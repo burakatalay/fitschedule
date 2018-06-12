@@ -1,4 +1,4 @@
-  {
+{
   "name": "fitschedule-frontend",
   "version": "0.1.0",
   "private": true,
@@ -20,11 +20,12 @@
   "dependencies": {
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
-    "react-scripts": "1.1.4",
-    "react-router-dom": "4.2.2",
+    "react-google-maps": "^9.4.5",
     "react-md": "1.2.11",
-    "webfontloader": "1.6.28",
-    "styled-components": "3.1.6"
+    "react-router-dom": "4.2.2",
+    "react-scripts": "1.1.4",
+    "styled-components": "3.1.6",
+    "webfontloader": "1.6.28"
   },
   "scripts": {
     "start": "PORT=8080 react-scripts start",
