@@ -6,8 +6,8 @@ const helmet     = require('helmet');
 
 const middlewares = require('./middlewares');
 
-//const auth  = require('./routes/auth');
-//const movie = require('./routes/movie');
+const auth  = require('./routes/auth');
+const movie = require('./routes/movie');
 
 const api = express();
 
@@ -22,13 +22,13 @@ api.use(middlewares.allowCrossDomain);
 // Basic route
 api.get('/', (req, res) => {
     res.json({
-        name: 'FitSchedule Backend'
+        name: 'SEBA Master Movie Backend'
     });
 });
 
 // API routes
-//api.use('/auth'  , auth);
-//api.use('/movies', movie);
+api.use('/auth'  , auth);
+api.use('/movies', movie);
 
 
 

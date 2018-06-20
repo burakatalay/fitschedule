@@ -1,21 +1,61 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+"use strict";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
+import React from 'react';
+import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+
+import { MovieListView } from './views/MovieListView';
+import { MovieDetailView }   from './views/MovieDetailView';
+import { MovieFormView }   from './views/MovieFormView';
+import { UserLoginView } from "./views/UserLoginView";
+import { UserSignupView } from "./views/UserSignupView";
+
+import UserService from "./services/UserService";
+
+
+export default class App extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            title: 'Movie Example App',
+            routes: [
+                { component: MovieListView , path: '/', exact: true},
+                { component: MovieDetailView , path: '/show/:id'},
+                { render: (props) => {
+                        if(UserService.isAuthenticated()) {
+                            return (<MovieFormView {... props} />)
+                        }
+                        else {
+                            return (<Redirect to={'/login'}/>)
+                        }} , path: '/edit/:id'},
+                { render: (props) => {
+                    if(UserService.isAuthenticated()) {
+                        return (<MovieFormView {... props} />)
+                    }
+                    else {
+                        return (<Redirect to={'/login'}/>)
+                    }}, path: '/add',},
+                { component: UserLoginView, path: '/login'},
+                { component: UserSignupView, path: '/register'}
+            ]
+        };
+    }
+
+    componentDidMount(){
+        document.title = this.state.title;
+    }
+
+    render() {
+        return(
+            <div>
+                <Router>
+                    <Switch>
+                        {this.state.routes.map((route, i) => (<Route key={i} {...route}/>) )}
+                    </Switch>
+                </Router>
+            </div>
+        );
+    }
 }
 
-export default App;
