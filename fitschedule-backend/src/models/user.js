@@ -13,10 +13,14 @@ const UserSchema  = new mongoose.Schema({
         type: String,
         required: true,
         unique: true
+    },
+    schedule: {
+        type: Schema.Types.ObjectId,
+        required: true
     }
 });
 
-UserSchema.set('versionKey', false);
+//UserSchema.set('versionKey', false);
 
 // Export the Movie model
 module.exports = mongoose.model('User', UserSchema);
