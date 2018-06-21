@@ -15,7 +15,7 @@ const UserSchema  = new mongoose.Schema({
         unique: true
     },
     schedule: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     }
 });
