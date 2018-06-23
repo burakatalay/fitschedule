@@ -6,6 +6,8 @@ import Discover from '../components/Discover';
 
 export class DiscoverView extends React.Component {
 
+    
+
     constructor(props) {
         super(props);
 

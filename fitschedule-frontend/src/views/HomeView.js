@@ -1,11 +1,12 @@
 "use strict";
 
 import React from 'react';
+import { Component } from "react";
+import MDSpinner from "react-md-spinner";
 
 import Home from '../components/Home';
 
 import MovieService from '../services/MovieService';
-
 
 export class HomeView extends React.Component {
 
@@ -39,7 +40,11 @@ export class HomeView extends React.Component {
 
     render() {
         if (this.state.loading) {
-            return (<h2>Loading...</h2>);
+            return (
+                <div className="md-grid md-cell--middle md-cell--center">
+                  <MDSpinner className="md-cell--center md-cell--middle" size="50"/>
+                </div>
+              );
         }
 
         return (
