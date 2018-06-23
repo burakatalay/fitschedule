@@ -11,11 +11,11 @@ const FitnessCenterSchema  = new mongoose.Schema({
         unique: true
     },
     location: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     courses: {
-        type: [Schema.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
         required: true
     }
 });

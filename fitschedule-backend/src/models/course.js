@@ -18,7 +18,7 @@ const CourseSchema  = new mongoose.Schema({
         required: true
     },
     reviews: {
-        type: [Schema.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
     },
     fitnesscenter: {
         type: Schema.Types.ObjectId,
