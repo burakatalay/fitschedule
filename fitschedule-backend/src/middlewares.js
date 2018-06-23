@@ -18,6 +18,19 @@ const allowCrossDomain = (req, res, next) => {
     }
 };
 
+const checkInstructor = (req, res, next) => {
+    // check header or url parameters or post parameters for token
+    const isInstructor = req.body.isInstructor
+
+    if (!isInstructor)
+        return res.status(401).send({
+            error: 'Unauthorized',
+            message: 'No token provided in the request'
+        });
+
+    next();
+};
+
 const checkAuthentication = (req, res, next) => {
 
     // check header or url parameters or post parameters for token
@@ -56,5 +69,6 @@ const errorHandler = (err, req, res, next) => {
 module.exports = {
     allowCrossDomain,
     checkAuthentication,
-    errorHandler
+    errorHandler,
+    checkInstructor
 };

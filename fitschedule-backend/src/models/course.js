@@ -14,15 +14,10 @@ const CourseSchema  = new mongoose.Schema({
         required: true
     },
     average_rating: {
-        type: String,
-        required: true
+        type: String
     },
     reviews: {
-        type: [mongoose.Schema.Types.ObjectId],
-    },
-    fitnesscenter: {
-        type: Schema.Types.ObjectId,
-        required: true
+        type: [mongoose.Schema.Types.ObjectId]
     }
 });
 

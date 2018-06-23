@@ -10,10 +10,26 @@ const FitnessCenterSchema  = new mongoose.Schema({
         required: true,
         unique: true
     },
-    location: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
-    },
+    /*
+    location: [
+    {
+        lat:{   
+            type: Number,
+            required: true
+        },
+        lon:{   
+            type: Number,
+            required: true
+        }
+    }
+    ],
+    */
+   location: [
+    {
+        type:[Number],
+        index: '2d'
+    }
+    ],
     courses: {
         type: [mongoose.Schema.Types.ObjectId],
         required: true
