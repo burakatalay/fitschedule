@@ -34,22 +34,7 @@ export class HomeView extends React.Component {
     }
 
     onSubmit(input) {
-        // this.setState({
-        //     data: [...this.state.data],
-        //     loading: true
-        // });
-        // MovieService.deleteMovie(id).then((message) => {
-        //
-        //     let movieIndex = this.state.data.map(movie => movie['_id']).indexOf(id);
-        //     let movies = this.state.data;
-        //     movies.splice(movieIndex, 1);
-        //     this.setState({
-        //        data: [...movies],
-        //        loading: false
-        //     });
-        // }).catch((e) => {
-        //     console.error(e);
-        // });
+        this.props.history.push(`/discover/${input}`);
     }
 
     render() {

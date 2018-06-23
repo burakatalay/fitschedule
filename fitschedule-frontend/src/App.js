@@ -10,6 +10,7 @@ import { UserLoginView } from "./views/UserLoginView";
 import { UserSignupView } from "./views/UserSignupView";
 
 import UserService from "./services/UserService";
+import { DiscoverView } from './views/DiscoverView';
 
 
 export default class App extends React.Component {
@@ -21,6 +22,7 @@ export default class App extends React.Component {
             title: 'FitSchedule',
             routes: [
                 { component: HomeView , path: '/', exact: true},
+                { component: DiscoverView , path: '/discover/:input', exact: true},
                 { component: MovieDetailView , path: '/show/:id'},
                 { render: (props) => {
                         if(UserService.isAuthenticated()) {
