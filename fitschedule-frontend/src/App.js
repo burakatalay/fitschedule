@@ -3,7 +3,7 @@
 import React from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
-import { MovieListView } from './views/MovieListView';
+import { HomeView } from './views/HomeView';
 import { MovieDetailView }   from './views/MovieDetailView';
 import { MovieFormView }   from './views/MovieFormView';
 import { UserLoginView } from "./views/UserLoginView";
@@ -20,7 +20,7 @@ export default class App extends React.Component {
         this.state = {
             title: 'FitSchedule',
             routes: [
-                { component: MovieListView , path: '/', exact: true},
+                { component: HomeView , path: '/', exact: true},
                 { component: MovieDetailView , path: '/show/:id'},
                 { render: (props) => {
                         if(UserService.isAuthenticated()) {
