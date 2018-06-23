@@ -5,13 +5,8 @@ const mongoose = require('mongoose');
 // Define the schedule schema
 
 const ScheduleSchema  = new mongoose.Schema({
-    owner: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        unique: true
-    },
-    course: {
-        type: [Schema.Types.ObjectId],
+    courses: {
+        type: [mongoose.Schema.Types.ObjectId],
         required: true
     }
 });
