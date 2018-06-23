@@ -9,7 +9,7 @@ class Discover extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            input: props.match.params.input,
+            input: !!props.match.params.input,
             isMarkerShown: true
         };
         this.getInnerRef = this.getInnerRef.bind(this);
