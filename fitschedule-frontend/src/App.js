@@ -22,7 +22,7 @@ export default class App extends React.Component {
             title: 'FitSchedule',
             routes: [
                 { component: HomeView , path: '/', exact: true},
-                { component: DiscoverView , path: '/discover/:input', exact: true},
+                { component: DiscoverView , path: '/discover', exact: true},
                 { component: MovieDetailView , path: '/show/:id'},
                 { render: (props) => {
                         if(UserService.isAuthenticated()) {

@@ -4,32 +4,34 @@ import React from 'react';
 import {withRouter} from 'react-router-dom'
 import Page from "./Page";
 import Map from "./Map";
+import SearchBar from "./SearchBar";
 
 class Discover extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            input: !!props.match.params.input,
-            isMarkerShown: true
-        };
-        this.getInnerRef = this.getInnerRef.bind(this);
-        this.getLocation = this.getLocation.bind(this);
+        this.searchSubmit = this.searchSubmit.bind(this);
+        this.locationSubmit = this.locationSubmit.bind(this);
+        this.useGeolocation = this.useGeolocation.bind(this);
     }
 
-    innerRef;
+    searchSubmit(value) {
+        console.log('[DiscoverComponent] Search submit', value);
 
-    getInnerRef(ref) {
-        this.innerRef = ref;
     }
 
-    getLocation() {
-        this.innerRef && this.innerRef.getLocation();
+    locationSubmit(value) {
+        this.setState({geolocation: value});
+    }
+
+    useGeolocation() {
+
     }
 
     render() {
         return (
             <Page>
-                <Map/>
+                <SearchBar useGeolocation={() => this.useGeolocation()} onSubmit={(value) => this.searchSubmit(value)}/>
+                <Map onSubmit={(value) => this.locationSubmit(value)}/>
             </Page>
         )
     }

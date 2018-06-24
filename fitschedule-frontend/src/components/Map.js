@@ -4,16 +4,15 @@ import {FontIcon, Snackbar, TextField} from "react-md";
 import MapPin from "./MapPin";
 import {withRouter} from "react-router-dom";
 
-const textFieldStyle = {backgroundColor:'white'};
-
 class Map extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {toasts: []};
+        this.state = {toasts: [], geolocation: null};
 
         this.showPosition = this.showPosition.bind(this);
         this.dismissToast = this.dismissToast.bind(this);
+        this.handleChangeCourse = this.handleChangeCourse.bind(this);
     }
 
     componentDidMount() {
@@ -27,12 +26,14 @@ class Map extends React.Component {
 
     showPosition(position) {
         console.log('[MapComponent] Geolocation: lat:', position.coords.latitude, 'long:', position.coords.longitude);
+        const geolocation = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        };
         this.setState({
-            geolocation: {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            }
+            geolocation: geolocation
         });
+        this.props.onSubmit(geolocation);
     }
 
     showError(error) {
@@ -69,18 +70,17 @@ class Map extends React.Component {
         this.setState({toasts});
     };
 
+    handleChangeCourse(value) {
+        this.setState({course: value});
+    }
+
     render() {
         return (
-            <div style={{height: '90vh', width: '100%'}}>
+            <div style={{height: '80vh', width: '100%'}}>
                 <GoogleMapReact
                     bootstrapURLKeys={{key: 'AIzaSyB5oqtbEdUtP1TmVDXf3PWEwUh05x7R6uc'}}
                     defaultCenter={this.props.center}
                     defaultZoom={this.props.zoom}>
-                    <TextField
-                        style={textFieldStyle}
-                        label=""
-                        type="text"
-                        className="md-row"/>
                     {
                         this.state.geolocation && <MapPin isPerson={true}
                                                           lat={this.state.geolocation.latitude}

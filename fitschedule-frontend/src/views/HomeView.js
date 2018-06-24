@@ -34,8 +34,8 @@ export class HomeView extends React.Component {
         });
     }
 
-    onSubmit(input) {
-        this.props.history.push(`/discover/${input}`);
+    onSubmit() {
+        this.props.history.push(`/discover`);
     }
 
     render() {
@@ -48,7 +48,7 @@ export class HomeView extends React.Component {
         }
 
         return (
-            <Home onSubmit={(input) => this.onSubmit(input)}/>
+            <Home onSubmit={() => this.onSubmit()}/>
         );
     }
 }

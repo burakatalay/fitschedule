@@ -7,20 +7,15 @@ export default class DiscoverService {
     constructor() {
     }
 
-    static baseURL() {return "http://localhost:3000/auth"; }
+    static baseURL() {return "http://localhost:3000/courses"; }
 
-    static getResults(){
+    static getCourseProviders(course, lat, long, dist){
         return new Promise((resolve, reject) => {
-            HttpService.get(this.baseURL(), function(data) {
+            HttpService.get(`${DiscoverService.baseURL()}/?course=${course}&lat=${lat}&long=${long}&dist=${dist}`, function(data) {
                 resolve(data);
             }, function(textStatus) {
                 reject(textStatus);
             });
         });
      }
-
-
-    static isAuthenticated() {
-        return !!window.localStorage['jwtToken'];
-    }
 }
