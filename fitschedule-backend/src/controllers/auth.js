@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const config = require('../config');
 const UserModel = require('../models/user');
 const ScheduleModel = require('../models/schedule');
+const CourseModel = require('../models/course');
 
 const login = (req, res) => {
     if (!Object.prototype.hasOwnProperty.call(req.body, 'password')) return res.status(400).json({
@@ -115,10 +116,25 @@ const logout = (req, res) => {
     res.status(200).send({token: null});
 };
 
+const createCourse = (req, res) => {
+    if (Object.keys(req.body).length === 0) return res.status(400).json({
+        error: 'Bad Request',
+        message: 'The request body is empty'
+    });
+
+    CourseModel.create(req.body)
+        .then(course => res.status(201).json(course))
+        .catch(error => res.status(500).json({
+            error: 'Internal server error',
+            message: error.message
+        }));
+};
+
 
 module.exports = {
     login,
     register,
     logout,
-    me
+    me,
+    createCourse
 };

@@ -14,6 +14,9 @@ const UserSchema  = new mongoose.Schema({
         required: true,
         unique: true
     },
+    is_instructor: {
+        type: Boolean
+    },
     schedule: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
