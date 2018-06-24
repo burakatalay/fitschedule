@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { Card, Button, TextField } from 'react-md';
+import { Card, Button, TextField, Checkbox } from 'react-md';
 import { withRouter } from 'react-router-dom';
 
 import { AlertMessage } from './AlertMessage';
@@ -18,11 +18,13 @@ class UserSignup extends React.Component {
 
         this.state = {
             username : '',
-            password : ''
+            password : '',
+            isInstructor: false
         };
 
         this.handleChangeUsername = this.handleChangeUsername.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
+        this.handleIsInstructor = this.handleIsInstructor.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -35,16 +37,24 @@ class UserSignup extends React.Component {
         this.setState(Object.assign({}, this.state, {password: value}));
     }
 
+    handleIsInstructor(value) {
+        this.setState(Object.assign({}, this.state, {isInstructor: value}));
+    }
+
     handleSubmit(event) {
         event.preventDefault();
 
         let user = {
             username: this.state.username,
-            password: this.state.password
+            password: this.state.password,
+            isInstructor: this.state.isInstructor,
         };
 
         this.props.onSubmit(user);
-    }
+    }; 
+
+    
+
 
     render() {
         return (
@@ -69,7 +79,15 @@ class UserSignup extends React.Component {
                             value={this.state.password}
                             onChange={this.handleChangePassword}
                             errorText="Password is required"/>
+                        <Checkbox
+                            id="checkbox-Isinstructor"
+                            name="simple-checkboxes[]"
+                            label="Are you a course provider?"
+                            type="checkbox"
+                            value={this.state.isInstructor}
+                            onChange={this.handleIsInstructor}/>
 
+                        
                         <Button id="submit" type="submit"
                                 disabled={this.state.username == undefined || this.state.username == '' || this.state.password == undefined || this.state.password == '' ? true : false}
                                 raised primary className="md-cell md-cell--2">Register</Button>
