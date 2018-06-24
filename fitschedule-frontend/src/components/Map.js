@@ -1,8 +1,10 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
-import {FontIcon, Snackbar} from "react-md";
+import {FontIcon, Snackbar, TextField} from "react-md";
 import MapPin from "./MapPin";
 import {withRouter} from "react-router-dom";
+
+const textFieldStyle = {backgroundColor:'white'};
 
 class Map extends React.Component {
 
@@ -74,6 +76,11 @@ class Map extends React.Component {
                     bootstrapURLKeys={{key: 'AIzaSyB5oqtbEdUtP1TmVDXf3PWEwUh05x7R6uc'}}
                     defaultCenter={this.props.center}
                     defaultZoom={this.props.zoom}>
+                    <TextField
+                        style={textFieldStyle}
+                        label=""
+                        type="text"
+                        className="md-row"/>
                     {
                         this.state.geolocation && <MapPin isPerson={true}
                                                           lat={this.state.geolocation.latitude}
