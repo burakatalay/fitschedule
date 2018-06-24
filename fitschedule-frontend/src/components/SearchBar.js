@@ -3,7 +3,7 @@ import {Button, FontIcon, SelectField, TextField} from "react-md";
 import {withRouter} from "react-router-dom";
 import LocationSearchField from "./LocationSearchField";
 
-const searchBarStyle = {display: 'flex', justifyContent: 'space-around', alignItems: 'center'};
+const searchBarStyle = {display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '80%'};
 const textFieldStyle = {width: '20rem'};
 const buttonStyle = {verticalAlign: 'bottom'};
 const pinStyle = {fontSize: 30, cursor: 'pointer'};
@@ -27,8 +27,7 @@ class SearchBar extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-
-        let search = {
+        const search = {
             course: this.state.course,
             coord: this.state.coord,
             useGeolocation: this.state.useGeolocation,
@@ -44,7 +43,6 @@ class SearchBar extends React.Component {
 
     useGeolocation() {
         this.setState({useGeolocation: true});
-        this.props.useGeolocation();
     }
 
     handleChangeDistance(value, index, event, details) {
@@ -62,15 +60,16 @@ class SearchBar extends React.Component {
                     value={this.state.course}
                     onChange={this.handleChangeCourse}/>
                 <LocationSearchField onSubmit={(value) => this.locationSubmit(value)}/>
-                <FontIcon primary style={pinStyle} onClick={this.useGeolocation}>my_location</FontIcon>
                 <SelectField
                     id="distanceField"
                     label="Distance in KM"
                     placeholder="Placeholder"
+                    defaultValue={NUMBER_ITEMS[4]}
                     onChange={this.handleChangeDistance}
                     className="md-cell"
                     menuItems={NUMBER_ITEMS}
                 />
+                <FontIcon primary style={pinStyle} onClick={this.useGeolocation}>my_location</FontIcon>
                 <Button id="submit" type="submit" style={buttonStyle} raised secondary>Discover</Button>
             </form>
         );

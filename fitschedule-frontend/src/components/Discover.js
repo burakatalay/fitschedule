@@ -10,7 +10,8 @@ import {Snackbar} from "react-md";
 class Discover extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {geolocation: null};
+        this.state = {toasts: [], geolocation: null};
+
         this.searchSubmit = this.searchSubmit.bind(this);
         this.dismissToast = this.dismissToast.bind(this);
         this.locationSubmit = this.locationSubmit.bind(this);
@@ -74,6 +75,10 @@ class Discover extends React.Component {
     };
 
     searchSubmit(value) {
+        if (!value.course) {
+            this.addToast("Please enter a course name.");
+            return;
+        }
         const query = {
             course: value.course,
             dist: value.dist
@@ -84,13 +89,13 @@ class Discover extends React.Component {
             query.coord = value.coord;
         }
 
-        if (query.coord) {
-            console.log('[DiscoverComponent] Submitting query', query);
-            this.props.onSubmit(query);
-        } else {
+        if (!query.coord) {
             this.addToast("Please enable location or enter it manually.");
+            return;
         }
 
+        console.log('[DiscoverComponent] Submitting query', query);
+        this.props.onSubmit(query);
     }
 
     locationSubmit(value) {
