@@ -21,7 +21,7 @@ export class HomeView extends React.Component {
 
     componentWillMount(){
         this.setState({
-            loading: true
+            loading: false
         });
 
         MovieService.getMovies().then((data) => {
