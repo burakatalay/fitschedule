@@ -1,43 +1,88 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
-import {FontIcon} from "react-md";
-import {geolocated} from 'react-geolocated';
-
-const personPin = {fontSize: 30};
-const Marker = () => <FontIcon secondary style={personPin}>person_pin</FontIcon>;
+import {FontIcon, Snackbar} from "react-md";
+import MapPin from "./MapPin";
+import {withRouter} from "react-router-dom";
 
 class Map extends React.Component {
+
     constructor(props) {
         super(props);
+        this.state = {toasts: []};
+
+        this.showPosition = this.showPosition.bind(this);
+        this.dismissToast = this.dismissToast.bind(this);
     }
 
-    geolocationUnavailable() {
-
+    componentDidMount() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(this.showPosition, this.showError);
+        } else {
+            console.log('[MapComponent] Browser does not support geolocation');
+            this.addToast("Browser doesn't support location.");
+        }
     }
 
-    geolocationDisabled() {
-
+    showPosition(position) {
+        console.log('[MapComponent] Geolocation: lat:', position.coords.latitude, 'long:', position.coords.longitude);
+        this.setState({
+            geolocation: {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            }
+        });
     }
+
+    showError(error) {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                console.log('[MapComponent] User denied the request for Geolocation');
+                this.addToast("Please enable location permission.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                console.log('[MapComponent] Location information is unavailable');
+                this.addToast("Location information is unavailable. Please enter manually.");
+                break;
+            case error.TIMEOUT:
+                console.log('[MapComponent] The request to get user location timed out');
+                this.addToast("Please enable location from browser settings.");
+                break;
+            case error.UNKNOWN_ERROR:
+                console.log('[MapComponent] An unknown error occurred');
+                this.addToast("Unknown error. Location information is unavailable.");
+                break;
+        }
+    }
+
+    addToast(text, action) {
+        this.setState((state) => {
+            const toasts = state.toasts.slice();
+            toasts.push({text, action});
+            return {toasts};
+        });
+    }
+
+    dismissToast() {
+        const [, ...toasts] = this.state.toasts;
+        this.setState({toasts});
+    };
 
     render() {
-        return <div style={{height: '90vh', width: '100%'}}>
-            <GoogleMapReact
-                bootstrapURLKeys={{key: 'AIzaSyB5oqtbEdUtP1TmVDXf3PWEwUh05x7R6uc'}}
-                defaultCenter={this.props.center}
-                defaultZoom={this.props.zoom}>
-                {this.props.coords && <Marker lat={this.props.coords.latitude}
-                                              lng={this.props.coords.longitude}/>}
-            </GoogleMapReact>
-        </div>
-
-        //
-        // !this.props.isGeolocationAvailable
-        //     ? <div>Your browser does not support Geolocation.</div>
-        //     : !this.props.isGeolocationEnabled
-        //         ? <div>Geolocation is not enabled.</div>
-        //         : this.props.coords
-        //             ?
-        //             : <div>Getting the location data&hellip; </div>;
+        return (
+            <div style={{height: '90vh', width: '100%'}}>
+                <GoogleMapReact
+                    bootstrapURLKeys={{key: 'AIzaSyB5oqtbEdUtP1TmVDXf3PWEwUh05x7R6uc'}}
+                    defaultCenter={this.props.center}
+                    defaultZoom={this.props.zoom}>
+                    {
+                        this.state.geolocation && <MapPin isPerson={true}
+                                                          lat={this.state.geolocation.latitude}
+                                                          lng={this.state.geolocation.longitude}/>
+                    }
+                </GoogleMapReact>
+                <Snackbar toasts={this.state.toasts} autohide={true} onDismiss={this.dismissToast}/>
+            </div>
+        );
     }
 }
 
@@ -48,10 +93,6 @@ Map.defaultProps = {
     },
     zoom: 11
 };
-// export default Map;
-export default geolocated({
-    positionOptions: {
-        enableHighAccuracy: true,
-    },
-    userDecisionTimeout: 5000,
-})(Map);
+
+export default withRouter(Map);
+
