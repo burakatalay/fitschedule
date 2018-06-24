@@ -3,42 +3,26 @@
 import React from 'react';
 
 import Discover from '../components/Discover';
+import DiscoverService from "../services/DiscoverService";
 
 export class DiscoverView extends React.Component {
-
-    
-
     constructor(props) {
         super(props);
-
-        this.state = {
-            loading: false,
-            data: []
-        };
+        this.state = {};
     }
 
-    componentWillMount(){
-        this.setState({
-            loading: false
+    discover(query) {
+        DiscoverService.getCourseProviders(query.course, query.coord.lat, query.coord.lng, query.dist)
+            .then((data) => {
+                console.error('[DiscoverView] Success getting course providers', data);
+            }).catch((e) => {
+            console.error('[DiscoverView] Error getting course providers', e);
         });
-
-        // MovieService.getMovies().then((data) => {
-        //     this.setState({
-        //         data: [...data],
-        //         loading: false
-        //     });
-        // }).catch((e) => {
-        //     console.error(e);
-        // });
     }
 
     render() {
-        if (this.state.loading) {
-            return (<h2>Loading...</h2>);
-        }
-
         return (
-            <Discover input={this.state.input} />
+            <Discover onSubmit={(query) => this.discover(query)}/>
         );
     }
 }
