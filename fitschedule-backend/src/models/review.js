@@ -14,15 +14,15 @@ const ReviewSchema  = new mongoose.Schema({
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        Ref: 'User'
     },
     course: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        Ref: 'Course'
     }
 });
 
 //ReviewSchema.set('versionKey', false);
 
-// Export the Movie model
+// Export the Review model
 module.exports = mongoose.model('Review', ReviewSchema);

@@ -8,95 +8,93 @@ const UserModel = require('../models/user');
 const ScheduleModel = require('../models/schedule');
 const CourseModel = require('../models/course');
 
-const login = (req, res) => {
-    if (!Object.prototype.hasOwnProperty.call(req.body, 'password')) return res.status(400).json({
-        error: 'Bad Request',
-        message: 'The request body must contain a password property'
+module.exports.login = function(req, res){
+
+    if(!req.body.username){
+        res.status(400).send('username required');
+        return;
+    }
+    if(!req.body.password){
+        res.status(400).send('password required');
+        return;
+    }
+
+    UserModel.findOne({username: req.body.username}, function(err, user){
+
+        if (err) {
+            res.status(500).send(err);
+            return
+        }
+
+        if (!user) {
+            res.status(401).send('Invalid Credentials');
+            return;
+        }
+        const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
+        if (!isPasswordValid) {
+            console.log(req.body.password);
+            return res.status(401).send({token: null});
+        }
+        
+
+        const token = jwt.sign({id: user._id, username: user.username}, config.JwtSecret, {
+            expiresIn: 86400 // expires in 24 hours
+        });
+
+        res.status(200).json({token: token});
     });
 
-    if (!Object.prototype.hasOwnProperty.call(req.body, 'username')) return res.status(400).json({
-        error: 'Bad Request',
-        message: 'The request body must contain a username property'
+};
+
+
+module.exports.register = function(req, res){
+
+    if(!req.body.username){
+        res.status(400).send('username required');
+        return;
+    }
+    if(!req.body.password){
+        res.status(400).send('password required');
+        return;
+    }
+
+    var user = new UserModel();
+
+    user.username = req.body.username;
+    user.password = bcrypt.hashSync(req.body.password, 8);
+    if(req.body.isInstructor == true) {
+        user.type = "instructor"
+    } else {
+        user.type = "regular"
+    }
+    var schedule = new ScheduleModel({
+        courses: []
     });
-
-    UserModel.findOne({username: req.body.username}).exec()
-        .then(user => {
-            // check if the password is valid
-            const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
-            if (!isPasswordValid) return res.status(401).send({token: null});
-
-            // if user is found and password is valid
-            // create a token
+    schedule.save(function(err) {
+        if (err) {
+            res.status.send(err);
+            return;
+        }   
+        user.schedule = schedule._id; 
+        user.save(function(err) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            
             const token = jwt.sign({id: user._id, username: user.username}, config.JwtSecret, {
                 expiresIn: 86400 // expires in 24 hours
             });
-
-            res.status(200).json({token: token});
-
-        })
-        .catch(error => res.status(404).json({
-            error: 'User Not Found',
-            message: error.message
-        }));
-
+            
+            res.status(201).json({token: token}); 
+        });    
+        
+    });
+    
 };
 
-
-const register = (req, res) => {
-    if (!Object.prototype.hasOwnProperty.call(req.body, 'password')) return res.status(400).json({
-        error: 'Bad Request',
-        message: 'The request body must contain a password property'
-    });
-
-    if (!Object.prototype.hasOwnProperty.call(req.body, 'username')) return res.status(400).json({
-        error: 'Bad Request',
-        message: 'The request body must contain a username property'
-    });
-    const schedule = Object.assign({courses: []});
-    const user = Object.assign(req.body, {password: bcrypt.hashSync(req.body.password, 8)});
-
-    ScheduleModel.create(schedule)
-        .then(schedule => {
-            console.log('[AuthController] Success creating new schedule', schedule);
-            user.schedule = schedule.id;
-            UserModel.create(user)
-                .then(user => {
-                    console.log('[AuthController] Success creating new user', user);
-                    // if user is registered without errors
-                    // create a token
-                    const token = jwt.sign({id: user._id, username: user.username}, config.JwtSecret, {
-                        expiresIn: 86400 // expires in 24 hours
-                    });
-
-                    res.status(200).json({token: token});
-
-
-                })
-                .catch(error => {
-                    if (error.code == 11000) {
-                        console.log('[AuthController] Error creating already existing user', error);
-                        res.status(400).json({
-                            error: 'User exists',
-                            message: error.message
-                        })
-                    }
-                    else {
-                        console.log('[AuthController] Error creating new user', error);
-                        res.status(500).json({
-                            error: 'Internal server error',
-                            message: error.message
-                        })
-                    }
-                });
-        })
-        .catch(error => {
-            console.log('[AuthController] Error creating new schedule', error);
-        });
-};
-
-
-const me = (req, res) => {
-    UserModel.findById(req.userId).select('username').exec()
+module.exports.me = (req, res) => {
+    UserModel.findById(req.userId).exec()
         .then(user => {
 
             if (!user) return res.status(404).json({
@@ -112,11 +110,11 @@ const me = (req, res) => {
         }));
 };
 
-const logout = (req, res) => {
+module.exports.logout = (req, res) => {
     res.status(200).send({token: null});
 };
 
-const createCourse = (req, res) => {
+module.exports.createCourse = (req, res) => {
     if (Object.keys(req.body).length === 0) return res.status(400).json({
         error: 'Bad Request',
         message: 'The request body is empty'
@@ -128,13 +126,4 @@ const createCourse = (req, res) => {
             error: 'Internal server error',
             message: error.message
         }));
-};
-
-
-module.exports = {
-    login,
-    register,
-    logout,
-    me,
-    createCourse
 };
