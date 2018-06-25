@@ -10,8 +10,8 @@ const CourseModel = require('../models/course');
 
 module.exports.login = function(req, res){
 
-    if(!req.body.username){
-        res.status(400).send('username required');
+    if(!req.body.email){
+        res.status(400).send('email required');
         return;
     }
     if(!req.body.password){
@@ -19,7 +19,7 @@ module.exports.login = function(req, res){
         return;
     }
 
-    UserModel.findOne({username: req.body.username}, function(err, user){
+    UserModel.findOne({email: req.body.email}, function(err, user){
 
         if (err) {
             res.status(500).send(err);
@@ -37,7 +37,7 @@ module.exports.login = function(req, res){
         }
         
 
-        const token = jwt.sign({id: user._id, username: user.username}, config.JwtSecret, {
+        const token = jwt.sign({id: user._id, email: user.email}, config.JwtSecret, {
             expiresIn: 86400 // expires in 24 hours
         });
 
@@ -49,8 +49,8 @@ module.exports.login = function(req, res){
 
 module.exports.register = function(req, res){
 
-    if(!req.body.username){
-        res.status(400).send('username required');
+    if(!req.body.email){
+        res.status(400).send('email required');
         return;
     }
     if(!req.body.password){
@@ -60,7 +60,7 @@ module.exports.register = function(req, res){
 
     var user = new UserModel();
 
-    user.username = req.body.username;
+    user.email = req.body.email;
     user.password = bcrypt.hashSync(req.body.password, 8);
     if(req.body.isInstructor == true) {
         user.type = "instructor"
@@ -82,7 +82,7 @@ module.exports.register = function(req, res){
                 return;
             }
             
-            const token = jwt.sign({id: user._id, username: user.username}, config.JwtSecret, {
+            const token = jwt.sign({id: user._id, email: user.email}, config.JwtSecret, {
                 expiresIn: 86400 // expires in 24 hours
             });
             

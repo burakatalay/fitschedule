@@ -16,7 +16,7 @@ const upperSection = {
 }
 
 const lowerSection = {
-    'background-color': 'grey',
+    'backgroundColor': 'grey',
     'height': '700px'
 }
 
