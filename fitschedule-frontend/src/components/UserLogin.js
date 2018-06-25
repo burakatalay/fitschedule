@@ -32,7 +32,7 @@ class UserLogin extends React.Component {
     }
 
     handleChangePassword(value) {
-        this.setState(Object.assign({}, this.state, {email: value}));
+        this.setState(Object.assign({}, this.state, {password: value}));
     }
 
     handleSubmit(event) {

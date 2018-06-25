@@ -17,37 +17,51 @@ class UserSignup extends React.Component {
         super(props);
 
         this.state = {
+            firstname: '',
+            surname: '',
             email : '',
             password : '',
-            isInstructor: false
+            isCourseProvider: false
         };
 
+        this.handleChangeFirstname = this.handleChangeFirstname.bind(this);
+        this.handleChangeSurname = this.handleChangeSurname.bind(this);
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
-        this.handleIsInstructor = this.handleIsInstructor.bind(this);
+        this.handleIsCourseProvider = this.handleIsCourseProvider.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    handleChangeFirstname(value) {
+        this.setState({firstname: value});
+    }
+
+    handleChangeSurname(value) {
+        this.setState({surname: value});
+    }
+
     handleChangeEmail(value) {
-        this.setState(Object.assign({}, this.state, {email: value}));
+        this.setState({email: value});
     }
 
     handleChangePassword(value) {
-        this.setState(Object.assign({}, this.state, {password: value}));
+        this.setState({password: value});
     }
 
-    handleIsInstructor(value) {
-        this.setState(Object.assign({}, this.state, {isInstructor: value}));
+    handleIsCourseProvider(value) {
+        this.setState({isCourseProvider: value});
     }
 
     handleSubmit(event) {
         event.preventDefault();
 
         let user = {
-            email: this.state.username,
+            firstname: this.state.firstname,
+            surname: this.state.surname,
+            email: this.state.email,
             password: this.state.password,
-            isInstructor: this.state.isInstructor,
+            isCourseProvider: this.state.isCourseProvider,
         };
 
         this.props.onSubmit(user);
@@ -58,6 +72,24 @@ class UserSignup extends React.Component {
             <Page>
                 <Card style={style} className="md-block-centered">
                     <form className="md-grid" onSubmit={this.handleSubmit} onReset={() => this.props.history.goBack()}>
+                        <TextField
+                            label="Firstname"
+                            id="firstnameField"
+                            type="text"
+                            className="md-row"
+                            required={true}
+                            value={this.state.firstname}
+                            onChange={this.handleChangeFirstname}
+                            errorText="Firstname is required"/>
+                        <TextField
+                            label="Surname"
+                            id="surnameField"
+                            type="text"
+                            className="md-row"
+                            required={true}
+                            value={this.state.surname}
+                            onChange={this.handleChangeSurname}
+                            errorText="Surname is required"/>
                         <TextField
                             label="E-Mail"
                             id="emailField"
@@ -77,15 +109,15 @@ class UserSignup extends React.Component {
                             onChange={this.handleChangePassword}
                             errorText="Password is required"/>
                         <Checkbox
-                            id="checkbox-Isinstructor"
+                            id="checkbox-IsCourseProvider"
                             name="simple-checkboxes[]"
                             label="Are you a course provider?"
                             type="checkbox"
-                            value={this.state.isInstructor}
-                            onChange={this.handleIsInstructor}/>
+                            value={this.state.isCourseProvider}
+                            onChange={this.handleIsCourseProvider}/>
 
                         <Button id="submit" type="submit"
-                                disabled={this.state.email == undefined || this.state.email == '' || this.state.password == undefined || this.state.password == '' ? true : false}
+                                disabled={this.state.firstname == undefined || this.state.firstname == '' || this.state.surname == undefined || this.state.surname == '' || this.state.email == undefined || this.state.email == '' || this.state.password == undefined || this.state.password == '' ? true : false}
                                 raised primary className="md-cell md-cell--2">Register</Button>
                         <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
                         <AlertMessage className="md-row md-full-width" >{this.props.error ? `${this.props.error}` : ''}</AlertMessage>

@@ -1,3 +1,4 @@
+
 "use strict";
 
 const jwt = require('jsonwebtoken');
@@ -57,12 +58,23 @@ module.exports.register = function(req, res){
         res.status(400).send('password required');
         return;
     }
-
+    if(!req.body.firstname){
+        res.status(400).send('password required');
+        return;
+    }
+    if(!req.body.surname){
+        res.status(400).send('password required');
+        return;
+    }
+    
+    
     var user = new UserModel();
 
+    user.firstname = req.body.firstname;
+    user.lastname = req.body.surname;
     user.email = req.body.email;
     user.password = bcrypt.hashSync(req.body.password, 8);
-    if(req.body.isInstructor == true) {
+    if(req.body.isCourseProvider == true) {
         user.type = "instructor"
     } else {
         user.type = "regular"
@@ -127,3 +139,5 @@ module.exports.createCourse = (req, res) => {
             message: error.message
         }));
 };
+
+
