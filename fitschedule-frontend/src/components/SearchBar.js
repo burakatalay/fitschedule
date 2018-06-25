@@ -28,7 +28,7 @@ class SearchBar extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {course: '', useGeolocation: true};
+        this.state = {course: '', dist: 5};
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onAutocomplete = this.onAutocomplete.bind(this);
@@ -54,18 +54,10 @@ class SearchBar extends React.Component {
 
     onAutocomplete(value) {
         this.props.onAutocomplete(value);
-        // if (value[0] && value[0].geometry && value[0].geometry.location) {
-        //     const coord = {
-        //         lat: value[0].geometry.location.lat(),
-        //         lng: value[0].geometry.location.lng()
-        //     };
-        //     this.setState({coord: coord, useGeolocation: false});
-        //     console.log('[SearchBarComponent] On places changed', coord);
-        // }
     }
 
     useGeolocation() {
-        this.setState({useGeolocation: true});
+        this.props.useGeolocation();
     }
 
     handleChangeDistance(value, index, event, details) {
