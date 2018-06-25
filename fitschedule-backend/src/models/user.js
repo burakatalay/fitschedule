@@ -5,7 +5,15 @@ const mongoose = require('mongoose');
 // Define the user schema
 
 const UserSchema  = new mongoose.Schema({
-    username: {
+    firstname: {
+        type: String,
+        required: true
+    },
+    lastname: {
+        type: String,
+        required: true
+    },
+    email: {
         type: String,
         required: true
     },
@@ -14,16 +22,17 @@ const UserSchema  = new mongoose.Schema({
         required: true,
         unique: true
     },
-    is_instructor: {
-        type: Boolean
-    },
     schedule: {
         type: mongoose.Schema.Types.ObjectId,
+        Ref: 'Schedule'
+    },
+    isCourseProvider: {
+        type: Boolean,
         required: true
     }
 });
 
 //UserSchema.set('versionKey', false);
 
-// Export the Movie model
+// Export the User model
 module.exports = mongoose.model('User', UserSchema);

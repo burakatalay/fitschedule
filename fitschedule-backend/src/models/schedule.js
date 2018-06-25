@@ -5,13 +5,17 @@ const mongoose = require('mongoose');
 // Define the schedule schema
 
 const ScheduleSchema  = new mongoose.Schema({
+    // owner: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     Ref: 'User'
+    // },
     courses: {
         type: [mongoose.Schema.Types.ObjectId],
-        required: true
+        Ref: 'Course'
     }
 });
 
 //ScheduleSchema.set('versionKey', false);
 
-// Export the Movie model
+// Export the Schedule model
 module.exports = mongoose.model('Schedule', ScheduleSchema);

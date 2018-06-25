@@ -1,23 +1,24 @@
 import React from 'react';
-import {Button, FontIcon, TextField} from "react-md";
+import {Button, FontIcon, SelectField, TextField} from "react-md";
 import {withRouter} from "react-router-dom";
 import LocationSearchField from "./LocationSearchField";
 
-const searchBarStyle = {display: 'flex', justifyContent: 'space-around', alignItems: 'center'};
+const searchBarStyle = {display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '80%'};
 const textFieldStyle = {width: '20rem'};
 const buttonStyle = {verticalAlign: 'bottom'};
-const pinStyle = {fontSize: 30};
+const pinStyle = {fontSize: 30, cursor: 'pointer'};
+const NUMBER_ITEMS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
 class SearchBar extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {course: '', useGeolocation: true};
-
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.locationSubmit = this.locationSubmit.bind(this);
         this.useGeolocation = this.useGeolocation.bind(this);
+        this.handleChangeDistance = this.handleChangeDistance.bind(this);
     }
 
     handleChangeCourse(value) {
@@ -26,24 +27,27 @@ class SearchBar extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-
-        let search = {
+        const search = {
             course: this.state.course,
             coord: this.state.coord,
-            useGeolocation: this.state.useGeolocation
+            useGeolocation: this.state.useGeolocation,
+            dist: this.state.dist
         };
 
         this.props.onSubmit(search);
     }
 
     locationSubmit(value) {
-        this.setState({coord: value});
+        this.setState({coord: value, useGeolocation: false});
     }
 
     useGeolocation() {
-        this.setState({useGeolocation: !this.state.useGeolocation});
-        this.props.useGeolocation();
+        this.setState({useGeolocation: true});
     }
+
+    handleChangeDistance(value, index, event, details) {
+        this.setState({dist: value});
+    };
 
     render() {
         return (
@@ -56,6 +60,15 @@ class SearchBar extends React.Component {
                     value={this.state.course}
                     onChange={this.handleChangeCourse}/>
                 <LocationSearchField onSubmit={(value) => this.locationSubmit(value)}/>
+                <SelectField
+                    id="distanceField"
+                    label="Distance in KM"
+                    placeholder="Placeholder"
+                    defaultValue={NUMBER_ITEMS[4]}
+                    onChange={this.handleChangeDistance}
+                    className="md-cell"
+                    menuItems={NUMBER_ITEMS}
+                />
                 <FontIcon primary style={pinStyle} onClick={this.useGeolocation}>my_location</FontIcon>
                 <Button id="submit" type="submit" style={buttonStyle} raised secondary>Discover</Button>
             </form>

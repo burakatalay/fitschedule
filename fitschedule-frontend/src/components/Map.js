@@ -8,53 +8,32 @@ class Map extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {toasts: [], geolocation: null};
-
-        this.showPosition = this.showPosition.bind(this);
+        this.state = {toasts: []};
         this.dismissToast = this.dismissToast.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
     }
 
     componentDidMount() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(this.showPosition, this.showError);
+        this.props.onRef(this);
+    }
+
+    componentWillUnmount() {
+        this.props.onRef(undefined);
+    }
+
+    focusGeolocation() {
+        if(this.state.geolocation) {
+            this.setState({
+                center: {
+                    lat: this.state.geolocation.latitude,
+                    lng: this.state.geolocation.longitude
+                },
+                zoom: 50
+            });
         } else {
-            console.log('[MapComponent] Browser does not support geolocation');
-            this.addToast("Browser doesn't support location.");
+            this.addToast("Please enable location permission.");
         }
-    }
 
-    showPosition(position) {
-        console.log('[MapComponent] Geolocation: lat:', position.coords.latitude, 'long:', position.coords.longitude);
-        const geolocation = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-        };
-        this.setState({
-            geolocation: geolocation
-        });
-        this.props.onSubmit(geolocation);
-    }
-
-    showError(error) {
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                console.log('[MapComponent] User denied the request for Geolocation');
-                this.addToast("Please enable location permission.");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                console.log('[MapComponent] Location information is unavailable');
-                this.addToast("Location information is unavailable. Please enter manually.");
-                break;
-            case error.TIMEOUT:
-                console.log('[MapComponent] The request to get user location timed out');
-                this.addToast("Please enable location from browser settings.");
-                break;
-            case error.UNKNOWN_ERROR:
-                console.log('[MapComponent] An unknown error occurred');
-                this.addToast("Unknown error. Location information is unavailable.");
-                break;
-        }
     }
 
     addToast(text, action) {
@@ -80,11 +59,13 @@ class Map extends React.Component {
                 <GoogleMapReact
                     bootstrapURLKeys={{key: 'AIzaSyB5oqtbEdUtP1TmVDXf3PWEwUh05x7R6uc'}}
                     defaultCenter={this.props.center}
-                    defaultZoom={this.props.zoom}>
+                    defaultZoom={this.props.zoom}
+                    center={this.state.center}
+                    zoom={this.state.zoom}>
                     {
-                        this.state.geolocation && <MapPin isPerson={true}
-                                                          lat={this.state.geolocation.latitude}
-                                                          lng={this.state.geolocation.longitude}/>
+                        this.props.geolocation && <MapPin isPerson={true}
+                                                          lat={this.props.geolocation.lat}
+                                                          lng={this.props.geolocation.lng}/>
                     }
                 </GoogleMapReact>
                 <Snackbar toasts={this.state.toasts} autohide={true} onDismiss={this.dismissToast}/>

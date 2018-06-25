@@ -7,15 +7,19 @@ export default class DiscoverService {
     constructor() {
     }
 
-    static baseURL() {return "http://localhost:3000/courses"; }
+    static baseURL() {
+        return "http://localhost:3000/courses";
+    }
 
-    static getCourseProviders(course, lat, long, dist){
+    static getCourseProviders(course, lat, long, dist) {
+        console.log('[DiscoverService] Getting course providers for course:',
+            course, 'lat:', lat, 'long:', long, 'distance:', dist);
         return new Promise((resolve, reject) => {
-            HttpService.get(`${DiscoverService.baseURL()}/?course=${course}&lat=${lat}&long=${long}&dist=${dist}`, function(data) {
+            HttpService.get(`${DiscoverService.baseURL()}/?course=${course}&lat=${lat}&long=${long}&dist=${dist}`, function (data) {
                 resolve(data);
-            }, function(textStatus) {
+            }, function (textStatus) {
                 reject(textStatus);
             });
         });
-     }
+    }
 }
