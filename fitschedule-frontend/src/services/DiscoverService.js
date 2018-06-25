@@ -15,7 +15,7 @@ export default class DiscoverService {
         console.log('[DiscoverService] Getting course providers for course:',
             course, 'lat:', lat, 'long:', long, 'distance:', dist);
         return new Promise((resolve, reject) => {
-            HttpService.get(`${DiscoverService.baseURL()}/?course=${course}&lat=${lat}&long=${long}&dist=${dist}`, function (data) {
+            HttpService.get(`${DiscoverService.baseURL()}/?course=${course}&lat=${lat}&lng=${long}&dist=${dist}`, function (data) {
                 resolve(data);
             }, function (textStatus) {
                 reject(textStatus);

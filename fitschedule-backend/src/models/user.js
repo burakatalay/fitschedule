@@ -27,8 +27,7 @@ const UserSchema  = new mongoose.Schema({
         Ref: 'Schedule'
     },
     isCourseProvider: {
-        type: Boolean,
-        required: true
+        type: Boolean
     }
 });
 

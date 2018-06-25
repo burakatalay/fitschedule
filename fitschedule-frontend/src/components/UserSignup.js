@@ -17,18 +17,18 @@ class UserSignup extends React.Component {
         super(props);
 
         this.state = {
-            username : '',
+            email : '',
             password : ''
         };
 
-        this.handleChangeUsername = this.handleChangeUsername.bind(this);
+        this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChangeUsername(value) {
-        this.setState(Object.assign({}, this.state, {username: value}));
+    handleChangeEmail(value) {
+        this.setState(Object.assign({}, this.state, {email: value}));
     }
 
     handleChangePassword(value) {
@@ -39,7 +39,7 @@ class UserSignup extends React.Component {
         event.preventDefault();
 
         let user = {
-            username: this.state.username,
+            email: this.state.email,
             password: this.state.password
         };
 
@@ -52,14 +52,14 @@ class UserSignup extends React.Component {
                 <Card style={style} className="md-block-centered">
                     <form className="md-grid" onSubmit={this.handleSubmit} onReset={() => this.props.history.goBack()}>
                         <TextField
-                            label="Username"
-                            id="UsernameField"
+                            label="E-Mail"
+                            id="emailField"
                             type="text"
                             className="md-row"
                             required={true}
-                            value={this.state.username}
-                            onChange={this.handleChangeUsername}
-                            errorText="Username is required"/>
+                            value={this.state.email}
+                            onChange={this.handleChangeEmail}
+                            errorText="E-Mail is required"/>
                         <TextField
                             label="Password"
                             id="PasswordField"
@@ -71,7 +71,7 @@ class UserSignup extends React.Component {
                             errorText="Password is required"/>
 
                         <Button id="submit" type="submit"
-                                disabled={this.state.username == undefined || this.state.username == '' || this.state.password == undefined || this.state.password == '' ? true : false}
+                                disabled={this.state.email == undefined || this.state.email == '' || this.state.password == undefined || this.state.password == '' ? true : false}
                                 raised primary className="md-cell md-cell--2">Register</Button>
                         <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
                         <AlertMessage className="md-row md-full-width" >{this.props.error ? `${this.props.error}` : ''}</AlertMessage>

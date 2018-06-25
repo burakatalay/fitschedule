@@ -1,12 +1,27 @@
 import React from 'react';
 import {Button, FontIcon, SelectField, TextField} from "react-md";
 import {withRouter} from "react-router-dom";
-import LocationSearchField from "./LocationSearchField";
+import AutocompleteLocation from "./AutocompleteLocation";
 
-const searchBarStyle = {display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '80%'};
-const textFieldStyle = {width: '20rem'};
-const buttonStyle = {verticalAlign: 'bottom'};
-const pinStyle = {fontSize: 30, cursor: 'pointer'};
+const searchBarStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '4rem',
+    position: 'fixed',
+    width: '50%',
+    right: 0,
+    left: 0,
+    marginTop: '1rem',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    zIndex: 1
+};
+const textFieldStyle = {width: '15rem', margin: '15px 15px 25px'};
+const selectFieldStyle = {width: '5rem', margin: '15px 15px 25px'};
+const buttonStyle = {verticalAlign: 'bottom', margin: 15};
+const pinStyle = {fontSize: 30, cursor: 'pointer', margin: 15};
 const NUMBER_ITEMS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
 class SearchBar extends React.Component {
@@ -16,7 +31,7 @@ class SearchBar extends React.Component {
         this.state = {course: '', useGeolocation: true};
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.locationSubmit = this.locationSubmit.bind(this);
+        this.onPlacesChanged = this.onPlacesChanged.bind(this);
         this.useGeolocation = this.useGeolocation.bind(this);
         this.handleChangeDistance = this.handleChangeDistance.bind(this);
     }
@@ -37,8 +52,15 @@ class SearchBar extends React.Component {
         this.props.onSubmit(search);
     }
 
-    locationSubmit(value) {
-        this.setState({coord: value, useGeolocation: false});
+    onPlacesChanged(value) {
+        if (value[0] && value[0].geometry && value[0].geometry.location) {
+            const coord = {
+                lat: value[0].geometry.location.lat(),
+                lng: value[0].geometry.location.lng()
+            };
+            this.setState({coord: coord, useGeolocation: false});
+            console.log('[SearchBarComponent] On places changed', coord);
+        }
     }
 
     useGeolocation() {
@@ -56,14 +78,15 @@ class SearchBar extends React.Component {
                     style={textFieldStyle}
                     id="courseField"
                     label="Fitness Course"
+                    placeholder="Yoga, pilates.."
                     type="text"
                     value={this.state.course}
                     onChange={this.handleChangeCourse}/>
-                <LocationSearchField onSubmit={(value) => this.locationSubmit(value)}/>
+                <AutocompleteLocation onPlacesChanged={(value) => this.onPlacesChanged(value)}/>
                 <SelectField
+                    style={selectFieldStyle}
                     id="distanceField"
-                    label="Distance in KM"
-                    placeholder="Placeholder"
+                    label="Distance KM"
                     defaultValue={NUMBER_ITEMS[4]}
                     onChange={this.handleChangeDistance}
                     className="md-cell"
