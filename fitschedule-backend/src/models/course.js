@@ -16,6 +16,7 @@ const CourseSchema  = new mongoose.Schema({
     courseprovider: {
         type: mongoose.Schema.Types.ObjectId,
         Ref: 'CourseProvider'
+        //required: true
     },
     average_rating: {
         type: String
@@ -24,18 +25,25 @@ const CourseSchema  = new mongoose.Schema({
         type: [mongoose.Schema.Types.ObjectId],
         Ref: 'Review'
     },
-    location: { 
-        type: [Number], 
-        index: { type: '2dsphere', sparse: true},
-        required: true
+    location: {
+        type: { type: String },
+        coordinates: [Number]
     },
-    // timeslot: {
-    //     startTime: Date,
-    //     endTime: Date
-    // }
+    timeslot:[
+        {
+            start:{
+                type: Date,
+                required: true
+            },
+            end:{
+                type: Date,
+                required: true
+            }
+        }
+      ]
     
 });
-
+//CourseSchema.index({ "location": "2dsphere" });
 //CourseSchema.set('versionKey', false);
 
 // Export the Course model

@@ -12,8 +12,12 @@ module.exports.createCourse = function(req, res){
     var course = new CourseModel({
         name: req.body.name,
         instructor: req.body.instructor,
-        location: req.body.location,
-        //timeslot: req.body.timeslot
+        location: {
+            type: "Point",
+            coordinates: [req.body.lng, req.body.lat]
+          },
+        //courseprovider: req.body.courseprovider,
+        timeslot: req.body.timeslot
     });
     course.save(function(err, course) {
         if (err) {
@@ -21,18 +25,29 @@ module.exports.createCourse = function(req, res){
             return;
         }
         res.status(201).json(course);
-        // FitnessCenterModel.findByIdAndUpdate(
-        //     req.params.id,
-        //     {$push: {courses: course}},
-        //     function(err){
-        //         if (err) {
-        //             res.status(400).send(err);
-        //             return;
-        //         }
-        //         res.status(201).json(course);
-        //     }
-        // );  
     });
+}
+
+module.exports.findCoursesByNameAndLocation = function(req, res) {
+
+    const query = {
+        name: req.body.course,
+        location :
+        { $geoWithin :
+            { $centerSphere :
+                [ [req.body.lng, req.body.lat] , req.body.dist/6378.1 ]
+                } 
+            }   
+    };
+    console.log(query);
+    CourseModel.find(query, function(err, courses) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.json(courses);
+    });
+
 }
 
 module.exports.list  = (req, res) => {

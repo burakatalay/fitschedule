@@ -9,6 +9,7 @@ const CourseController = require('../controllers/course');
 
 router.get('/', CourseController.list); // List all courses
 router.post('/', CourseController.createCourse); // Create a new course
+router.post('/getcoursesbyname', CourseController.findCoursesByNameAndLocation); // List all courses
 //router.get('/:id', CourseController.read); // Read all courses by Name
 //router.put('/:id', middlewares.checkAuthentication, CourseController.update); // Update a course by Id
 //router.delete('/:id', middlewares.checkAuthentication, CourseController.remove); // Delete a course by Id
