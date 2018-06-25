@@ -9,11 +9,12 @@ export default class UserService {
 
     static baseURL() {return "http://localhost:3000/auth"; }
 
-    static register(email, password) {
+    static register(email, pass, inst) {
         return new Promise((resolve, reject) => {
             HttpService.post(`${UserService.baseURL()}/register`, {
                 email: email,
-                password: password
+                password: pass,
+                isInstructor: inst
             }, function(data) {
                 resolve(data);
             }, function(textStatus) {
@@ -22,11 +23,12 @@ export default class UserService {
         });
     }
 
-    static login(user, pass) {
+    static login(email, pass, inst) {
         return new Promise((resolve, reject) => {
             HttpService.post(`${UserService.baseURL()}/login`, {
-                email: user,
-                password: pass
+                email: email,
+                password: pass,
+                isInstructor: inst
             }, function(data) {
                 resolve(data);
             }, function(textStatus) {
