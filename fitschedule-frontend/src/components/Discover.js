@@ -8,11 +8,8 @@ class Discover extends React.Component {
     constructor(props) {
         super(props);
         this.state = {toasts: [], geolocation: null};
-
         this.searchSubmit = this.searchSubmit.bind(this);
         this.dismissToast = this.dismissToast.bind(this);
-        this.locationSubmit = this.locationSubmit.bind(this);
-        this.useGeolocation = this.useGeolocation.bind(this);
     }
 
     addToast(text, action) {
@@ -52,20 +49,10 @@ class Discover extends React.Component {
         this.props.onSubmit(query);
     }
 
-    locationSubmit(value) {
-        this.setState({geolocation: value});
-    }
-
-    useGeolocation() {
-        this.child.focusGeolocation();
-    }
-
     render() {
         return (
             <Page>
-                <Map geolocation={this.state.geolocation}
-                     onSubmit={(value) => this.locationSubmit(value)}
-                     onRef={ref => (this.child = ref)}/>
+                <Map onSubmit={(value) => this.searchSubmit(value)}/>
                 <Snackbar toasts={this.state.toasts} autohide={true} onDismiss={this.dismissToast}/>
             </Page>
         );

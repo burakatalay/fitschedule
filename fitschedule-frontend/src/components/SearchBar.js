@@ -31,7 +31,7 @@ class SearchBar extends React.Component {
         this.state = {course: '', useGeolocation: true};
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.onPlacesChanged = this.onPlacesChanged.bind(this);
+        this.onAutocomplete = this.onAutocomplete.bind(this);
         this.useGeolocation = this.useGeolocation.bind(this);
         this.handleChangeDistance = this.handleChangeDistance.bind(this);
     }
@@ -52,15 +52,16 @@ class SearchBar extends React.Component {
         this.props.onSubmit(search);
     }
 
-    onPlacesChanged(value) {
-        if (value[0] && value[0].geometry && value[0].geometry.location) {
-            const coord = {
-                lat: value[0].geometry.location.lat(),
-                lng: value[0].geometry.location.lng()
-            };
-            this.setState({coord: coord, useGeolocation: false});
-            console.log('[SearchBarComponent] On places changed', coord);
-        }
+    onAutocomplete(value) {
+        this.props.onAutocomplete(value);
+        // if (value[0] && value[0].geometry && value[0].geometry.location) {
+        //     const coord = {
+        //         lat: value[0].geometry.location.lat(),
+        //         lng: value[0].geometry.location.lng()
+        //     };
+        //     this.setState({coord: coord, useGeolocation: false});
+        //     console.log('[SearchBarComponent] On places changed', coord);
+        // }
     }
 
     useGeolocation() {
@@ -82,7 +83,7 @@ class SearchBar extends React.Component {
                     type="text"
                     value={this.state.course}
                     onChange={this.handleChangeCourse}/>
-                <AutocompleteLocation onPlacesChanged={(value) => this.onPlacesChanged(value)}/>
+                <AutocompleteLocation onAutocomplete={(value) => this.onAutocomplete(value)}/>
                 <SelectField
                     style={selectFieldStyle}
                     id="distanceField"

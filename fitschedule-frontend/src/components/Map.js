@@ -14,10 +14,11 @@ class Map extends React.Component {
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.showPosition = this.showPosition.bind(this);
         this.showError = this.showError.bind(this);
+        this.useGeolocation = this.useGeolocation.bind(this);
+        this.markAutocompleteLocation = this.markAutocompleteLocation.bind(this);
     }
 
     componentDidMount() {
-        this.props.onRef(this);
         const mapCenter = new google.maps.LatLng(48.1351, 11.5820);
         this.map = new google.maps.Map(document.getElementById('map'), {
             center: mapCenter,
@@ -29,10 +30,6 @@ class Map extends React.Component {
             console.log('[MapComponent] Browser does not support geolocation');
             this.addToast("Browser doesn't support location.");
         }
-    }
-
-    componentWillUnmount() {
-        this.props.onRef(undefined);
     }
 
     showPosition(position) {
@@ -104,10 +101,37 @@ class Map extends React.Component {
         this.setState({course: value});
     }
 
+    useGeolocation() {
+    }
+
+    onAutocomplete(value) {
+        console.log('[MapComponent] Retrieving geometry for place_id', value);
+        const request = {
+            placeId: value,
+            fields: ['geometry']
+        };
+        this.placesService = new google.maps.places.PlacesService(this.map);
+        this.placesService.getDetails(request, this.markAutocompleteLocation);
+    }
+
+    markAutocompleteLocation(place, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            console.log('[MapComponent] Success retrieving geolocation', 'lat', place.geometry.location.lat(), 'lng:', place.geometry.location.lng());
+            // createMarker(place);
+        } else {
+            console.log('[MapComponent] Error retrieving geolocation', place);
+        }
+    }
+
+    searchSubmit(value) {
+        this.props.onSubmit();
+    }
+
     render() {
         return (
             <div>
-                <SearchBar  useGeolocation={() => this.useGeolocation()}
+                <SearchBar useGeolocation={() => this.useGeolocation()}
+                           onAutocomplete={(value) => this.onAutocomplete(value)}
                            onSubmit={(value) => this.searchSubmit(value)}/>
                 <div id="map" style={mapStyle}>
                 </div>

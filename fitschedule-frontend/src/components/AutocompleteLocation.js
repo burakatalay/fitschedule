@@ -8,32 +8,34 @@ export default class AutocompleteLocation extends React.Component {
         super(props);
         this.state = {suggestions: [], filterType: Autocomplete.caseInsensitiveFilter};
         this.displaySuggestions = this.displaySuggestions.bind(this);
+        this.onAutocomplete = this.onAutocomplete.bind(this);
         this.onChange = this.onChange.bind(this);
     }
 
     displaySuggestions(predictions, status) {
-        if (status != google.maps.places.PlacesServiceStatus.OK) {
+        if (status !== google.maps.places.PlacesServiceStatus.OK) {
             alert(status);
             return;
         }
-        const suggestions = [];
-        predictions.forEach(function (prediction) {
-            suggestions.push(prediction.description);
-        });
         this.setState({
-            suggestions: suggestions
+            suggestions: predictions
         });
-        console.log('[AutocompleteLocationComponent] Predictions', predictions);
+        console.log('[AutocompleteLocationComponent] New predictions', predictions);
     }
 
     componentDidMount() {
-        this.service = new google.maps.places.AutocompleteService();
+        this.autocompleteService = new google.maps.places.AutocompleteService();
     }
 
     onChange(value, event) {
         if (value.length) {
-            this.service.getPlacePredictions({input: value}, this.displaySuggestions);
+            this.autocompleteService.getPlacePredictions({input: value}, this.displaySuggestions);
         }
+    }
+
+    onAutocomplete(suggestion, suggestionIndex, matches) {
+        console.log('[AutocompleteLocationComponent] Autocomplete selected for location with place_id', suggestion);
+        this.props.onAutocomplete(suggestion);
     }
 
     render() {
@@ -43,8 +45,11 @@ export default class AutocompleteLocation extends React.Component {
                 id="locationField"
                 label="Location"
                 placeholder="Eg. Marienplatz"
+                onAutocomplete={this.onAutocomplete}
                 onChange={this.onChange}
                 data={this.state.suggestions}
+                dataLabel="description"
+                dataValue="place_id"
                 filter={this.state.filterType}
             />
         );
