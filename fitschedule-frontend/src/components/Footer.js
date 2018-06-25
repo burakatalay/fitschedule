@@ -27,8 +27,11 @@ export const Footer = Styled(PlainFooter)`
     right: 0;
     position: fixed;
     background: white;
+    > hr {
+        margin-top: auto;
+    }
     > p {
         text-align: center;
-        margin-top: 4px;
+        margin-top: 10px;
     }
 `;
