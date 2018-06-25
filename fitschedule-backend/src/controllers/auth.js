@@ -37,7 +37,6 @@ module.exports.login = function(req, res){
             return res.status(401).send({token: null});
         }
         
-
         const token = jwt.sign({id: user._id, email: user.email}, config.JwtSecret, {
             expiresIn: 86400 // expires in 24 hours
         });
@@ -50,6 +49,14 @@ module.exports.login = function(req, res){
 
 module.exports.register = function(req, res){
 
+    if(!req.body.firstname){
+        res.status(400).send('First name required');
+        return;
+    }
+    if(!req.body.surname){
+        res.status(400).send('Last name required');
+        return;
+    }
     if(!req.body.email){
         res.status(400).send('email required');
         return;
@@ -58,27 +65,15 @@ module.exports.register = function(req, res){
         res.status(400).send('password required');
         return;
     }
-    if(!req.body.firstname){
-        res.status(400).send('password required');
-        return;
-    }
-    if(!req.body.surname){
-        res.status(400).send('password required');
-        return;
-    }
-    
-    
+
     var user = new UserModel();
 
     user.firstname = req.body.firstname;
     user.lastname = req.body.surname;
     user.email = req.body.email;
     user.password = bcrypt.hashSync(req.body.password, 8);
-    if(req.body.isCourseProvider == true) {
-        user.type = "instructor"
-    } else {
-        user.type = "regular"
-    }
+    user.isCourseProvider = req.body.isCourseProvider;
+
     var schedule = new ScheduleModel({
         courses: []
     });
@@ -105,39 +100,26 @@ module.exports.register = function(req, res){
     
 };
 
-module.exports.me = (req, res) => {
-    UserModel.findById(req.userId).exec()
-        .then(user => {
+module.exports.me = function(req, res) {
 
-            if (!user) return res.status(404).json({
-                error: 'Not Found',
-                message: `User not found`
-            });
+    UserModel.findById(req.userId, function(err, user){
 
-            res.status(200).json(user)
-        })
-        .catch(error => res.status(500).json({
-            error: 'Internal Server Error',
-            message: error.message
-        }));
-};
+        if (err) {
+            res.status(500).send(err);
+            return
+        }
+        if (!user) return res.status(404).json({
+            error: 'Not Found',
+            message: `User not found`
+        });
 
-module.exports.logout = (req, res) => {
-    res.status(200).send({token: null});
-};
-
-module.exports.createCourse = (req, res) => {
-    if (Object.keys(req.body).length === 0) return res.status(400).json({
-        error: 'Bad Request',
-        message: 'The request body is empty'
+        return res.status(200).json(user);
+    
     });
+};
 
-    CourseModel.create(req.body)
-        .then(course => res.status(201).json(course))
-        .catch(error => res.status(500).json({
-            error: 'Internal server error',
-            message: error.message
-        }));
+module.exports.logout = function(req, res) {
+    res.status(200).send({token: null});
 };
 
 
