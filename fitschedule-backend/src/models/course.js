@@ -15,8 +15,8 @@ const CourseSchema  = new mongoose.Schema({
     },
     courseprovider: {
         type: mongoose.Schema.Types.ObjectId,
-        Ref: 'CourseProvider'
-        //required: true
+        Ref: 'CourseProvider',
+        required: true
     },
     average_rating: {
         type: String
@@ -43,8 +43,6 @@ const CourseSchema  = new mongoose.Schema({
       ]
     
 });
-//CourseSchema.index({ "location": "2dsphere" });
-//CourseSchema.set('versionKey', false);
 
 // Export the Course model
 module.exports = mongoose.model('Course', CourseSchema);

@@ -8,6 +8,7 @@ const config = require('../config');
 const UserModel = require('../models/user');
 const ScheduleModel = require('../models/schedule');
 const CourseModel = require('../models/course');
+const CourseProviderModel = require('../models/courseprovider');
 
 module.exports.login = function(req, res){
 
@@ -19,6 +20,7 @@ module.exports.login = function(req, res){
         res.status(400).send('password required');
         return;
     }
+    
 
     UserModel.findOne({email: req.body.email}, function(err, user){
 
@@ -33,7 +35,6 @@ module.exports.login = function(req, res){
         }
         const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
         if (!isPasswordValid) {
-            console.log(req.body.password);
             return res.status(401).send({token: null});
         }
         
@@ -77,6 +78,20 @@ module.exports.register = function(req, res){
     var schedule = new ScheduleModel({
         courses: []
     });
+
+    if(user.isCourseProvider) {
+        var courseProvider = new CourseProviderModel({
+            name: req.body.firstname + " " + req.body.surname
+        });
+        courseProvider.save(function(err) {
+            if (err) {
+                res.status.send(err);
+                return;
+            }
+        });
+        user.courseProvider = courseProvider
+    }
+    
     schedule.save(function(err) {
         if (err) {
             res.status.send(err);

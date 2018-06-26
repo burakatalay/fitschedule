@@ -1,14 +1,10 @@
 "use strict";
 
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-
-const config = require('../config');
-const UserModel = require('../models/user');
 const CourseModel = require('../models/course');
+const CourseProviderModel = require('../models/courseprovider');
+const UserModel = require('../models/user');
 
-module.exports.createCourse = function(req, res){
-
+module.exports.createCourseAsInstructor = function(req, res){
     var course = new CourseModel({
         name: req.body.name,
         instructor: req.body.instructor,
@@ -16,16 +12,87 @@ module.exports.createCourse = function(req, res){
             type: "Point",
             coordinates: [req.body.lng, req.body.lat]
           },
-        //courseprovider: req.body.courseprovider,
-        timeslot: req.body.timeslot
+        timeslot: {
+            start: req.body.start,
+            end: req.body.end
+        },
     });
-    course.save(function(err, course) {
+
+    UserModel.findById(req.userId, function(err, user){
+
+        if (err) {
+            res.status(500).send(err);
+            return
+        }
+        if (!user) return res.status(404).json({
+            error: 'Not Found',
+            message: `User not found`
+        });
+
+        course.courseprovider = user.courseProvider
+        course.save(function(err, course) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            res.status(201).json(course);
+        });
+        
+    
+    });
+}
+
+module.exports.createCourseAsFitnessCenter = function(req, res){
+    var course = new CourseModel({
+        name: req.body.name,
+        instructor: req.body.instructor,
+        location: {
+            type: "Point",
+            coordinates: [req.body.lng, req.body.lat]
+          },
+        timeslot: {
+            start: req.body.start,
+            end: req.body.end
+        },
+    });
+
+    CourseProviderModel.findOne({name: req.body.fitnesscentername}, function(err, courseprovider) {
         if (err) {
             res.status(400).send(err);
             return;
         }
-        res.status(201).json(course);
+        if(!courseprovider) {
+            var courseProvider = new CourseProviderModel({
+                name: req.body.fitnesscentername
+                });
+                courseProvider.save(function(err) {
+                if (err) {
+                    res.status.send(err);
+                    return;
+                    }
+                });
+            course.courseprovider = courseProvider;
+            course.save(function(err, course) {
+                if (err) {
+                    res.status(400).send(err);
+                    return;
+                }
+                
+                res.status(201).json(course);
+            });
+        } else {
+            course.courseprovider = courseprovider;
+            course.save(function(err, course) {
+                if (err) {
+                    res.status(400).send(err);
+                    return;
+                }
+                
+                res.status(201).json(course);
+            });
+        }  
     });
+   
 }
 
 module.exports.findCoursesByNameAndLocation = function(req, res) {
@@ -39,7 +106,6 @@ module.exports.findCoursesByNameAndLocation = function(req, res) {
                 } 
             }   
     };
-    console.log(query);
     CourseModel.find(query, function(err, courses) {
         if (err) {
             res.status(400).send(err);

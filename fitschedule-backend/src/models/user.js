@@ -15,23 +15,30 @@ const UserSchema  = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
         required: true,
-        unique: true
     },
     schedule: {
         type: mongoose.Schema.Types.ObjectId,
         Ref: 'Schedule'
     },
     isCourseProvider: {
-        type: Boolean
-    }
+        type: Boolean,
+        required: true,
+    },
+    courseProvider: {
+        type: mongoose.Schema.Types.ObjectId,
+        Ref: 'CourseProvider',
+        required: function() {
+            return this.isCourseProvider == true;
+        }
+    },
+    
 });
-
-//UserSchema.set('versionKey', false);
 
 // Export the User model
 module.exports = mongoose.model('User', UserSchema);

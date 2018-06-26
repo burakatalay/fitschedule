@@ -11,7 +11,5 @@ const CourseProviderSchema  = new mongoose.Schema({
     }
 });
 
-//CourseSchema.set('versionKey', false);
-
-// Export the Course model
+// Export the CourseProvider model
 module.exports = mongoose.model('CourseProvider', CourseProviderSchema);

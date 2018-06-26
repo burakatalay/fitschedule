@@ -22,7 +22,5 @@ const ReviewSchema  = new mongoose.Schema({
     }
 });
 
-//ReviewSchema.set('versionKey', false);
-
 // Export the Review model
 module.exports = mongoose.model('Review', ReviewSchema);

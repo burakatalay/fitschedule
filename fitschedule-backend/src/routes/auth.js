@@ -9,7 +9,6 @@ const AuthController = require('../controllers/auth');
 
 router.post('/login', AuthController.login);
 router.post('/register', AuthController.register);
-//router.post('/createcourse',middlewares.checkInstructor, AuthController.createCourse)
 router.get('/me', middlewares.checkAuthentication , AuthController.me);
 router.get('/logout', middlewares.checkAuthentication, AuthController.logout);
 

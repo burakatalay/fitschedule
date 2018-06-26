@@ -2,6 +2,7 @@
 
 const jwt    = require('jsonwebtoken');
 const config = require ('./config');
+const userModel = require('./models/user');
 
 module.exports.allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -15,17 +16,35 @@ module.exports.allowCrossDomain = function(req, res, next) {
     }
 };
 
-module.exports.checkInstructor = (req, res, next) => {
-    const isInstructor = req.body.isInstructor
-
-    if (!isInstructor)
-        return res.status(401).send({
+module.exports.checkInstructor = function(req, res, next) {
+    const token = req.headers['x-access-token'];
+    if (!token)
+    return res.status(401).send({
+        error: 'Unauthorized',
+        message: 'No token provided in the request'
+    });
+    jwt.verify(token, config.JwtSecret, (err, decoded) => {
+        if (err) return res.status(401).send({
             error: 'Unauthorized',
-            message: 'No token provided in the request'
+            message: 'Failed to authenticate token.'
         });
-
-    next();
-};
+        req.userId = decoded.id;
+        });
+        userModel.findOne({_id: req.userId}, function (err, user) {
+            if(err) {
+                res.sendStatus(500);
+                return;
+            }
+            if(user.isCourseProvider == true) {
+                next();
+            } else {
+                return res.status(401).send({
+                    error: 'Unauthorized',
+                    message: 'You should not be here'
+                });
+            }
+        });
+}
 
 module.exports.checkAuthentication = function(req, res, next) {
     const token = req.headers['x-access-token'];

@@ -15,7 +15,5 @@ const ScheduleSchema  = new mongoose.Schema({
     }
 });
 
-//ScheduleSchema.set('versionKey', false);
-
 // Export the Schedule model
 module.exports = mongoose.model('Schedule', ScheduleSchema);
