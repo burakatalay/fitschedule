@@ -10,8 +10,8 @@ import { UserLoginView } from "./views/UserLoginView";
 import { UserSignupView } from "./views/UserSignupView";
 
 import UserService from "./services/UserService";
-import { DiscoverView } from './views/DiscoverView';
 import { ScheduleView } from './views/ScheduleView';
+import Discover from "./components/Discover";
 
 
 export default class App extends React.Component {
@@ -23,7 +23,7 @@ export default class App extends React.Component {
             title: 'FitSchedule',
             routes: [
                 { component: HomeView , path: '/', exact: true},
-                { component: DiscoverView , path: '/discover', exact: true},
+                { component: Discover, path: '/discover', exact: true},
                 { component: ScheduleView , path: '/schedule', exact: true},
                 { component: MovieDetailView , path: '/show/:id'},
                 { render: (props) => {
