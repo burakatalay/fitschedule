@@ -2,6 +2,7 @@ import React from 'react';
 import {FontIcon, Snackbar, TextField} from "react-md";
 import {withRouter} from "react-router-dom";
 import SearchBar from "./SearchBar";
+import DiscoverService from "../services/DiscoverService";
 
 const mapStyle = {height: '90vh', width: '100%'};
 
@@ -9,7 +10,7 @@ class Discover extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {toasts: [], useGeolocation: false};
+        this.state = {toasts: [], useGeolocation: false, markers: [], referenceMarker: null, geolocation: null};
         this.dismissToast = this.dismissToast.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.showPosition = this.showPosition.bind(this);
@@ -32,6 +33,42 @@ class Discover extends React.Component {
         }
     }
 
+    discover(query) {
+        DiscoverService.getCourses(query.course, query.coord.lat, query.coord.lng, query.dist)
+            .then((courses) => {
+                console.log('[DiscoverComponent] Success getting course providers', courses);
+                this.clearMarkers();
+                courses.forEach((course) => {
+                    const geolocation = {
+                        'lng': course.location.coordinates[0],
+                        'lat': course.location.coordinates[1]
+                    };
+                    this.createMarker(geolocation);
+                });
+            }).catch((e) => {
+            console.error('[DiscoverComponent] Error getting course providers', e);
+        });
+    }
+
+    createMarker(geolocation) {
+        const markers = this.state.markers;
+        markers.push(new google.maps.Marker({
+                position: geolocation,
+                map: this.map
+            })
+        );
+    }
+
+    clearMarkers() {
+        const markers = this.state.markers;
+        markers.forEach(marker => {
+            marker.setMap(null);
+        });
+        this.setState({
+            markers: []
+        });
+    }
+
     showPosition(position) {
         console.log('[DiscoverComponent] Geolocation: lat:', position.coords.latitude, 'long:', position.coords.longitude);
         const geolocation = {
@@ -42,16 +79,18 @@ class Discover extends React.Component {
             geolocation: geolocation,
             useGeolocation: true
         });
-        this.markLocation(geolocation);
+        this.createReferenceMarker(geolocation);
     }
 
-    markLocation(geolocation) {
-        if (this.marker) {
-            this.marker.setMap(null);
+    createReferenceMarker(geolocation) {
+        if (this.state.referenceMarker) {
+            this.state.referenceMarker.setMap(null);
         }
-        this.marker = new google.maps.Marker({
-            position: geolocation,
-            map: this.map
+        this.setState({
+            referenceMarker: new google.maps.Marker({
+                position: geolocation,
+                map: this.map
+            })
         });
     }
 
@@ -99,6 +138,8 @@ class Discover extends React.Component {
         this.setState({
             useGeolocation: true
         });
+        this.createReferenceMarker(this.state.geolocation);
+        this.searchBar.clearLocation();
     }
 
     onAutocomplete(value) {
@@ -109,6 +150,7 @@ class Discover extends React.Component {
         };
         this.placesService = new google.maps.places.PlacesService(this.map);
         this.placesService.getDetails(request, this.markAutocompleteLocation);
+        this.setState({useGeolocation: false});
     }
 
     markAutocompleteLocation(place, status) {
@@ -123,7 +165,7 @@ class Discover extends React.Component {
                 autoCompleteLocation: geolocation,
                 useGeolocation: false
             });
-            this.markLocation(geolocation);
+            this.createReferenceMarker(geolocation);
         } else {
             console.log('[DiscoverComponent] Error retrieving geolocation', place);
         }
@@ -138,17 +180,17 @@ class Discover extends React.Component {
             course: value.course,
             dist: value.dist
         };
-        if (value.useGeolocation && this.state.geolocation) {
+        if (this.state.useGeolocation && this.state.geolocation) {
             query.coord = this.state.geolocation;
-        } else if (!value.useGeolocation && this.state.autoCompleteLocation) {
+        } else if (!this.state.useGeolocation && this.state.autoCompleteLocation) {
             query.coord = this.state.autoCompleteLocation;
         } else {
-            this.addToast("Please enable location or enter it manually.");
+            this.addToast("Please enable location or enter it manually.",);
             return;
         }
 
         console.log('[DiscoverComponent] Submitting query', query);
-        this.props.onSubmit(query);
+        this.discover(query);
     }
 
     addToast(text, action) {
@@ -169,7 +211,8 @@ class Discover extends React.Component {
             <div>
                 <SearchBar useGeolocation={() => this.useGeolocation()}
                            onAutocomplete={(value) => this.onAutocomplete(value)}
-                           onSubmit={(value) => this.searchSubmit(value)}/>
+                           onSubmit={(value) => this.searchSubmit(value)}
+                           onRef={ref => (this.searchBar = ref)}/>
                 <div id="map" style={mapStyle}>
                 </div>
                 <Snackbar toasts={this.state.toasts} autohide={true} onDismiss={this.dismissToast}/>

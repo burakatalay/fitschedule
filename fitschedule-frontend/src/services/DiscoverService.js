@@ -11,11 +11,11 @@ export default class DiscoverService {
         return "http://localhost:3000/courses";
     }
 
-    static getCourseProviders(course, lat, long, dist) {
+    static getCourses(coursename, lat, long, dist) {
         console.log('[DiscoverService] Getting course providers for course:',
-            course, 'lat:', lat, 'long:', long, 'distance:', dist);
+            coursename, 'lat:', lat, 'long:', long, 'distance:', dist);
         return new Promise((resolve, reject) => {
-            HttpService.get(`${DiscoverService.baseURL()}/?course=${course}&lat=${lat}&lng=${long}&dist=${dist}`, function (data) {
+            HttpService.get(`${DiscoverService.baseURL()}/?course=${coursename}&lat=${lat}&lng=${long}&dist=${dist}`, function (data) {
                 resolve(data);
             }, function (textStatus) {
                 reject(textStatus);
