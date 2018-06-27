@@ -32,7 +32,9 @@
     "webpack-merge": "4.1.0"
   },
   "dependencies": {
+    "moment": "^2.22.2",
     "react": "16.2.0",
+    "react-agenda": "0.0.7",
     "react-dom": "16.2.0",
     "react-md": "1.2.11",
     "react-router-dom": "4.2.2",
