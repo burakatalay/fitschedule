@@ -4,8 +4,6 @@ import React from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
 import { HomeView } from './views/HomeView';
-import { MovieDetailView }   from './views/MovieDetailView';
-import { MovieFormView }   from './views/MovieFormView';
 import { UserLoginView } from "./views/UserLoginView";
 import { UserSignupView } from "./views/UserSignupView";
 
@@ -25,7 +23,6 @@ export default class App extends React.Component {
                 { component: HomeView , path: '/', exact: true},
                 { component: Discover, path: '/discover', exact: true},
                 { component: ScheduleView , path: '/schedule', exact: true},
-                { component: MovieDetailView , path: '/show/:id'},
                 { render: (props) => {
                         if(UserService.isAuthenticated()) {
                             return (<MovieFormView {... props} />)
@@ -35,7 +32,7 @@ export default class App extends React.Component {
                         }} , path: '/edit/:id'},
                 { render: (props) => {
                     if(UserService.isAuthenticated()) {
-                        return (<MovieFormView {... props} />)
+                        return (<ScheduleView {... props} />)
                     }
                     else {
                         return (<Redirect to={'/login'}/>)
