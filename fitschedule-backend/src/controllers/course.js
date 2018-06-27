@@ -126,6 +126,7 @@ module.exports.findCoursesByNameAndLocation = function(req, res) {
             res.status(400).send(err);
             return;
         }
+        console.log(courses);
         res.json(courses);
     });
 
