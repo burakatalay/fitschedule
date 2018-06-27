@@ -11,6 +11,7 @@ import { UserSignupView } from "./views/UserSignupView";
 
 import UserService from "./services/UserService";
 import { DiscoverView } from './views/DiscoverView';
+import { ScheduleView } from './views/ScheduleView';
 
 
 export default class App extends React.Component {
@@ -23,6 +24,7 @@ export default class App extends React.Component {
             routes: [
                 { component: HomeView , path: '/', exact: true},
                 { component: DiscoverView , path: '/discover', exact: true},
+                { component: ScheduleView , path: '/schedule', exact: true},
                 { component: MovieDetailView , path: '/show/:id'},
                 { render: (props) => {
                         if(UserService.isAuthenticated()) {
