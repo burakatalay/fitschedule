@@ -11,7 +11,14 @@ class Discover extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {toasts: [], useGeolocation: false, markers: [], referenceMarker: null, geolocation: null, courseProviders: []};
+        this.state = {
+            toasts: [],
+            useGeolocation: false,
+            markers: [],
+            referenceMarker: null,
+            geolocation: null,
+            courseProviders: []
+        };
         this.dismissToast = this.dismissToast.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.showPosition = this.showPosition.bind(this);
@@ -42,17 +49,22 @@ class Discover extends React.Component {
                 this.setState({
                     courseProviders: []
                 });
-                courses.forEach((course) => {
-                    DiscoverService.getCourseProvider(course.courseprovider)
-                        .then((courseProvider) => {
-                            this.updateCourseProviders([courseProvider]);
-                        });
-                    const geolocation = {
-                        'lng': course.location.coordinates[0],
-                        'lat': course.location.coordinates[1]
-                    };
-                    this.createCourseMarker(geolocation);
-                });
+                if (courses.length > 0) {
+                    courses.forEach((course) => {
+                        DiscoverService.getCourseProvider(course.courseprovider)
+                            .then((courseProvider) => {
+                                this.updateCourseProviders([courseProvider]);
+                            });
+                        const geolocation = {
+                            'lng': course.location.coordinates[0],
+                            'lat': course.location.coordinates[1]
+                        };
+                        this.createCourseMarker(geolocation);
+                    });
+                } else {
+                    this.addToast('No courses found around your location.');
+                }
+
             }).catch((e) => {
             console.error('[DiscoverComponent] Error getting course providers', e);
         });
@@ -240,7 +252,7 @@ class Discover extends React.Component {
         } else if (!this.state.useGeolocation && this.state.autoCompleteLocation) {
             query.coord = this.state.autoCompleteLocation;
         } else {
-            this.addToast("Please enable location or enter it manually.",);
+            this.addToast('Please enable location or enter it manually.');
             return;
         }
 
