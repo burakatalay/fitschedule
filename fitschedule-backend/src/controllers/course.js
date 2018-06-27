@@ -3,6 +3,7 @@
 const CourseModel = require('../models/course');
 const CourseProviderModel = require('../models/courseprovider');
 const UserModel = require('../models/user');
+const ScheduleModel = require('../models/schedule');
 
 module.exports.createCourseAsInstructor = function(req, res){
     var course = new CourseModel({
@@ -28,20 +29,13 @@ module.exports.createCourseAsInstructor = function(req, res){
             error: 'Not Found',
             message: `User not found`
         });
-        ScheduleModel.findOne({_id: user.schedule}, function(err, schedule) {
+        console.log(user);
+        ScheduleModel.findById(user.schedule, function(err, schedule) {
             if (err) {
                 res.status(400).send(err);
                 return;
             }
-            console.log(schedule);
-            schedule.courses.push(course);
-            schedule.save(function(err) {
-                if (err) {
-                    res.status.send(err);
-                    return;
-                    }
-                });
-        
+        console.log(schedule);
         
         course.courseprovider = user.courseProvider
         course.save(function(err, course) {
@@ -51,8 +45,15 @@ module.exports.createCourseAsInstructor = function(req, res){
             }
             res.status(201).json(course);
         });
-        
-    });
+        schedule.courses.push(course);
+        schedule.save(function(err) {
+            if (err) {
+                res.status.send(err);
+                return;
+                }
+            });
+            console.log(schedule);
+        });
     });
 }
 
