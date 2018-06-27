@@ -8,6 +8,7 @@ const CourseController = require('../controllers/course');
 
 
 router.get('/', CourseController.list); // List all courses
+router.get('/getCourseDetails/:courseID', middlewares.checkAuthentication, CourseController.getCourseDetails); // Get details of course from course ID
 router.post('/', /*middlewares.checkAuthentication,*/ middlewares.checkInstructor, CourseController.createCourseAsInstructor); // Create a new course
 router.post('/createcourseasfitnesscenter', CourseController.createCourseAsFitnessCenter); // Create a new course
 router.post('/getcoursesbyname', middlewares.checkAuthentication, CourseController.findCoursesByNameAndLocation); // List all courses

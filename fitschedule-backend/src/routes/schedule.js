@@ -6,7 +6,8 @@ const router = express.Router();
 const middlewares    = require('../middlewares');
 const scheduleController = require('../controllers/schedule');
 
-//router.post('/', middlewares.checkAuthentication, scheduleController.addCourse); // Add course to schedule
-router.get('/', middlewares.checkAuthentication, scheduleController.list); // List my courses in my schedule
+router.get('/', middlewares.checkAuthentication, scheduleController.listMyCourses); // List my courses in my schedule
+router.post('/', middlewares.checkAuthentication, scheduleController.addCourseToSchedule); // Add course to schedule
+router.delete('/removeCourse', middlewares.checkAuthentication, scheduleController.removeCourseFromSchedule);
 
 module.exports = router;

@@ -116,6 +116,20 @@ module.exports.findCoursesByNameAndLocation = function(req, res) {
 
 }
 
+module.exports.getCourseDetails = function(req, res) {
+    CourseModel.findById(req.params.courseID, function(err, course){
+        if (err) {
+            res.status(500).send(err);
+            return
+        }
+        if (!course) return res.status(404).json({
+            error: 'Not Found',
+            message: `Course not found`
+        });
+        res.status(201).json(course);
+    });
+}
+
 module.exports.list  = (req, res) => {
     CourseModel.find({}).exec()
         .then(course => res.status(200).json(course))
