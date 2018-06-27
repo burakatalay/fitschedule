@@ -17,12 +17,15 @@ module.exports.allowCrossDomain = function(req, res, next) {
 };
 
 module.exports.checkInstructor = function(req, res, next) {
-    const token = req.headers['x-access-token'];
+    let token = ""
+    if(req.headers.authorization) {
+        token = req.headers.authorization.substring(4);
+    }
     if (!token)
-    return res.status(401).send({
-        error: 'Unauthorized',
-        message: 'No token provided in the request'
-    });
+        return res.status(401).send({
+            error: 'Unauthorized',
+            message: 'No token provided in the request'
+        });
     jwt.verify(token, config.JwtSecret, (err, decoded) => {
         if (err) return res.status(401).send({
             error: 'Unauthorized',
