@@ -28,7 +28,21 @@ module.exports.createCourseAsInstructor = function(req, res){
             error: 'Not Found',
             message: `User not found`
         });
-
+        ScheduleModel.findOne({_id: user.schedule}, function(err, schedule) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            console.log(schedule);
+            schedule.courses.push(course);
+            schedule.save(function(err) {
+                if (err) {
+                    res.status.send(err);
+                    return;
+                    }
+                });
+        
+        
         course.courseprovider = user.courseProvider
         course.save(function(err, course) {
             if (err) {
@@ -38,7 +52,7 @@ module.exports.createCourseAsInstructor = function(req, res){
             res.status(201).json(course);
         });
         
-    
+    });
     });
 }
 
@@ -98,11 +112,11 @@ module.exports.createCourseAsFitnessCenter = function(req, res){
 module.exports.findCoursesByNameAndLocation = function(req, res) {
 
     const query = {
-        name: req.body.course,
+        name: req.query.course,
         location :
         { $geoWithin :
             { $centerSphere :
-                [ [req.body.lng, req.body.lat] , req.body.dist/6378.1 ]
+                [ [req.query.lng, req.query.lat] , req.query.dist/6378.1 ]
                 } 
             }   
     };
