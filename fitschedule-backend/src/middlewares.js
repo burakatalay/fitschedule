@@ -47,21 +47,27 @@ module.exports.checkInstructor = function(req, res, next) {
 }
 
 module.exports.checkAuthentication = function(req, res, next) {
-    const token = req.headers['x-access-token'];
+    let token = ""
+    if(req.headers.authorization) {
+        token = req.headers.authorization.substring(4);
+    }
     if (!token)
-    return res.status(401).send({
-        error: 'Unauthorized',
-        message: 'No token provided in the request'
-    });
-    
+        return res.status(401).send({
+            error: 'Unauthorized',
+            message: 'No token provided in the request'
+        });
+    // verifies secret and checks exp
     jwt.verify(token, config.JwtSecret, (err, decoded) => {
         if (err) return res.status(401).send({
             error: 'Unauthorized',
             message: 'Failed to authenticate token.'
         });
+        // if everything is good, save to request for use in other routes
         req.userId = decoded.id;
         next();
     });
+
+
 };
 
 module.exports.errorHandler = function(err, req, res, next) {
