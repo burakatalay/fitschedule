@@ -1,16 +1,12 @@
 "use strict";
 
-/* 
-This routes file was added for testing purposes, if needed could be removed or modified in the future for additional capabilities
-*/
-
-
-
 const express = require('express');
 const router = express.Router();
 
+const middlewares    = require('../middlewares');
 const courseProviderController = require('../controllers/courseprovider');
 
-router.get('/', courseProviderController.list); // List all courseproviders
+router.get('/getAllProvider', middlewares.checkAuthentication, courseProviderController.list); // Only to be called from the backend
+router.get('/', courseProviderController.getDetails); // Get details of the courseprovider based on ID
 
 module.exports = router;
