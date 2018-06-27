@@ -3,6 +3,7 @@ import {FontIcon, Snackbar, TextField} from "react-md";
 import {withRouter} from "react-router-dom";
 import SearchBar from "./SearchBar";
 import DiscoverService from "../services/DiscoverService";
+import Page from "./Page";
 
 const mapStyle = {height: '90vh', width: '100%'};
 
@@ -10,7 +11,7 @@ class Discover extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {toasts: [], useGeolocation: false, markers: [], referenceMarker: null, geolocation: null};
+        this.state = {toasts: [], useGeolocation: false, markers: [], referenceMarker: null, geolocation: null, courseProviders: []};
         this.dismissToast = this.dismissToast.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
         this.showPosition = this.showPosition.bind(this);
@@ -38,7 +39,14 @@ class Discover extends React.Component {
             .then((courses) => {
                 console.log('[DiscoverComponent] Success getting course providers', courses);
                 this.clearCourseMarkers();
+                this.setState({
+                    courseProviders: []
+                });
                 courses.forEach((course) => {
+                    DiscoverService.getCourseProvider(course.courseprovider)
+                        .then((courseProvider) => {
+                            this.updateCourseProviders([courseProvider]);
+                        });
                     const geolocation = {
                         'lng': course.location.coordinates[0],
                         'lat': course.location.coordinates[1]
@@ -47,6 +55,16 @@ class Discover extends React.Component {
                 });
             }).catch((e) => {
             console.error('[DiscoverComponent] Error getting course providers', e);
+        });
+    }
+
+    updateCourseProviders(providers) {
+        providers.forEach((provider) => {
+            const providers = this.state.courseProviders;
+            providers.push(provider);
+            this.setState({
+                courseProviders: providers
+            });
         });
     }
 
@@ -245,7 +263,7 @@ class Discover extends React.Component {
 
     render() {
         return (
-            <div>
+            <Page>
                 <SearchBar useGeolocation={() => this.useGeolocation()}
                            onAutocomplete={(value) => this.onAutocomplete(value)}
                            onSubmit={(value) => this.searchSubmit(value)}
@@ -253,7 +271,7 @@ class Discover extends React.Component {
                 <div id="map" style={mapStyle}>
                 </div>
                 <Snackbar toasts={this.state.toasts} autohide={true} onDismiss={this.dismissToast}/>
-            </div>
+            </Page>
         );
     }
 }
