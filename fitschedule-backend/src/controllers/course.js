@@ -13,12 +13,8 @@ module.exports.createCourseAsInstructor = function(req, res){
             type: "Point",
             coordinates: [req.body.lng, req.body.lat]
           },
-        timeslot: {
-            start: req.body.start,
-            end: req.body.end
-        },
+        timeslot: req.body.timeslot,
     });
-
     UserModel.findById(req.userId, function(err, user){
 
         if (err) {
@@ -61,15 +57,14 @@ module.exports.createCourseAsFitnessCenter = function(req, res){
     var course = new CourseModel({
         name: req.body.name,
         instructor: req.body.instructor,
+        day: req.body.day,
         location: {
             type: "Point",
             coordinates: [req.body.lng, req.body.lat]
           },
-        timeslot: {
-            start: req.body.start,
-            end: req.body.end
-        },
+        timeslot: req.body.timeslot,
     });
+
 
     CourseProviderModel.findOne({name: req.body.fitnesscentername}, function(err, courseprovider) {
         if (err) {
@@ -108,6 +103,26 @@ module.exports.createCourseAsFitnessCenter = function(req, res){
         }  
     });
    
+}
+
+module.exports.updateCourseDetails = function(req, res) {
+    CourseModel.findById(req.body.id, function(err, course){
+        if (err) {
+            res.status(400).send(err);
+            return
+        }
+        console.log(course);
+        console.log(req.body);
+        console.log(course.timeslot.start);
+        course.timeslot = req.body.timeslot;
+        course.save(function(err, course) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            res.status(201).json(course);
+        });
+    });
 }
 
 module.exports.findCoursesByNameAndLocation = function(req, res) {
