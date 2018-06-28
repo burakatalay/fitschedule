@@ -12,14 +12,14 @@ module.exports.addCourseToSchedule = function(req, res) {
             error: 'Not Found',
             message: `User not found`
         });
-        console.log(user);
-        console.log(user.schedule);
+        //console.log(user);
+        //console.log(user.schedule);
         ScheduleModel.findOne({_id: user.schedule}, function(err, schedule) {
             if (err) {
                 res.status(400).send(err);
                 return;
             }
-            console.log(schedule);
+            //console.log(schedule);
             CourseModel.findOne({_id: req.body.course}, function(err, course) {
                 if (err) {
                     res.status(400).send(err);
@@ -33,7 +33,7 @@ module.exports.addCourseToSchedule = function(req, res) {
                         return;
                         }
                     });
-                console.log(schedule.courses);
+                //console.log(schedule.courses);
             });
             
         });
@@ -86,6 +86,7 @@ module.exports.removeCourseFromSchedule = function(req, res) {
 
 module.exports.listMyCourses = function(req, res) {
     UserModel.findById(req.userId, function(err, user){
+        console.log(req.userId);
         if (err) {
             res.status(500).send(err);
             return
@@ -94,16 +95,12 @@ module.exports.listMyCourses = function(req, res) {
             error: 'Not Found',
             message: `User not found`
         });
-        console.log(user.firstname);
-        console.log(user.schedule);
+        console.log(user);
         ScheduleModel.findOne({_id: user.schedule}, function(err, schedule) {
             if (err) {
                 res.status(400).send(err);
                 return;
             }
-            console.log(schedule);
-            console.log(schedule);
-            console.log(schedule.courses);
             return res.status(200).json(schedule.courses);
         });
     });
