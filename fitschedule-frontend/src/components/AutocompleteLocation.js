@@ -1,7 +1,7 @@
 import React from 'react';
 import {Autocomplete} from "react-md";
 
-const autocompleteStyle = {width: '15rem', margin: '15px 15px 25px'};
+const autocompleteStyle = {width: '20rem', margin: '15px 15px 25px'};
 
 export default class AutocompleteLocation extends React.Component {
     constructor(props) {
