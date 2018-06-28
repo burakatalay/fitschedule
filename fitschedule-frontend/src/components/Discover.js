@@ -9,6 +9,7 @@ import ScheduleService from "../services/ScheduleService";
 
 const mapStyle = {height: '90vh', width: '100%'};
 const buttonStyle = {marginLeft: '4rem', marginTop: '1rem'};
+const iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 
 class Discover extends React.Component {
 
@@ -20,7 +21,7 @@ class Discover extends React.Component {
             markers: [],
             referenceMarker: null,
             geolocation: null,
-            visible: true,
+            visible: false,
             course: {
                 name: ''
             }
@@ -279,7 +280,7 @@ class Discover extends React.Component {
         } else {
             ScheduleService.addToSchedule(this.state.course._id)
                 .then(() => {
-                    console.error('[DiscoverService] Success adding course to the schedule');
+                    console.log('[DiscoverService] Success adding course to the schedule');
                     this.addToast('Course has been added to your schedule successfully');
                 }, (error) => {
                     console.error('[DiscoverService] Error adding course to the schedule', error);
