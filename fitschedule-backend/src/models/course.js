@@ -40,7 +40,12 @@ const CourseSchema  = new mongoose.Schema({
                 required: true
             }
         }
-      ]
+      ],
+    day: {
+        type: String,
+        enum: ['Mon, Tue, Wed, Thur, Fri, Sat, Sun'],
+        //required: true
+    }
     
 });
 
