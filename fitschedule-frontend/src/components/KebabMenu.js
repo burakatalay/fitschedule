@@ -16,8 +16,6 @@ class KebabMenu extends React.Component {
         this.state = {
             user: UserService.isAuthenticated() ? UserService.getCurrentUser() : undefined
         }
-        console.log("State: " + this.state);
-        console.log("props: " + this.props);
     }
 
     logout() {

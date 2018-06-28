@@ -38,6 +38,7 @@ class SearchBar extends React.Component {
 
     componentDidMount() {
         this.props.onRef(this);
+        this.props.distChange(this.state.dist);
     }
 
     componentWillUnmount() {
@@ -73,6 +74,7 @@ class SearchBar extends React.Component {
 
     handleChangeDistance(value, index, event, details) {
         this.setState({dist: value});
+        this.props.distChange(value);
     };
 
     render() {

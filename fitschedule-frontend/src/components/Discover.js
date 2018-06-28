@@ -9,7 +9,6 @@ import ScheduleService from "../services/ScheduleService";
 
 const mapStyle = {height: '90vh', width: '100%'};
 const buttonStyle = {marginLeft: '4rem', marginTop: '1rem'};
-const iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 
 class Discover extends React.Component {
 
@@ -17,9 +16,11 @@ class Discover extends React.Component {
         super(props);
         this.state = {
             toasts: [],
+            dist: null,
             useGeolocation: false,
             markers: [],
             referenceMarker: null,
+            autoCompleteLocation: null,
             geolocation: null,
             visible: false,
             course: {
@@ -35,6 +36,7 @@ class Discover extends React.Component {
         this.handleVisibility = this.handleVisibility.bind(this);
         this.closeDrawer = this.closeDrawer.bind(this);
         this.addToSchedule = this.addToSchedule.bind(this);
+        this.distChange = this.distChange.bind(this);
     }
 
     componentDidMount() {
@@ -151,6 +153,7 @@ class Discover extends React.Component {
                 map: this.map
             })
         });
+        this.createReferenceCircle(geolocation);
     }
 
     showError(error) {
@@ -270,11 +273,11 @@ class Discover extends React.Component {
     };
 
     closeDrawer() {
-        this.setState({ visible: false });
+        this.setState({visible: false});
     };
 
     addToSchedule() {
-        if(!UserService.isAuthenticated()) {
+        if (!UserService.isAuthenticated()) {
             console.log('[DiscoverService] User is not authenticated');
             this.props.history.push('/login');
         } else {
@@ -289,12 +292,55 @@ class Discover extends React.Component {
         }
     };
 
+    createReferenceCircle(geolocation) {
+        if (this.state.referenceCircle) {
+            this.state.referenceCircle.setMap(null);
+        }
+        this.setState({
+            referenceCircle: new google.maps.Circle({
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35,
+                map: this.map,
+                center: geolocation,
+                radius: this.state.dist * 1000
+            })
+        });
+    }
+
+    changeCircleRadius(value) {
+        if (this.state.referenceCircle) {
+            this.state.referenceCircle.setMap(null);
+            this.setState({
+                referenceCircle: new google.maps.Circle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    map: this.map,
+                    center: this.state.referenceCircle.center,
+                    radius: value * 1000
+                })
+            });
+        }
+    }
+
+    distChange(value) {
+        console.log('[DiscoveComponent] Distance changed to', value);
+        this.setState({dist: value});
+        this.changeCircleRadius(value);
+    }
+
     render() {
         const closeBtn = <Button icon onClick={this.closeDrawer}>{'close'}</Button>;
 
         return (
             <Page>
-                <SearchBar useGeolocation={() => this.useGeolocation()}
+                <SearchBar distChange={(value) => this.distChange(value)}
+                           useGeolocation={() => this.useGeolocation()}
                            onAutocomplete={(value) => this.onAutocomplete(value)}
                            onSubmit={(value) => this.searchSubmit(value)}
                            onRef={ref => (this.searchBar = ref)}/>
@@ -314,9 +360,10 @@ class Discover extends React.Component {
                                 title={this.state.course.name}
                                 className="md-divider-border md-divider-border--bottom"
                             />
-                            <Button id="submit" type="submit" style={buttonStyle} onClick={this.addToSchedule} raised primary>Add to Schedule</Button>
+                            <Button id="submit" type="submit" style={buttonStyle} onClick={this.addToSchedule} raised
+                                    primary>Add to Schedule</Button>
                         </div>
-                        )}
+                    )}
                 />
                 <Snackbar toasts={this.state.toasts} autohide={true} onDismiss={this.dismissToast}/>
             </Page>
