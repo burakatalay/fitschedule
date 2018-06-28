@@ -29,8 +29,7 @@ const CourseSchema  = new mongoose.Schema({
         type: { type: String },
         coordinates: [Number]
     },
-    timeslot:[
-        {
+    timeslot: {
             start:{
                 type: Date,
                 required: true
@@ -40,8 +39,6 @@ const CourseSchema  = new mongoose.Schema({
                 required: true
             }
         }
-      ]
-    
 });
 
 // Export the Course model

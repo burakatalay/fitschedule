@@ -25,7 +25,7 @@ export default class DiscoverService {
 
     static getCourseProvider(id) {
         return new Promise((resolve, reject) => {
-            HttpService.get(`${DiscoverService.baseURL()}/courseproviders/${id}`, function (data) {
+            HttpService.get(`${DiscoverService.baseURL()}/courseprovider/${id}`, function (data) {
                 resolve(data);
             }, function (textStatus) {
                 reject(textStatus);

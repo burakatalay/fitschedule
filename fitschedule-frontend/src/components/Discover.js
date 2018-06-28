@@ -16,8 +16,7 @@ class Discover extends React.Component {
             useGeolocation: false,
             markers: [],
             referenceMarker: null,
-            geolocation: null,
-            courseProviders: []
+            geolocation: null
         };
         this.dismissToast = this.dismissToast.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
@@ -44,66 +43,48 @@ class Discover extends React.Component {
     discover(query) {
         DiscoverService.getCourses(query.course, query.coord.lat, query.coord.lng, query.dist)
             .then((courses) => {
-                console.log('[DiscoverComponent] Success getting course providers', courses);
+                console.log('[DiscoverComponent] Success getting courses', courses);
                 this.clearCourseMarkers();
                 this.setState({
                     courseProviders: []
                 });
                 if (courses.length > 0) {
                     courses.forEach((course) => {
-                        DiscoverService.getCourseProvider(course.courseprovider)
-                            .then((courseProvider) => {
-                                this.updateCourseProviders([courseProvider]);
-                            });
-                        const geolocation = {
-                            'lng': course.location.coordinates[0],
-                            'lat': course.location.coordinates[1]
-                        };
-                        this.createCourseMarker(geolocation);
+                        this.getCourseProvider(course);
                     });
                 } else {
                     this.addToast('No courses found around your location.');
                 }
 
             }).catch((e) => {
-            console.error('[DiscoverComponent] Error getting course providers', e);
+            console.error('[DiscoverComponent] Error getting courses', e);
         });
     }
 
-    updateCourseProviders(providers) {
-        providers.forEach((provider) => {
-            const providers = this.state.courseProviders;
-            providers.push(provider);
-            this.setState({
-                courseProviders: providers
+    getCourseProvider(course) {
+        DiscoverService.getCourseProvider(course.courseprovider)
+            .then((courseProvider) => {
+                console.log('[DiscoverComponent] Success getting course provider', courseProvider);
+                this.createCourseMarker(course, courseProvider);
+            }, (error) => {
+                console.log('[DiscoverComponent] Error getting course provider with id', course.courseprovider);
             });
-        });
     }
 
-    createCourseMarker(geolocation) {
-        const contentString = '<div id="content">' +
-            '<div id="siteNotice">' +
-            '</div>' +
-            '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
-            '<div id="bodyContent">' +
-            '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
-            'sandstone rock formation in the southern part of the ' +
-            'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) ' +
-            'south west of the nearest large town, Alice Springs; 450&#160;km ' +
-            '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major ' +
-            'features of the Uluru - Kata Tjuta National Park. Uluru is ' +
-            'sacred to the Pitjantjatjara and Yankunytjatjara, the ' +
-            'Aboriginal people of the area. It has many springs, waterholes, ' +
-            'rock caves and ancient paintings. Uluru is listed as a World ' +
-            'Heritage Site.</p>' +
-            '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">' +
-            'https://en.wikipedia.org/w/index.php?title=Uluru</a> ' +
-            '(last visited June 22, 2009).</p>' +
-            '</div>' +
-            '</div>';
+    createCourseMarker(course, courseProvider) {
+        const startTime = new Date(course.timeslot.start).getHours() + ':' + new Date(course.timeslot.start).getMinutes();
+        const endTime = new Date(course.timeslot.end).getHours() + ':' + new Date(course.timeslot.end).getMinutes();
+
+        const contentString = '<div><h3>' + courseProvider.name + '</h3><h4>' +
+            course.instructor + '</h4><p>' + startTime + ' - ' + endTime + '</p></div>';
+        console.log('[DiscoverComponent] Content string: ', contentString);
         const infowindow = new google.maps.InfoWindow({
             content: contentString
         });
+        const geolocation = {
+            'lng': course.location.coordinates[0],
+            'lat': course.location.coordinates[1]
+        };
         const marker = new google.maps.Marker({
             position: geolocation,
             map: this.map,
