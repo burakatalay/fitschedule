@@ -110,6 +110,7 @@ class Discover extends React.Component {
     addCourseProvider(course, courseProvider) {
         return {
             name: course.name,
+            id: course._id,
             courseProvider: courseProvider.name,
             instructor: course.instructor,
             timeslot: course.timeslot

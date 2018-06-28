@@ -43,9 +43,9 @@ class SideDrawer extends React.Component {
             console.log('[SideDrawerComponent] User is not authenticated');
             this.props.history.push('/login');
         } else {
-            ScheduleService.addToSchedule(this.state.course._id)
-                .then(() => {
-                    console.log('[SideDrawerComponent] Success adding course to the schedule');
+            ScheduleService.addToSchedule(this.state.course.id)
+                .then((data) => {
+                    console.log('[SideDrawerComponent] Success adding course to the schedule', data);
                     this.props.addToast('Course has been added to your schedule successfully');
                 }, (error) => {
                     console.error('[SideDrawerComponent] Error adding course to the schedule', error);
