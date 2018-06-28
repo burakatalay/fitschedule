@@ -4,11 +4,9 @@ import {withRouter} from "react-router-dom";
 import SearchBar from "./SearchBar";
 import DiscoverService from "../services/DiscoverService";
 import Page from "./Page";
-import UserService from "../services/UserService";
-import ScheduleService from "../services/ScheduleService";
+import SideDrawer from "./SideDrawer";
 
 const mapStyle = {height: '90vh', width: '100%'};
-const buttonStyle = {marginLeft: '4rem', marginTop: '1rem'};
 
 class Discover extends React.Component {
 
@@ -33,9 +31,6 @@ class Discover extends React.Component {
         this.showError = this.showError.bind(this);
         this.useGeolocation = this.useGeolocation.bind(this);
         this.markAutocompleteLocation = this.markAutocompleteLocation.bind(this);
-        this.handleVisibility = this.handleVisibility.bind(this);
-        this.closeDrawer = this.closeDrawer.bind(this);
-        this.addToSchedule = this.addToSchedule.bind(this);
         this.distChange = this.distChange.bind(this);
     }
 
@@ -85,10 +80,11 @@ class Discover extends React.Component {
     }
 
     createCourseMarker(course, courseProvider) {
-        const startTime = new Date(course.timeslot.start).getHours() + ':' + new Date(course.timeslot.start).getMinutes();
-        const endTime = new Date(course.timeslot.end).getHours() + ':' + new Date(course.timeslot.end).getMinutes();
-        const contentString = '<div><h3>' + courseProvider.name + '</h3><h4>' +
-            course.instructor + '</h4><p>' + startTime + ' - ' + endTime + '</p></div>';
+        let startTime = new Date(course.timeslot.start)
+        startTime = startTime.getHours() + ':' + startTime.getMinutes();
+        let endTime = new Date(course.timeslot.end)
+        endTime = endTime.getHours() + ':' + endTime.getMinutes();
+        const contentString = '<div><h4 style="color: darkgray;">' + courseProvider.name + '</h4></div>';
         console.log('[DiscoverComponent] Content string: ', contentString);
         const infowindow = new google.maps.InfoWindow({
             content: contentString
@@ -102,16 +98,21 @@ class Discover extends React.Component {
             map: this.map,
             infowindow: infowindow
         });
+        infowindow.open(this.map, marker);
         marker.addListener('click', () => {
             this.closeAllInfoWindows();
             infowindow.open(this.map, marker);
-            this.setState({visible: true, course: course});
+            this.openSideDrawer(course);
         });
         const markers = this.state.markers;
         markers.push(marker);
         this.setState({
             markers: markers
         });
+    }
+
+    openSideDrawer(course) {
+        this.sideDrawer.openDrawer(course);
     }
 
     closeAllInfoWindows() {
@@ -268,30 +269,6 @@ class Discover extends React.Component {
         this.setState({toasts});
     };
 
-    handleVisibility(visible) {
-        this.setState({visible: visible});
-    };
-
-    closeDrawer() {
-        this.setState({visible: false});
-    };
-
-    addToSchedule() {
-        if (!UserService.isAuthenticated()) {
-            console.log('[DiscoverService] User is not authenticated');
-            this.props.history.push('/login');
-        } else {
-            ScheduleService.addToSchedule(this.state.course._id)
-                .then(() => {
-                    console.log('[DiscoverService] Success adding course to the schedule');
-                    this.addToast('Course has been added to your schedule successfully');
-                }, (error) => {
-                    console.error('[DiscoverService] Error adding course to the schedule', error);
-                    this.addToast('Something went wrong. Please try again later.');
-                });
-        }
-    };
-
     createReferenceCircle(geolocation) {
         if (this.state.referenceCircle) {
             this.state.referenceCircle.setMap(null);
@@ -335,8 +312,6 @@ class Discover extends React.Component {
     }
 
     render() {
-        const closeBtn = <Button icon onClick={this.closeDrawer}>{'close'}</Button>;
-
         return (
             <Page>
                 <SearchBar distChange={(value) => this.distChange(value)}
@@ -344,28 +319,13 @@ class Discover extends React.Component {
                            onAutocomplete={(value) => this.onAutocomplete(value)}
                            onSubmit={(value) => this.searchSubmit(value)}
                            onRef={ref => (this.searchBar = ref)}/>
-                <div id="map" style={mapStyle}>
-                </div>
-                <Drawer
-                    type={Drawer.DrawerTypes.TEMPORARY}
-                    visible={this.state.visible}
-                    autoclose={false}
-                    position="left"
-                    onVisibilityChange={this.handleVisibility}
-                    navItems={[]}
-                    header={(
-                        <div>
-                            <Toolbar
-                                actions={closeBtn}
-                                title={this.state.course.name}
-                                className="md-divider-border md-divider-border--bottom"
-                            />
-                            <Button id="submit" type="submit" style={buttonStyle} onClick={this.addToSchedule} raised
-                                    primary>Add to Schedule</Button>
-                        </div>
-                    )}
-                />
-                <Snackbar toasts={this.state.toasts} autohide={true} onDismiss={this.dismissToast}/>
+                <div id="map" style={mapStyle}></div>
+                <SideDrawer addToast={(value) => this.addToast(value)}
+                            addToSchedule={() => this.addToSchedule()}
+                            onRef={ref => (this.sideDrawer = ref)}/>
+                <Snackbar toasts={this.state.toasts}
+                          autohide={true}
+                          onDismiss={this.dismissToast}/>
             </Page>
         );
     }
