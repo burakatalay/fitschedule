@@ -98,7 +98,7 @@ class Discover extends React.Component {
         marker.addListener('click', () => {
             this.closeAllInfoWindows();
             infowindow.open(this.map, marker);
-            this.openSideDrawer(this.parseCourse(course, courseProvider));
+            this.openSideDrawer(this.addCourseProvider(course, courseProvider));
         });
         const markers = this.state.markers;
         markers.push(marker);
@@ -107,18 +107,12 @@ class Discover extends React.Component {
         });
     }
 
-    parseCourse(course, courseProvider) {
-        let startTime = new Date(course.timeslot.start);
-        startTime = startTime.getHours() + ':' + startTime.getMinutes();
-        let endTime = new Date(course.timeslot.end);
-        endTime = endTime.getHours() + ':' + endTime.getMinutes();
+    addCourseProvider(course, courseProvider) {
         return {
             name: course.name,
             courseProvider: courseProvider.name,
             instructor: course.instructor,
-            startTime: startTime,
-            endTime: endTime,
-            day: course.day
+            timeslot: course.timeslot
         };
     }
 
@@ -332,7 +326,6 @@ class Discover extends React.Component {
                            onRef={ref => (this.searchBar = ref)}/>
                 <div id="map" style={mapStyle}></div>
                 <SideDrawer addToast={(value) => this.addToast(value)}
-                            addToSchedule={() => this.addToSchedule()}
                             onRef={ref => (this.sideDrawer = ref)}/>
                 <Snackbar toasts={this.state.toasts}
                           autohide={true}

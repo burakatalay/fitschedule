@@ -1,11 +1,13 @@
 import React from 'react';
-import {Button, Drawer, Toolbar} from "react-md";
+import {Button, Divider, Drawer, Toolbar} from "react-md";
 import ScheduleService from "../services/ScheduleService";
 import UserService from "../services/UserService";
 import {withRouter} from "react-router-dom";
+import Timeslots from "./Timeslots";
 
 const buttonStyle = {marginLeft: '4rem', marginTop: '1rem'};
-const courseStyle = {marginLeft: '1rem', marginTop: '1rem'};
+const courseStyle = {marginLeft: '1rem', marginRight: '1rem', marginTop: '1rem'};
+const dividerStyle = {marginBottom: '1rem'};
 
 class SideDrawer extends React.Component {
     constructor(props) {
@@ -62,8 +64,9 @@ class SideDrawer extends React.Component {
                 position="left"
                 onVisibilityChange={this.handleVisibility}
                 navItems={[]}
-                header={this.state.course
-                    ? <div>
+                header={
+                    this.state.course
+                    && <div>
                         <Toolbar
                             actions={closeBtn}
                             title={this.state.course.name}
@@ -71,7 +74,8 @@ class SideDrawer extends React.Component {
                         <div style={courseStyle}>
                             <h1>{this.state.course.courseProvider}</h1>
                             <p><strong>Instructor:</strong> {this.state.course.instructor}</p>
-                            <p>{this.state.course.startTime} - {this.state.course.endTime}</p>
+                            <Divider style={dividerStyle}/>
+                            <Timeslots timeslot={this.state.course.timeslot}/>
                         </div>
                         <Button id="submit"
                                 type="submit"
@@ -80,7 +84,7 @@ class SideDrawer extends React.Component {
                                 raised
                                 primary>Add to Schedule</Button>
                     </div>
-                    : <div></div>}/>
+                }/>
         );
     }
 }
