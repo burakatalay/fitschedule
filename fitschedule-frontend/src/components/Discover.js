@@ -1,11 +1,14 @@
 import React from 'react';
-import {FontIcon, Snackbar, TextField} from "react-md";
+import {Button, Drawer, FontIcon, Snackbar, TextField, Toolbar} from "react-md";
 import {withRouter} from "react-router-dom";
 import SearchBar from "./SearchBar";
 import DiscoverService from "../services/DiscoverService";
 import Page from "./Page";
+import UserService from "../services/UserService";
+import ScheduleService from "../services/ScheduleService";
 
 const mapStyle = {height: '90vh', width: '100%'};
+const buttonStyle = {marginLeft: '4rem', marginTop: '1rem'};
 
 class Discover extends React.Component {
 
@@ -16,7 +19,11 @@ class Discover extends React.Component {
             useGeolocation: false,
             markers: [],
             referenceMarker: null,
-            geolocation: null
+            geolocation: null,
+            visible: true,
+            course: {
+                name: ''
+            }
         };
         this.dismissToast = this.dismissToast.bind(this);
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
@@ -24,6 +31,9 @@ class Discover extends React.Component {
         this.showError = this.showError.bind(this);
         this.useGeolocation = this.useGeolocation.bind(this);
         this.markAutocompleteLocation = this.markAutocompleteLocation.bind(this);
+        this.handleVisibility = this.handleVisibility.bind(this);
+        this.closeDrawer = this.closeDrawer.bind(this);
+        this.addToSchedule = this.addToSchedule.bind(this);
     }
 
     componentDidMount() {
@@ -74,7 +84,6 @@ class Discover extends React.Component {
     createCourseMarker(course, courseProvider) {
         const startTime = new Date(course.timeslot.start).getHours() + ':' + new Date(course.timeslot.start).getMinutes();
         const endTime = new Date(course.timeslot.end).getHours() + ':' + new Date(course.timeslot.end).getMinutes();
-
         const contentString = '<div><h3>' + courseProvider.name + '</h3><h4>' +
             course.instructor + '</h4><p>' + startTime + ' - ' + endTime + '</p></div>';
         console.log('[DiscoverComponent] Content string: ', contentString);
@@ -93,6 +102,7 @@ class Discover extends React.Component {
         marker.addListener('click', () => {
             this.closeAllInfoWindows();
             infowindow.open(this.map, marker);
+            this.setState({visible: true, course: course});
         });
         const markers = this.state.markers;
         markers.push(marker);
@@ -254,7 +264,33 @@ class Discover extends React.Component {
         this.setState({toasts});
     };
 
+    handleVisibility(visible) {
+        this.setState({visible: visible});
+    };
+
+    closeDrawer() {
+        this.setState({ visible: false });
+    };
+
+    addToSchedule() {
+        if(!UserService.isAuthenticated()) {
+            console.log('[DiscoverService] User is not authenticated');
+            this.props.history.push('/login');
+        } else {
+            ScheduleService.addToSchedule(this.state.course._id)
+                .then(() => {
+                    console.error('[DiscoverService] Success adding course to the schedule');
+                    this.addToast('Course has been added to your schedule successfully');
+                }, (error) => {
+                    console.error('[DiscoverService] Error adding course to the schedule', error);
+                    this.addToast('Something went wrong. Please try again later.');
+                });
+        }
+    };
+
     render() {
+        const closeBtn = <Button icon onClick={this.closeDrawer}>{'close'}</Button>;
+
         return (
             <Page>
                 <SearchBar useGeolocation={() => this.useGeolocation()}
@@ -263,6 +299,24 @@ class Discover extends React.Component {
                            onRef={ref => (this.searchBar = ref)}/>
                 <div id="map" style={mapStyle}>
                 </div>
+                <Drawer
+                    type={Drawer.DrawerTypes.TEMPORARY}
+                    visible={this.state.visible}
+                    autoclose={false}
+                    position="left"
+                    onVisibilityChange={this.handleVisibility}
+                    navItems={[]}
+                    header={(
+                        <div>
+                            <Toolbar
+                                actions={closeBtn}
+                                title={this.state.course.name}
+                                className="md-divider-border md-divider-border--bottom"
+                            />
+                            <Button id="submit" type="submit" style={buttonStyle} onClick={this.addToSchedule} raised primary>Add to Schedule</Button>
+                        </div>
+                        )}
+                />
                 <Snackbar toasts={this.state.toasts} autohide={true} onDismiss={this.dismissToast}/>
             </Page>
         );
