@@ -11,14 +11,6 @@ const ReviewSchema  = new mongoose.Schema({
     rating: {
         type: Number,
         required: true
-    },
-    author: {
-        type: mongoose.Schema.Types.ObjectId,
-        Ref: 'User'
-    },
-    course: {
-        type: mongoose.Schema.Types.ObjectId,
-        Ref: 'Course'
     }
 });
 

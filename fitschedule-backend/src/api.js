@@ -10,6 +10,7 @@ const auth  = require('./routes/auth');
 const course = require('./routes/course');
 const courseprovider = require('./routes/courseprovider');
 const schedule = require('./routes/schedule');
+const review = require('./routes/review');
 
 const api = express();
 
@@ -33,5 +34,6 @@ api.use('/auth'  , auth);
 api.use('/courses', course);
 api.use('/courseprovider', courseprovider);
 api.use('/schedule', schedule);
+api.use('/review', review);
 
 module.exports = api;

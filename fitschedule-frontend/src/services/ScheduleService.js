@@ -15,4 +15,16 @@ export default class ScheduleService {
     static getUserSchedule() {
         
     }
+
+    static addToSchedule(courseId) {
+        return new Promise((resolve, reject) => {
+            HttpService.post(`${ScheduleService.baseURL()}`, {
+                course: courseId
+            } ,function (data) {
+                resolve(data);
+            }, function (textStatus) {
+                reject(textStatus);
+            });
+        });
+    }
 }

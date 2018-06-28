@@ -3,6 +3,7 @@
 const CourseModel = require('../models/course');
 const CourseProviderModel = require('../models/courseprovider');
 const UserModel = require('../models/user');
+const ScheduleModel = require('../models/schedule');
 
 module.exports.createCourseAsInstructor = function(req, res){
     var course = new CourseModel({
@@ -12,12 +13,8 @@ module.exports.createCourseAsInstructor = function(req, res){
             type: "Point",
             coordinates: [req.body.lng, req.body.lat]
           },
-        timeslot: {
-            start: req.body.start,
-            end: req.body.end
-        },
+        timeslot: req.body.timeslot,
     });
-
     UserModel.findById(req.userId, function(err, user){
 
         if (err) {
@@ -28,7 +25,14 @@ module.exports.createCourseAsInstructor = function(req, res){
             error: 'Not Found',
             message: `User not found`
         });
-
+        console.log(user);
+        ScheduleModel.findById(user.schedule, function(err, schedule) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+        console.log(schedule);
+        
         course.courseprovider = user.courseProvider
         course.save(function(err, course) {
             if (err) {
@@ -37,8 +41,15 @@ module.exports.createCourseAsInstructor = function(req, res){
             }
             res.status(201).json(course);
         });
-        
-    
+        schedule.courses.push(course);
+        schedule.save(function(err) {
+            if (err) {
+                res.status.send(err);
+                return;
+                }
+            });
+            console.log(schedule);
+        });
     });
 }
 
@@ -46,15 +57,14 @@ module.exports.createCourseAsFitnessCenter = function(req, res){
     var course = new CourseModel({
         name: req.body.name,
         instructor: req.body.instructor,
+        day: req.body.day,
         location: {
             type: "Point",
             coordinates: [req.body.lng, req.body.lat]
           },
-        timeslot: {
-            start: req.body.start,
-            end: req.body.end
-        },
+        timeslot: req.body.timeslot,
     });
+
 
     CourseProviderModel.findOne({name: req.body.fitnesscentername}, function(err, courseprovider) {
         if (err) {
@@ -95,14 +105,34 @@ module.exports.createCourseAsFitnessCenter = function(req, res){
    
 }
 
+module.exports.updateCourseDetails = function(req, res) {
+    CourseModel.findById(req.body.id, function(err, course){
+        if (err) {
+            res.status(400).send(err);
+            return
+        }
+        console.log(course);
+        console.log(req.body);
+        console.log(course.timeslot.start);
+        course.timeslot = req.body.timeslot;
+        course.save(function(err, course) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            res.status(201).json(course);
+        });
+    });
+}
+
 module.exports.findCoursesByNameAndLocation = function(req, res) {
 
     const query = {
-        name: req.body.course,
+        name: req.query.course,
         location :
         { $geoWithin :
             { $centerSphere :
-                [ [req.body.lng, req.body.lat] , req.body.dist/6378.1 ]
+                [ [req.query.lng, req.query.lat] , req.query.dist/6378.1 ]
                 } 
             }   
     };
@@ -111,6 +141,7 @@ module.exports.findCoursesByNameAndLocation = function(req, res) {
             res.status(400).send(err);
             return;
         }
+        console.log(courses);
         res.json(courses);
     });
 

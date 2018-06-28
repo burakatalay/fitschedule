@@ -1,12 +1,12 @@
 import React from 'react';
 import {Autocomplete} from "react-md";
 
-const autocompleteStyle = {width: '15rem', margin: '15px 15px 25px'};
+const autocompleteStyle = {width: '20rem', margin: '15px 15px 25px'};
 
 export default class AutocompleteLocation extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {suggestions: [], filterType: Autocomplete.caseInsensitiveFilter};
+        this.state = {suggestions: [], filterType: Autocomplete.caseInsensitiveFilter, value: ''};
         this.displaySuggestions = this.displaySuggestions.bind(this);
         this.onAutocomplete = this.onAutocomplete.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -24,10 +24,24 @@ export default class AutocompleteLocation extends React.Component {
     }
 
     componentDidMount() {
+        this.props.onRef(this);
         this.autocompleteService = new google.maps.places.AutocompleteService();
     }
 
+    componentWillUnmount() {
+        this.props.onRef(undefined);
+    }
+
+    clearLocation() {
+        this.setState({
+            value: ''
+        });
+    }
+
     onChange(value, event) {
+        this.setState({
+            value: value
+        });
         if (value.length) {
             this.autocompleteService.getPlacePredictions({input: value}, this.displaySuggestions);
         }
@@ -35,6 +49,9 @@ export default class AutocompleteLocation extends React.Component {
 
     onAutocomplete(suggestion, suggestionIndex, matches) {
         console.log('[AutocompleteLocationComponent] Autocomplete selected for location with place_id', suggestion);
+        this.setState({
+            value: this.state.suggestions[suggestionIndex].description
+        });
         this.props.onAutocomplete(suggestion);
     }
 
@@ -48,6 +65,7 @@ export default class AutocompleteLocation extends React.Component {
                 onAutocomplete={this.onAutocomplete}
                 onChange={this.onChange}
                 data={this.state.suggestions}
+                value={this.state.value}
                 dataLabel="description"
                 dataValue="place_id"
                 filter={this.state.filterType}

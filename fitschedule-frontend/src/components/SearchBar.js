@@ -36,6 +36,19 @@ class SearchBar extends React.Component {
         this.handleChangeDistance = this.handleChangeDistance.bind(this);
     }
 
+    componentDidMount() {
+        this.props.onRef(this);
+        this.props.distChange(this.state.dist);
+    }
+
+    componentWillUnmount() {
+        this.props.onRef(undefined);
+    }
+
+    clearLocation() {
+        this.autocompleteLocation.clearLocation();
+    }
+
     handleChangeCourse(value) {
         this.setState({course: value});
     }
@@ -45,7 +58,6 @@ class SearchBar extends React.Component {
         const search = {
             course: this.state.course,
             coord: this.state.coord,
-            useGeolocation: this.state.useGeolocation,
             dist: this.state.dist
         };
 
@@ -62,6 +74,7 @@ class SearchBar extends React.Component {
 
     handleChangeDistance(value, index, event, details) {
         this.setState({dist: value});
+        this.props.distChange(value);
     };
 
     render() {
@@ -75,7 +88,8 @@ class SearchBar extends React.Component {
                     type="text"
                     value={this.state.course}
                     onChange={this.handleChangeCourse}/>
-                <AutocompleteLocation onAutocomplete={(value) => this.onAutocomplete(value)}/>
+                <AutocompleteLocation onAutocomplete={(value) => this.onAutocomplete(value)}
+                                      onRef={ref => (this.autocompleteLocation = ref)}/>
                 <SelectField
                     style={selectFieldStyle}
                     id="distanceField"
