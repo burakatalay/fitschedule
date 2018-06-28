@@ -80,10 +80,6 @@ class Discover extends React.Component {
     }
 
     createCourseMarker(course, courseProvider) {
-        let startTime = new Date(course.timeslot.start)
-        startTime = startTime.getHours() + ':' + startTime.getMinutes();
-        let endTime = new Date(course.timeslot.end)
-        endTime = endTime.getHours() + ':' + endTime.getMinutes();
         const contentString = '<div><h4 style="color: darkgray;">' + courseProvider.name + '</h4></div>';
         console.log('[DiscoverComponent] Content string: ', contentString);
         const infowindow = new google.maps.InfoWindow({
@@ -102,13 +98,28 @@ class Discover extends React.Component {
         marker.addListener('click', () => {
             this.closeAllInfoWindows();
             infowindow.open(this.map, marker);
-            this.openSideDrawer(course);
+            this.openSideDrawer(this.parseCourse(course, courseProvider));
         });
         const markers = this.state.markers;
         markers.push(marker);
         this.setState({
             markers: markers
         });
+    }
+
+    parseCourse(course, courseProvider) {
+        let startTime = new Date(course.timeslot.start);
+        startTime = startTime.getHours() + ':' + startTime.getMinutes();
+        let endTime = new Date(course.timeslot.end);
+        endTime = endTime.getHours() + ':' + endTime.getMinutes();
+        return {
+            name: course.name,
+            courseProvider: courseProvider.name,
+            instructor: course.instructor,
+            startTime: startTime,
+            endTime: endTime,
+            day: course.day
+        };
     }
 
     openSideDrawer(course) {

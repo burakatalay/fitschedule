@@ -5,6 +5,7 @@ import UserService from "../services/UserService";
 import {withRouter} from "react-router-dom";
 
 const buttonStyle = {marginLeft: '4rem', marginTop: '1rem'};
+const courseStyle = {marginLeft: '1rem', marginTop: '1rem'};
 
 class SideDrawer extends React.Component {
     constructor(props) {
@@ -67,6 +68,11 @@ class SideDrawer extends React.Component {
                             actions={closeBtn}
                             title={this.state.course.name}
                             className="md-divider-border md-divider-border--bottom"/>
+                        <div style={courseStyle}>
+                            <h1>{this.state.course.courseProvider}</h1>
+                            <p><strong>Instructor:</strong> {this.state.course.instructor}</p>
+                            <p>{this.state.course.startTime} - {this.state.course.endTime}</p>
+                        </div>
                         <Button id="submit"
                                 type="submit"
                                 style={buttonStyle}
