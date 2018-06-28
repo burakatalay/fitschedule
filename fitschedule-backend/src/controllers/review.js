@@ -9,12 +9,14 @@ module.exports.writeReview = function(req, res) {
         comment: req.body.comment,
         rating: req.body.rating,
     });
+    console.log(review);
     review.save(function(err) {
         if (err) {
             res.status.send(err);
             return;
         }
     });
+    
     UserModel.findById(req.body.userId, function(err, user){
 
         if (err) {
