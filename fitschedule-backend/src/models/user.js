@@ -37,6 +37,10 @@ const UserSchema  = new mongoose.Schema({
             return this.isCourseProvider == true;
         }
     },
+    writtenReviews: {
+        type: [mongoose.Schema.Types.ObjectId],
+        Ref: 'Review'
+    },
     
 });
 
