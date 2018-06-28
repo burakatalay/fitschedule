@@ -137,4 +137,13 @@ module.exports.logout = function(req, res) {
     res.status(200).send({token: null});
 };
 
+module.exports.list  = (req, res) => {
+    UserModel.find({}).exec()
+        .then(user => res.status(200).json(user))
+        .catch(error => res.status(500).json({
+            error: 'Internal server error',
+            message: error.message
+        }));
+};
+
 
