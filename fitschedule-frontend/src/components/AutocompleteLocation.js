@@ -14,7 +14,6 @@ export default class AutocompleteLocation extends React.Component {
 
     displaySuggestions(predictions, status) {
         if (status !== google.maps.places.PlacesServiceStatus.OK) {
-            alert(status);
             return;
         }
         this.setState({
