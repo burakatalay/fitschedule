@@ -121,12 +121,10 @@ class Schedule extends React.Component {
     //This method is disabled because standard user shouldn't be able to change anaything on the schedule
     handleCellSelection(item, openModal) {
         console.log("handleCellSelection");
-        console.log(startDate);
         if(this.state.selected && this.state.selected[0] === item){
             return  this._openModal();
         }
         this.setState({selected:[item] });
-    
     }
     
     //update course method will be added here 
@@ -213,6 +211,7 @@ class Schedule extends React.Component {
                     itemColors={colors}
                     autoScale={false}
                     fixedHeader={true}
+                    onCellSelect={this.handleCellSelection}
                     onChangeEvent={this.handleItemChange.bind(this)}
                     onChangeDuration={this.handleItemSize.bind(this)}
                     onItemEdit={this.handleItemEdit.bind(this)}

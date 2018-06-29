@@ -9,7 +9,7 @@ const AuthController = require('../controllers/auth');
 
 router.post('/login', AuthController.login);
 router.post('/register', AuthController.register);
-router.get('/me', middlewares.checkAuthentication , AuthController.me);
+router.get('/whoami', middlewares.checkAuthentication , AuthController.me);
 router.get('/name/:id', AuthController.getFullName);
 router.get('/logout', middlewares.checkAuthentication, AuthController.logout);
 router.get('/getAllUsers', AuthController.list);

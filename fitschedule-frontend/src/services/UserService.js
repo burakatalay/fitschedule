@@ -56,7 +56,7 @@ export default class UserService {
 
     static getUserFromDBWithToken() {
         return new Promise((resolve, reject) => {
-            HttpService.get(this.baseURL()+"/me", function(data) {
+            HttpService.get(this.baseURL()+"/whoami", function(data) {
                 resolve(data);
             }, function(textStatus) {
                 reject(textStatus);
