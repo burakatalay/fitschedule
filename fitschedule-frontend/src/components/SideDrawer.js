@@ -4,6 +4,7 @@ import ScheduleService from "../services/ScheduleService";
 import UserService from "../services/UserService";
 import {withRouter} from "react-router-dom";
 import Timeslots from "./Timeslots";
+import Review from './Review';
 
 const buttonStyle = {marginLeft: '4rem', marginTop: '1rem'};
 const courseStyle = {marginLeft: '1rem', marginRight: '1rem', marginTop: '1rem'};
@@ -16,6 +17,7 @@ class SideDrawer extends React.Component {
         this.handleVisibility = this.handleVisibility.bind(this);
         this.closeDrawer = this.closeDrawer.bind(this);
         this.addToSchedule = this.addToSchedule.bind(this);
+        this.printReviews = this.printReviews.bind(this);
     }
 
     componentDidMount() {
@@ -54,6 +56,12 @@ class SideDrawer extends React.Component {
         }
     };
 
+    printReviews() {
+        this.state.course.reviews.forEach(review => {
+            return <Review id={review}/>;
+        });
+    }
+
     render() {
         const closeBtn = <Button icon onClick={this.closeDrawer}>{'close'}</Button>;
         return (
@@ -77,6 +85,7 @@ class SideDrawer extends React.Component {
                             <Divider style={dividerStyle}/>
                             <Timeslots timeslot={this.state.course.timeslot}/>
                         </div>
+                        {this.printReviews}
                         <Button id="submit"
                                 type="submit"
                                 style={buttonStyle}

@@ -123,6 +123,32 @@ module.exports.updateCourseDetails = function(req, res) {
             res.status(201).json(course);
         });
     });
+
+    // UserModel.findById(req.userId, function(err, user) {
+    //     if (err) {
+    //         res.status(400).send(err);
+    //         return
+    //     }
+    //     console.log(course.courseprovider);
+    //     console.log(user.courseprovider);
+    //     if(course.courseprovider == user.courseprovider) {
+    //         console.log(course);
+    //         console.log(req.body);
+    //         course.timeslot = req.body.timeslot;
+    //         course.save(function(err, course) {
+    //         if (err) {
+    //             res.status(400).send(err);
+    //             return;
+    //         }
+    //         res.status(201).json(course);
+    //         });
+    //     } else {
+    //         return res.status(401).send({
+    //             error: 'Unauthorized',
+    //             message: 'This is not your course'
+    //         });
+    //     }
+    // });
 }
 
 module.exports.findCoursesByNameAndLocation = function(req, res) {

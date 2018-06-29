@@ -19,7 +19,8 @@ module.exports.getDetails = function(req, res) {
         });
         res.status(201).json(courseprovider);
     });
-}
+};
+
 module.exports.list  = (req, res) => {
     CourseProviderModel.find({}).exec()
         .then(courseprovider => res.status(200).json(courseprovider))

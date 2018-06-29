@@ -36,12 +36,7 @@ const UserSchema  = new mongoose.Schema({
         required: function() {
             return this.isCourseProvider == true;
         }
-    },
-    writtenReviews: {
-        type: [mongoose.Schema.Types.ObjectId],
-        Ref: 'Review'
-    },
-    
+    }
 });
 
 // Export the User model
