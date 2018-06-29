@@ -3,7 +3,6 @@
 import React from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
-import { HomeView } from './views/HomeView';
 import { UserLoginView } from "./views/UserLoginView";
 import { UserSignupView } from "./views/UserSignupView";
 
@@ -11,6 +10,7 @@ import UserService from "./services/UserService";
 import CourseForm from "./components/CourseForm";
 import Schedule  from './components/Schedule';
 import Discover from "./components/Discover";
+import Home from "./components/Home";
 
 
 export default class App extends React.Component {
@@ -21,7 +21,7 @@ export default class App extends React.Component {
         this.state = {
             title: 'FitSchedule',
             routes: [
-                { component: HomeView , path: '/', exact: true},
+                { component: Home , path: '/', exact: true},
                 { component: Discover, path: '/discover', exact: true},
                 { component: Schedule , path: '/schedule', exact: true},
                 { component: CourseForm , path: '/add', exact: true},
