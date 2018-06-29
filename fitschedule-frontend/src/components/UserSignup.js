@@ -1,14 +1,14 @@
 "use strict";
 
 import React from 'react';
-import { Card, Button, TextField, Checkbox } from 'react-md';
-import { withRouter } from 'react-router-dom';
+import {Button, Card, CardActions, CardText, Checkbox, TextField} from 'react-md';
+import {withRouter} from 'react-router-dom';
 
-import { AlertMessage } from './AlertMessage';
+import {AlertMessage} from './AlertMessage';
 import Page from './Page';
 
 
-const style = { maxWidth: 500 };
+const style = {maxWidth: 500, marginTop: '2rem'};
 
 
 class UserSignup extends React.Component {
@@ -19,8 +19,8 @@ class UserSignup extends React.Component {
         this.state = {
             firstname: '',
             surname: '',
-            email : '',
-            password : '',
+            email: '',
+            password: '',
             isCourseProvider: false
         };
 
@@ -71,57 +71,63 @@ class UserSignup extends React.Component {
         return (
             <Page>
                 <Card style={style} className="md-block-centered">
-                    <form className="md-grid" onSubmit={this.handleSubmit} onReset={() => this.props.history.goBack()}>
-                        <TextField
-                            label="Firstname"
-                            id="firstnameField"
-                            type="text"
-                            className="md-row"
-                            required={true}
-                            value={this.state.firstname}
-                            onChange={this.handleChangeFirstname}
-                            errorText="Firstname is required"/>
-                        <TextField
-                            label="Surname"
-                            id="surnameField"
-                            type="text"
-                            className="md-row"
-                            required={true}
-                            value={this.state.surname}
-                            onChange={this.handleChangeSurname}
-                            errorText="Surname is required"/>
-                        <TextField
-                            label="E-Mail"
-                            id="emailField"
-                            type="text"
-                            className="md-row"
-                            required={true}
-                            value={this.state.email}
-                            onChange={this.handleChangeEmail}
-                            errorText="E-Mail is required"/>
-                        <TextField
-                            label="Password"
-                            id="PasswordField"
-                            type="password"
-                            className="md-row"
-                            required={true}
-                            value={this.state.password}
-                            onChange={this.handleChangePassword}
-                            errorText="Password is required"/>
-                        <Checkbox
-                            id="checkbox-IsCourseProvider"
-                            name="simple-checkboxes[]"
-                            label="Are you a course provider?"
-                            type="checkbox"
-                            value={this.state.isCourseProvider}
-                            onChange={this.handleIsCourseProvider}/>
-
-                        <Button id="submit" type="submit"
-                                disabled={this.state.firstname == undefined || this.state.firstname == '' || this.state.surname == undefined || this.state.surname == '' || this.state.email == undefined || this.state.email == '' || this.state.password == undefined || this.state.password == '' ? true : false}
-                                raised primary className="md-cell md-cell--2">Register</Button>
-                        <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
-                        <AlertMessage className="md-row md-full-width" >{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
-                    </form>
+                    <CardText>
+                        <form className="md-grid" onSubmit={this.handleSubmit}
+                              onReset={() => this.props.history.goBack()}>
+                            <TextField
+                                label="Firstname"
+                                id="firstnameField"
+                                type="text"
+                                className="md-row"
+                                required={true}
+                                value={this.state.firstname}
+                                onChange={this.handleChangeFirstname}
+                                errorText="Firstname is required"/>
+                            <TextField
+                                label="Surname"
+                                id="surnameField"
+                                type="text"
+                                className="md-row"
+                                required={true}
+                                value={this.state.surname}
+                                onChange={this.handleChangeSurname}
+                                errorText="Surname is required"/>
+                            <TextField
+                                label="E-Mail"
+                                id="emailField"
+                                type="text"
+                                className="md-row"
+                                required={true}
+                                value={this.state.email}
+                                onChange={this.handleChangeEmail}
+                                errorText="E-Mail is required"/>
+                            <TextField
+                                label="Password"
+                                id="PasswordField"
+                                type="password"
+                                className="md-row"
+                                required={true}
+                                value={this.state.password}
+                                onChange={this.handleChangePassword}
+                                errorText="Password is required"/>
+                            <Checkbox
+                                id="checkbox-IsCourseProvider"
+                                name="simple-checkboxes[]"
+                                label="Are you a course provider?"
+                                type="checkbox"
+                                value={this.state.isCourseProvider}
+                                onChange={this.handleIsCourseProvider}/>
+                            <CardActions>
+                                <Button id="submit" type="submit"
+                                        disabled={this.state.firstname == undefined || this.state.firstname == '' || this.state.surname == undefined || this.state.surname == '' || this.state.email == undefined || this.state.email == '' || this.state.password == undefined || this.state.password == '' ? true : false}
+                                        raised primary className="md-cell md-cell--2">Register</Button>
+                                <Button id="reset" type="reset" raised secondary
+                                        className="md-cell md-cell--2">Dismiss</Button>
+                                <AlertMessage
+                                    className="md-row md-full-width">{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
+                            </CardActions>
+                        </form>
+                    </CardText>
                 </Card>
             </Page>
         );
