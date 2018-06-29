@@ -4,6 +4,21 @@ const CourseModel = require('../models/course');
 const UserModel = require('../models/user');
 const ReviewModel = require('../models/review');
 
+module.exports.getReview = function(req, res) {
+    console.log('[ReviewController] Received request to get review with id', req.params.id);
+    ReviewModel.findById(req.params.id, function(err, review){
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        if (!review) return res.status(404).json({
+            error: 'Not Found',
+            message: `Review not found`
+        });
+        res.status(201).json(review);
+    });
+};
+
 module.exports.writeReview = function(req, res) {
     var review = new ReviewModel({
         comment: req.body.comment,
@@ -54,7 +69,7 @@ module.exports.writeReview = function(req, res) {
         
         
     });
-}
+};
 
 module.exports.updateReview = function(req, res) {
     ReviewModel.findById(req.body.reviewID, function(err, review) {
@@ -68,7 +83,7 @@ module.exports.updateReview = function(req, res) {
             res.status(201).json(review).send();
         });
     });
-}
+};
 
 // module.exports.calculateAverageRating = function(req, res) {
 //     CourseModel.findById(req.body.courseID, function(err, course) {
