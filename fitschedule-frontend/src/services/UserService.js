@@ -50,8 +50,18 @@ export default class UserService {
         let base64 = base64Url.replace('-', '+').replace('_', '/');
         return {
             id : JSON.parse(window.atob(base64)).id,
-            email: JSON.parse(window.atob(base64)).email
+            email: JSON.parse(window.atob(base64)).email,
         };
+    }
+
+    static getUserFromDBWithToken() {
+        return new Promise((resolve, reject) => {
+            HttpService.get(this.baseURL()+"/me", function(data) {
+                resolve(data);
+            }, function(textStatus) {
+                reject(textStatus);
+            });
+        });
     }
 
     static isAuthenticated() {
