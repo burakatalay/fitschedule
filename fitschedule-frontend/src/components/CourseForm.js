@@ -1,7 +1,8 @@
 "use strict";
 
 import React from 'react';
-import { Card, Button, FontIcon, TextField, SelectField, TimePicker, DatePicker, Autocomplete } from 'react-md';
+import { Card, Button, FontIcon, TextField, SelectField, TimePicker, DatePicker, Autocomplete, DataTable,
+        TableHeader, TableBody, TableRow, TableColumn, Checkbox } from 'react-md';
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types';
 
@@ -10,10 +11,10 @@ import Page from './Page';
 
 const autocompleteStyle = {width: '15rem', margin: '15px 15px 25px'};
 
-
-const style = { maxWidth: 350 };
-const insidestyle = { width: 250};
-const datepickerstyle = { width: 250};
+const style = { maxWidth: 800, maxHeight: 'auto' };
+const insidestyle = { width: 200};
+const datepickerstyle = { width: 200};
+const buttonstyle = { width: 115};
 /*const endtime = new Date;
 end.setMinute(start.getMinute() + 1);
 end.setMinute(start.getMinute() + 1);
@@ -30,40 +31,28 @@ class CourseForm extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            name: "",
+            instructor: "",
+            lat: "",
+            lng: "",
+            timeslot: [],
+
+        }
         this.state = {suggestions: [], filterType: Autocomplete.caseInsensitiveFilter};
         this.displaySuggestions = this.displaySuggestions.bind(this);
         this.onAutocomplete = this.onAutocomplete.bind(this);
         this.onChange = this.onChange.bind(this);
 
-        if(this.props.course != undefined) {
-            this.state = {
-                name : props.course.name,
-                start : props.course.start,
-                end : props.course.end,
-                day: props.course.day,
-                instructor : props.course.instructor,
-                lat: props.course.lat,
-                lng: props.course.lng
-            };
-        } else {
-            this.state = {
-                name : '',
-                start : '',
-                end : '',
-                day: '',
-                instructor : '',
-                lat: '',
-                lng: ''
-            };
-
-            }
+        
 
 
 
         this.handleChangeName = this.handleChangeName.bind(this);
         this.handleChangeStart = this.handleChangeStart.bind(this);
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
-        this.handleChangeDay = this.handleChangeDay.bind(this);
+        this.handleSelectDay = this.handleSelectDay.bind(this);
         this.handleChangeInstructor = this.handleChangeInstructor.bind(this);
         this.handleChangeLat = this.handleChangeLat.bind(this);
         this.handleChangeLng = this.handleChangeLng.bind(this);
@@ -97,12 +86,13 @@ class CourseForm extends React.Component {
              console.log('times do match');
             this.setState({end: endTime});
         }
-       
-        
 
     }
 
-    handleChangeDay(value) {
+
+    handleSelectDay(value) {
+        const timeslot = this.state.timeslot;
+        const time = {}
         console.log(value);
         this.setState({day: value});
     }
@@ -164,7 +154,103 @@ class CourseForm extends React.Component {
         this.props.onAutocomplete(suggestion);
     }
 
+    render() {
+        return(
+            <Page>
+             <Card style={style} className="md-block-centered">
+                <div className="md-grid">
+                    
+                    <TextField
+                            label="Course Name"
+                            id="NameField"
+                            type="text"
+                            className="md-block-left"
+                            required
+                            style={insidestyle}
+                            value={this.state.name}
+                            onChange={this.handleChangeName}
+                            errorText="Please enter a name"/>
+                    <Autocomplete
+                            style={autocompleteStyle}
+                            id="locationField"
+                            className="md-block-right"
+                            required
+                            label="Location"
+                            placeholder="Eg. Marienplatz"
+                            onAutocomplete={this.onAutocomplete}
+                            onChange={this.onChange}
+                            data={this.state.suggestions}
+                            dataLabel="description"
+                            dataValue="place_id"
+                            filter={this.state.filterType}/>
+                </div> 
+                    
+                    <DataTable plain>
+                        <TableHeader>
+                            <TableRow>
+                                <TableColumn>Day</TableColumn>
+                                <TableColumn>Start Time</TableColumn>
+                                <TableColumn>End Time</TableColumn>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {Array.from(Array(7)).map((_, i) => (
+                            <TableRow key={i}>
+                                <TableColumn>
+                                    <Checkbox
+                                        id="checkbox-Day"
+                                        name="day-checkboxes[]"
+                                        label={days[i]}
+                                        type="checkbox"
+                                        value={i}
+                                        onChange={this.handleSelectDay}/>
+                                
+                                </TableColumn>
+                                <TableColumn>
+                                    <TimePicker
+                                        id="StartField"
+                                        label="Select a course start time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeStart}
+                                        style={datepickerstyle}
+                                        className="md-cell"/>
+                                </TableColumn>
+                                <TableColumn>
+                                    <TimePicker
+                                        id="EndField"
+                                        label="Select a course end time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeEnd}
+                                        style={datepickerstyle}
+                                        className="md-cell"/>
+                                </TableColumn>
+                            </TableRow>
+                        ))}
+                        </TableBody>
+                                
+                          
+                        
+                    </DataTable>
+                    <Button id="submit" type="submit"
+                                disabled={this.state.name == undefined || this.state.name == '' || this.state.start == undefined || this.state.start == '' 
+                                || this.state.end == undefined || this.state.end == '' || this.state.instructor == undefined || this.state.instructor == '' 
+                                || this.state.lng == undefined || this.state.lng == '' || this.state.lat == undefined || this.state.lat == ''
+                                || this.state.day == undefined || this.state.day == '' || this.state.end == this.state.start}
+                                raised primary className="md-cell md-cell--2">Create</Button>
+                        
+                        <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
+                        <AlertMessage className="md-row md-full-width" >{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
 
+                 </Card>
+            </Page>
+
+
+        );
+    }
+
+    /*
     render() {
         return ( 
             <Page>
@@ -235,6 +321,9 @@ class CourseForm extends React.Component {
             </Page>
         );
     }
+
+    */
 }
+
 
 export default withRouter(CourseForm);

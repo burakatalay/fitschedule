@@ -8,6 +8,7 @@ import { UserLoginView } from "./views/UserLoginView";
 import { UserSignupView } from "./views/UserSignupView";
 
 import UserService from "./services/UserService";
+import CourseForm from "./components/CourseForm";
 import { ScheduleView } from './views/ScheduleView';
 import Discover from "./components/Discover";
 
@@ -23,16 +24,10 @@ export default class App extends React.Component {
                 { component: HomeView , path: '/', exact: true},
                 { component: Discover, path: '/discover', exact: true},
                 { component: ScheduleView , path: '/schedule', exact: true},
-                { render: (props) => {
-                        if(UserService.isAuthenticated()) {
-                            return (<MovieFormView {... props} />)
-                        }
-                        else {
-                            return (<Redirect to={'/login'}/>)
-                        }} , path: '/edit/:id'},
+                { component: CourseForm , path: '/add', exact: true},
                 { render: (props) => {
                     if(UserService.isAuthenticated()) {
-                        return (<ScheduleView {... props} />)
+                        return (<CourseForm {... props} />)
                     }
                     else {
                         return (<Redirect to={'/login'}/>)
