@@ -9,7 +9,7 @@ import { UserSignupView } from "./views/UserSignupView";
 
 import UserService from "./services/UserService";
 import CourseForm from "./components/CourseForm";
-import { ScheduleView } from './views/ScheduleView';
+import Schedule  from './components/Schedule';
 import Discover from "./components/Discover";
 
 
@@ -23,11 +23,11 @@ export default class App extends React.Component {
             routes: [
                 { component: HomeView , path: '/', exact: true},
                 { component: Discover, path: '/discover', exact: true},
-                { component: ScheduleView , path: '/schedule', exact: true},
+                { component: Schedule , path: '/schedule', exact: true},
                 { component: CourseForm , path: '/add', exact: true},
                 { render: (props) => {
                     if(UserService.isAuthenticated()) {
-                        return (<CourseForm {... props} />)
+                        return (<Schedule {... props} />)
                     }
                     else {
                         return (<Redirect to={'/login'}/>)

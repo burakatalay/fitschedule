@@ -50,11 +50,33 @@ export default class UserService {
         let base64 = base64Url.replace('-', '+').replace('_', '/');
         return {
             id : JSON.parse(window.atob(base64)).id,
-            email: JSON.parse(window.atob(base64)).email
+            email: JSON.parse(window.atob(base64)).email,
         };
+    }
+
+    static getUserFromDBWithToken() {
+        return new Promise((resolve, reject) => {
+            HttpService.get(this.baseURL()+"/whoami", function(data) {
+                resolve(data);
+            }, function(textStatus) {
+                reject(textStatus);
+            });
+        });
     }
 
     static isAuthenticated() {
         return !!window.localStorage['jwtToken'];
+    }
+
+    static getUserFullName(id) {
+        return new Promise((resolve, reject) => {
+            HttpService.get(`${UserService.baseURL()}/auth/fullname/${id}`, {
+                id: id
+            }, function(data) {
+                resolve(data);
+            }, function(textStatus) {
+                reject(textStatus);
+            });
+        });
     }
 }

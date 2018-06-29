@@ -161,6 +161,8 @@ class Discover extends React.Component {
             })
         });
         this.createReferenceCircle(geolocation);
+        const mapCenter = new google.maps.LatLng(geolocation.lat, geolocation.lng);
+        this.map.setCenter(mapCenter);
     }
 
     showError(error) {
@@ -182,21 +184,6 @@ class Discover extends React.Component {
                 this.addToast("Unknown error. Location information is unavailable.");
                 break;
         }
-    }
-
-    focusGeolocation() {
-        if (this.state.geolocation) {
-            this.setState({
-                center: {
-                    lat: this.state.geolocation.latitude,
-                    lng: this.state.geolocation.longitude
-                },
-                zoom: 50
-            });
-        } else {
-            this.addToast("Please enable location permission.");
-        }
-
     }
 
     handleChangeCourse(value) {
@@ -224,8 +211,8 @@ class Discover extends React.Component {
 
     markAutocompleteLocation(place, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-            console.log('[DiscoverComponent] Success retrieving geolocation', 'lat', place.geometry.location.lat(), 'lng:', place.geometry.location.lng());
-            // createMarker(place);
+            console.log('[DiscoverComponent] Success retrieving geolocation',
+                'lat', place.geometry.location.lat(), 'lng:', place.geometry.location.lng());
             const geolocation = {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng()
