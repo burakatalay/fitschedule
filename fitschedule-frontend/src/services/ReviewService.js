@@ -2,7 +2,7 @@
 
 import HttpService from "./HttpService";
 
-export default class ReviewsService {
+export default class ReviewService {
 
     constructor() {
     }
@@ -26,12 +26,10 @@ export default class ReviewsService {
         });
     }
 
-    static updateReview(reviewId) {
+    static getReview(reviewId) {
         return new Promise((resolve, reject) => {
-            HttpService.post(`${ScheduleService.baseURL()}`, {
-                review: reviewId,
-                comment: writtenComment,
-                rating: givenRating
+            HttpService.get(`${ScheduleService.baseURL()}`, {
+                id: reviewId,
             } ,function (data) {
                 resolve(data);
             }, function (textStatus) {

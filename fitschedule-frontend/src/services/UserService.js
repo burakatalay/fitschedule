@@ -57,4 +57,16 @@ export default class UserService {
     static isAuthenticated() {
         return !!window.localStorage['jwtToken'];
     }
+
+    static getUserFullName(id) {
+        return new Promise((resolve, reject) => {
+            HttpService.get(`${UserService.baseURL()}/auth/fullname/${id}`, {
+                id: id
+            }, function(data) {
+                resolve(data);
+            }, function(textStatus) {
+                reject(textStatus);
+            });
+        });
+    }
 }
