@@ -23,51 +23,32 @@ module.exports.writeReview = function(req, res) {
     var review = new ReviewModel({
         comment: req.body.comment,
         rating: req.body.rating,
+        created_at: new Date(),
+        created_by: req.userId
     });
-    console.log(review);
+    console.log('[ReviewController] Saving new review', review);
     review.save(function(err) {
         if (err) {
+            console.log('[ReviewController] Error saving new review', review);
             res.status.send(err);
             return;
         }
     });
-    
-    UserModel.findById(req.body.userId, function(err, user){
 
+    CourseModel.findById(req.body.course, function(err, course) {
         if (err) {
-            res.status(500).send(err);
+            console.log("Course not found");
+            res.status(400).send(err);
             return;
         }
-        if (!user) return res.status(404).json({
-            error: 'Not Found',
-            message: `User not found`
-        });
-
-        CourseModel.findById(req.body.course, function(err, course) {
-            if (err) {
-                console.log("we are here");
-                res.status(400).send(err);
-                return;
-            }
-        
         course.reviews.push(review);
         course.save(function(err, course) {
             if (err) {
                 res.status(400).send(err);
                 return;
             }
-            user.writtenReviews.push(review);
-            user.save(function(err) {
-            if (err) {
-                res.status.send(err);
-                return;
-                }
-            });
-            res.status(201).json(review).send();
+            res.status(201).json(review);
         });
-        });
-        
-        
     });
 };
 

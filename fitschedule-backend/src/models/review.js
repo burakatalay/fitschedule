@@ -11,6 +11,15 @@ const ReviewSchema  = new mongoose.Schema({
     rating: {
         type: Number,
         required: true
+    },
+    created_at: {
+        type: Date,
+        required: true
+    },
+    created_by: {
+        type: mongoose.Schema.ObjectId,
+        Ref: 'User',
+        required: true
     }
 });
 
