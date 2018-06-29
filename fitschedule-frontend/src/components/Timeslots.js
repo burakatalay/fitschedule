@@ -26,7 +26,7 @@ export default class Timeslots extends React.Component {
                     break;
                 case 1:
                     const tue = {
-                        start: this.parseDate(lot.start),
+                        start: this.parseDate(slot.start),
                         end: this.parseDate(slot.end)
                     };
                     this.setState({tue: tue});
