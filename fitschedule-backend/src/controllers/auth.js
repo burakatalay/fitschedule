@@ -146,4 +146,18 @@ module.exports.list  = (req, res) => {
         }));
 };
 
+module.exports.getFullName = function(req, res) {
+    UserModel.findById(req.params.id, function(err, user){
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        if (!user) return res.status(404).json({
+            error: 'Not Found',
+            message: `User not found`
+        });
+        res.status(201).json(user.firstname + ' ' + user.lastname);
+    });
+};
+
 
