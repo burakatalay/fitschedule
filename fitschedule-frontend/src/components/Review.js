@@ -16,7 +16,7 @@ export default class Review extends React.Component {
     componentDidMount() {
         ReviewService.getReview(this.props.id).then((review) => {
             console.log('[ReviewComponent] Success getting review', review);
-            UserService.getUser(review.created_by).then((user) => {
+            UserService.getUserFullName(review.created_by).then((user) => {
             console.log('[ReviewComponent] Success getting user', user);
             this.setState({creator: user});
             }, (error) => {
