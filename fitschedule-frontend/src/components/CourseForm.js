@@ -271,11 +271,6 @@ class CourseForm extends React.Component {
 
     }
 
-    inputCheck() {
-        // TODO: IMPLEMENT INPUT CHECK
-        return false;
-    }
-
     autocompleteSubmit(value) {
         this.setState({lat: value.lat, lng: value.lng});
     }
