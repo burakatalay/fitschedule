@@ -48,7 +48,7 @@ export default class Review extends React.Component {
             <div>
                 {this.state.creatorNames.map((name,i) => (
                     <Card className="md-block-centered">
-                        <CardTitle title={name} subtitle={this.state.reviewDates[i]}/>
+                        <CardTitle title={name} subtitle={this.state.reviewDates[i].substring(0,10)}/>
                         <CardText>
                         <p>
                             {this.state.reviewContents[i]}
