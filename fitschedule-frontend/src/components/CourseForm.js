@@ -18,9 +18,10 @@ import {withRouter} from 'react-router-dom'
 import Page from './Page';
 import AutocompleteLocation from "./AutocompleteLocation";
 
+const rowStyle = {display: 'flex', alignItems:'center', width: '100%'};
+const spanStyle = {display: 'flex', width: '20rem', paddingTop: '1.5rem'};
 const style = {maxWidth: 700, marginBottom: '4rem', marginTop: '2rem'};
-const timePickerStyle = {width: '10rem'};
-const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const timePickerStyle = {width: '100%'};
 
 class CourseForm extends React.Component {
     constructor(props) {
@@ -36,7 +37,6 @@ class CourseForm extends React.Component {
         this.handleChangeName = this.handleChangeName.bind(this);
         this.handleChangeStart = this.handleChangeStart.bind(this);
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
-        this.handleSelectDay = this.handleSelectDay.bind(this);
         this.handleChangeInstructor = this.handleChangeInstructor.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -68,13 +68,6 @@ class CourseForm extends React.Component {
             this.setState({end: endTime});
         }
 
-    }
-
-    handleSelectDay(value) {
-        const timeslot = this.state.timeslot;
-        const time = {}
-        console.log(value);
-        this.setState({day: value});
     }
 
     handleChangeInstructor(value) {
@@ -138,53 +131,154 @@ class CourseForm extends React.Component {
                                 <AutocompleteLocation onRef={ref => (this.autocompleteLocation = ref)}
                                                       required={true}
                                                       onSubmit={(value) => this.autocompleteSubmit(value)}/>
+                                <div style={rowStyle}>
+                                    <span style={spanStyle}>
+                                        Monday:
+                                    </span>
+                                    <TimePicker
+                                        id="StartField"
+                                        label="Course start time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeStart}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                    <TimePicker
+                                        id="EndField"
+                                        label="Course end time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeEnd}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                </div>
+                                <div style={rowStyle}>
+                                    <span style={spanStyle}>
+                                        Tuesday:
+                                    </span>
+                                    <TimePicker
+                                        id="StartField"
+                                        label="Course start time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeStart}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                    <TimePicker
+                                        id="EndField"
+                                        label="Course end time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeEnd}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                </div>
+                                <div style={rowStyle}>
+                                    <span style={spanStyle}>
+                                        Wednesday:
+                                    </span>
+                                    <TimePicker
+                                        id="StartField"
+                                        label="Course start time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeStart}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                    <TimePicker
+                                        id="EndField"
+                                        label="Course end time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeEnd}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                </div>
+                                <div style={rowStyle}>
+                                    <span style={spanStyle}>
+                                        Thursday:
+                                    </span>
+                                    <TimePicker
+                                        id="StartField"
+                                        label="Course start time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeStart}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                    <TimePicker
+                                        id="EndField"
+                                        label="Course end time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeEnd}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                </div>
+                                <div style={rowStyle}>
+                                    <span style={spanStyle}>
+                                        Friday:
+                                    </span>
+                                    <TimePicker
+                                        id="StartField"
+                                        label="Course start time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeStart}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                    <TimePicker
+                                        id="EndField"
+                                        label="Course end time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeEnd}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                </div>
+                                <div style={rowStyle}>
+                                    <span style={spanStyle}>
+                                        Saturday:
+                                    </span>
+                                    <TimePicker
+                                        id="StartField"
+                                        label="Course start time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeStart}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                    <TimePicker
+                                        id="EndField"
+                                        label="Course end time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeEnd}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                </div>
+                                <div style={rowStyle}>
+                                    <span style={spanStyle}>
+                                        Sunday:
+                                    </span>
+                                    <TimePicker
+                                        id="StartField"
+                                        label="Course start time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeStart}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                    <TimePicker
+                                        id="EndField"
+                                        label="Course end time"
+                                        locales="da-DK"
+                                        outline
+                                        onChange={this.handleChangeEnd}
+                                        style={timePickerStyle}
+                                        className="md-cell"/>
+                                </div>
                             </div>
-
-                            <DataTable plain>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableColumn>Day</TableColumn>
-                                        <TableColumn>Start Time</TableColumn>
-                                        <TableColumn>End Time</TableColumn>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {Array.from(Array(7)).map((_, i) => (
-                                        <TableRow key={i}>
-                                            <TableColumn>
-                                                <Checkbox
-                                                    id="checkbox-Day"
-                                                    name="day-checkboxes[]"
-                                                    label={days[i]}
-                                                    type="checkbox"
-                                                    value={i}
-                                                    onChange={this.handleSelectDay}/>
-
-                                            </TableColumn>
-                                            <TableColumn>
-                                                <TimePicker
-                                                    id="StartField"
-                                                    label="Course start time"
-                                                    locales="da-DK"
-                                                    outline
-                                                    onChange={this.handleChangeStart}
-                                                    style={timePickerStyle}
-                                                    className="md-cell"/>
-                                            </TableColumn>
-                                            <TableColumn>
-                                                <TimePicker
-                                                    id="EndField"
-                                                    label="Course end time"
-                                                    locales="da-DK"
-                                                    outline
-                                                    onChange={this.handleChangeEnd}
-                                                    style={timePickerStyle}
-                                                    className="md-cell"/>
-                                            </TableColumn>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </DataTable>
                         </CardText>
                         <CardActions>
                             <Button id="submit" type="submit"
