@@ -8,7 +8,7 @@ import {AlertMessage} from './AlertMessage';
 import Page from './Page';
 
 
-const style = {maxWidth: 500, marginTop: '2rem'};
+const style = {maxWidth: 500, marginTop: '2rem', marginBottom: '2rem'};
 
 
 class UserLogin extends React.Component {
@@ -50,9 +50,9 @@ class UserLogin extends React.Component {
         return (
             <Page>
                 <Card style={style} className="md-block-centered">
-                    <CardText>
-                        <form className="md-grid" onSubmit={this.handleSubmit}
-                              onReset={() => this.props.history.goBack()}>
+                    <form onSubmit={this.handleSubmit}
+                          onReset={() => this.props.history.goBack()}>
+                        <CardText>
                             <TextField
                                 label="E-Mail"
                                 id="LoginField"
@@ -71,18 +71,18 @@ class UserLogin extends React.Component {
                                 value={this.state.password}
                                 onChange={this.handleChangePassword}
                                 errorText="Password is required"/>
-                            <CardActions>
-                                <Button id="submit" type="submit"
-                                        disabled={this.state.email == undefined || this.state.email == '' || this.state.password == undefined || this.state.password == '' ? true : false}
-                                        raised primary className="md-cell md-cell--2">Login</Button>
-                                <Button id="reset" type="reset" raised secondary
-                                        className="md-cell md-cell--2">Dismiss</Button>
-                                <Link to={'/register'} className="md-cell">Not registered yet?</Link>
-                                <AlertMessage
-                                    className="md-row md-full-width">{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
-                            </CardActions>
-                        </form>
-                    </CardText>
+                            <Link to={'/register'} className="md-cell">Not registered yet?</Link>
+                        </CardText>
+                        <CardActions>
+                            <Button id="submit" type="submit"
+                                    disabled={this.state.email == undefined || this.state.email == '' || this.state.password == undefined || this.state.password == '' ? true : false}
+                                    raised primary className="md-cell md-cell--2">Login</Button>
+                            <Button id="reset" type="reset" raised secondary
+                                    className="md-cell md-cell--2">Dismiss</Button>
+                            <AlertMessage
+                                className="md-row md-full-width">{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
+                        </CardActions>
+                    </form>
                 </Card>
             </Page>
         );

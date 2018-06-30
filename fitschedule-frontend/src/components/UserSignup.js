@@ -8,7 +8,7 @@ import {AlertMessage} from './AlertMessage';
 import Page from './Page';
 
 
-const style = {maxWidth: 500, marginTop: '2rem'};
+const style = {maxWidth: 500, marginTop: '2rem', marginBottom:'2rem'};
 
 
 class UserSignup extends React.Component {
@@ -71,9 +71,9 @@ class UserSignup extends React.Component {
         return (
             <Page>
                 <Card style={style} className="md-block-centered">
-                    <CardText>
-                        <form className="md-grid" onSubmit={this.handleSubmit}
-                              onReset={() => this.props.history.goBack()}>
+                    <form onSubmit={this.handleSubmit}
+                          onReset={() => this.props.history.goBack()}>
+                        <CardText>
                             <TextField
                                 label="Firstname"
                                 id="firstnameField"
@@ -117,17 +117,16 @@ class UserSignup extends React.Component {
                                 type="checkbox"
                                 value={this.state.isCourseProvider}
                                 onChange={this.handleIsCourseProvider}/>
-                            <CardActions>
-                                <Button id="submit" type="submit"
-                                        disabled={this.state.firstname == undefined || this.state.firstname == '' || this.state.surname == undefined || this.state.surname == '' || this.state.email == undefined || this.state.email == '' || this.state.password == undefined || this.state.password == '' ? true : false}
-                                        raised primary className="md-cell md-cell--2">Register</Button>
-                                <Button id="reset" type="reset" raised secondary
-                                        className="md-cell md-cell--2">Dismiss</Button>
-                                <AlertMessage
-                                    className="md-row md-full-width">{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
-                            </CardActions>
-                        </form>
-                    </CardText>
+                        </CardText>
+                        <CardActions>
+                            <Button id="submit" type="submit"
+                                    disabled={this.state.firstname == undefined || this.state.firstname == '' || this.state.surname == undefined || this.state.surname == '' || this.state.email == undefined || this.state.email == '' || this.state.password == undefined || this.state.password == '' ? true : false}
+                                    raised primary className="md-cell md-cell--2">Register</Button>
+                            <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
+                            <AlertMessage
+                                className="md-row md-full-width">{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
+                        </CardActions>
+                    </form>
                 </Card>
             </Page>
         );
