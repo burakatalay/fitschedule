@@ -253,7 +253,7 @@ class CourseForm extends React.Component {
             console.log('[CourseForm] Empty timeslot', timeslot);
         } else {
             const course = {
-                name: this.state.name,
+                name: this.state.name.toLowerCase(),
                 lng: this.state.lng,
                 lat: this.state.lat,
                 instructor: this.state.instructor,

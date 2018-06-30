@@ -213,7 +213,7 @@ class Discover extends React.Component {
             return;
         }
         const query = {
-            course: value.course,
+            course: value.course.toLowerCase(),
             dist: value.dist
         };
         if (this.state.useGeolocation && this.state.geolocation) {
