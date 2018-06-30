@@ -187,6 +187,20 @@ module.exports.getCourseDetails = function(req, res) {
     });
 }
 
+module.exports.deleteCourse = function(req, res) {
+    CourseModel.findByIdAndRemove(req.params.id, function(err, course) {
+        if (err) {
+            res.status(500).send(err);
+            return
+        }
+        if (!course) return res.status(404).json({
+            error: 'Not Found',
+            message: `Course not found`
+        });
+        res.status(201).send("course deleted");
+    });
+}
+
 module.exports.list  = (req, res) => {
     CourseModel.find({}).exec()
         .then(course => res.status(200).json(course))
