@@ -18,6 +18,7 @@ import {withRouter} from 'react-router-dom'
 import Page from './Page';
 import AutocompleteLocation from "./AutocompleteLocation";
 import {AlertMessage} from "./AlertMessage";
+import CourseService from "../services/CourseService";
 
 const rowStyle = {display: 'flex', alignItems: 'center', width: '100%'};
 const spanStyle = {display: 'flex', width: '20rem', paddingTop: '1.5rem'};
@@ -32,13 +33,20 @@ class CourseForm extends React.Component {
             instructor: "",
             lat: null,
             lng: null,
-            monday: null,
-            tuesday: null,
-            wednesday: null,
-            thursday: null,
-            friday: null,
-            saturday: null,
-            sunday: null,
+            mondayStart: null,
+            mondayEnd: null,
+            tuesdayStart: null,
+            tuesdayEnd: null,
+            wednesdayStart: null,
+            wednesdayEnd: null,
+            thursdayStart: null,
+            thursdayEnd: null,
+            fridayStart: null,
+            fridayEnd: null,
+            saturdayStart: null,
+            saturdayEnd: null,
+            sundayStart: null,
+            sundayEnd: null,
             error: null
         };
         this.handleChangeName = this.handleChangeName.bind(this);
@@ -73,9 +81,7 @@ class CourseForm extends React.Component {
         const start = new Date(dateObject);
         console.log('[CourseForm] Monday start time', start);
         this.setState({
-            monday: {
-                start: start
-            }
+            mondayStart: start
         });
     }
 
@@ -83,9 +89,7 @@ class CourseForm extends React.Component {
         const end = new Date(dateObject);
         console.log('[CourseForm] Monday end time', end);
         this.setState({
-            monday: {
-                end: end
-            }
+            mondayEnd: end
         });
     }
 
@@ -93,9 +97,7 @@ class CourseForm extends React.Component {
         const start = new Date(dateObject);
         console.log('[CourseForm] Tuesday start time', start);
         this.setState({
-            tuesday: {
-                start: start
-            }
+            tuesdayStart: start
         });
     }
 
@@ -103,9 +105,7 @@ class CourseForm extends React.Component {
         const end = new Date(dateObject);
         console.log('[CourseForm] Tuesday end time', end);
         this.setState({
-            tuesday: {
-                end: end
-            }
+            tuesdayEnd: end
         });
     }
 
@@ -113,9 +113,7 @@ class CourseForm extends React.Component {
         const start = new Date(dateObject);
         console.log('[CourseForm] Wednesday start time', start);
         this.setState({
-            wednesday: {
-                start: start
-            }
+            wednesdayStart: start
         });
     }
 
@@ -123,9 +121,7 @@ class CourseForm extends React.Component {
         const end = new Date(dateObject);
         console.log('[CourseForm] Wednesday end time', end);
         this.setState({
-            wednesday: {
-                end: end
-            }
+            wednesdayEnd: end
         });
     }
 
@@ -133,9 +129,7 @@ class CourseForm extends React.Component {
         const start = new Date(dateObject);
         console.log('[CourseForm] Thursday start time', start);
         this.setState({
-            thursday: {
-                start: start
-            }
+            thursdayStart: start
         });
     }
 
@@ -143,9 +137,7 @@ class CourseForm extends React.Component {
         const end = new Date(dateObject);
         console.log('[CourseForm] Thursday end time', end);
         this.setState({
-            thursday: {
-                end: end
-            }
+            thursdayEnd: end
         });
     }
 
@@ -153,9 +145,7 @@ class CourseForm extends React.Component {
         const start = new Date(dateObject);
         console.log('[CourseForm] Friday start time', start);
         this.setState({
-            friday: {
-                start: start
-            }
+            fridayStart: start
         });
     }
 
@@ -163,9 +153,7 @@ class CourseForm extends React.Component {
         const end = new Date(dateObject);
         console.log('[CourseForm] Friday end time', end);
         this.setState({
-            friday: {
-                end: end
-            }
+            fridayEnd: end
         });
     }
 
@@ -173,9 +161,7 @@ class CourseForm extends React.Component {
         const start = new Date(dateObject);
         console.log('[CourseForm] Saturday start time', start);
         this.setState({
-            saturday: {
-                start: start
-            }
+            saturdayStart: start
         });
     }
 
@@ -183,9 +169,7 @@ class CourseForm extends React.Component {
         const end = new Date(dateObject);
         console.log('[CourseForm] Saturday end time', end);
         this.setState({
-            saturday: {
-                end: end
-            }
+            saturdayEnd: end
         });
     }
 
@@ -193,9 +177,7 @@ class CourseForm extends React.Component {
         const start = new Date(dateObject);
         console.log('[CourseForm] Sunday start time', start);
         this.setState({
-            sunday: {
-                start: start
-            }
+            sundayStart: start
         });
     }
 
@@ -203,68 +185,66 @@ class CourseForm extends React.Component {
         const end = new Date(dateObject);
         console.log('[CourseForm] Sunday end time', end);
         this.setState({
-            sunday: {
-                end: end
-            }
+            sundayEnd: end
         });
     }
 
     handleSubmit(event) {
         event.preventDefault();
         const timeslot = [];
-        if (this.state.monday && this.state.monday.start && this.state.monday.end) {
+        if (this.state.mondayStart && this.state.mondayEnd) {
             const monday = {
                 day: 0,
-                start: this.state.monday.start,
-                end: this.state.monday.end
+                start: this.state.mondayStart,
+                end: this.state.mondayEnd
             };
             timeslot.push(monday);
         }
-        if (this.state.tuesday && this.state.tuesday.start && this.state.tuesday.end) {
+        if (this.state.tuesdayStart && this.state.tuesdayEnd) {
             const tuesday = {
                 day: 1,
-                start: this.state.tuesday.start,
-                end: this.state.tuesday.end
+                start: this.state.tuesdayStart,
+                end: this.state.tuesdayEnd
             };
             timeslot.push(tuesday);
         }
-        if (this.state.wednesday && this.state.wednesday.start && this.state.wednesday.end) {
+        if (this.state.wednesdayStart && this.state.wednesdayEnd) {
             const wednesday = {
                 day: 2,
-                start: this.state.wednesday.start,
-                end: this.state.wednesday.end
+                start: this.state.wednesdayStart,
+                end: this.state.wednesdayEnd
             };
             timeslot.push(wednesday);
         }
-        if (this.state.thursday && this.state.thursday.start && this.state.thursday.end) {
+        if (this.state.thursdayStart && this.state.thursdayEnd) {
             const thursday = {
                 day: 3,
                 start: this.state.thursday.start,
-                end: this.state.thursday.end
+                end: this.state.thursdayEnd
             };
             timeslot.push(thursday);
         }
-        if (this.state.friday && this.state.friday.start && this.state.friday.end) {
+        if (this.state.fridayStart && this.state.fridayEnd) {
             const friday = {
                 day: 4,
-                start: this.state.friday.start,
-                end: this.state.friday.end
+                start: this.state.fridayStart,
+                end: this.state.fridayEnd
             };
             timeslot.push(friday);
         }
-        if (this.state.saturday && this.state.saturday.start && this.state.saturday.end) {
+        if (this.state.saturdayStart && this.state.saturdayEnd) {
             const saturday = {
                 day: 5,
-                start: this.state.saturday.start,
-                end: this.state.saturday.end
+                start: this.state.saturdayStart,
+                end: this.state.saturdayEnd
             };
             timeslot.push(saturday);
         }
-        if (this.state.sunday && this.state.sunday.start && this.state.sunday.end) {
+        if (this.state.sundayStart && this.state.sundayEnd) {
             const sunday = {
                 day: 6,
-                start: this.state.sunday.start,
-                end: this.state.sunday.end
+                start: this.state.sundayStart,
+                end: this.state.sundayEnd
             };
             timeslot.push(sunday);
         }
@@ -274,19 +254,19 @@ class CourseForm extends React.Component {
         } else {
             const course = {
                 name: this.state.name,
-                location: {
-                    coordinates: [this.state.lng, this.state.lat]
-                },
+                lng: this.state.lng,
+                lat: this.state.lat,
                 instructor: this.state.instructor,
                 timeslot: timeslot
             };
             console.log('[CourseForm] Creating new course', course);
-            // CourseService.createCourse(course)
-            //     .then((course) => {
-            //         console.log('[CourseFormComponent] Success creating course', course);
-            //     }, (error) => {
-            //         console.log('[CourseFormComponent] Error creating course', error);
-            //     });
+            CourseService.createCourse(course)
+                .then((course) => {
+                    console.log('[CourseFormComponent] Success creating course', course);
+                    this.props.history.push('/schedule');
+                }, (error) => {
+                    console.log('[CourseFormComponent] Error creating course', error);
+                });
         }
 
     }
