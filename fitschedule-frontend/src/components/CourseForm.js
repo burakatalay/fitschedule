@@ -17,6 +17,7 @@ import {
 import {withRouter} from 'react-router-dom'
 import Page from './Page';
 import AutocompleteLocation from "./AutocompleteLocation";
+import {AlertMessage} from "./AlertMessage";
 
 const rowStyle = {display: 'flex', alignItems: 'center', width: '100%'};
 const spanStyle = {display: 'flex', width: '20rem', paddingTop: '1.5rem'};
@@ -37,12 +38,12 @@ class CourseForm extends React.Component {
             thursday: null,
             friday: null,
             saturday: null,
-            sunday: null
+            sunday: null,
+            error: null
         };
-        this.autocompleteSubmit = this.autocompleteSubmit.bind(this);
         this.handleChangeName = this.handleChangeName.bind(this);
-        this.handleChangeStart = this.handleChangeStart.bind(this);
-        this.handleChangeEnd = this.handleChangeEnd.bind(this);
+        this.handleChangeInstructor = this.handleChangeInstructor.bind(this);
+        this.autocompleteSubmit = this.autocompleteSubmit.bind(this);
         this.handleChangeStartMonday = this.handleChangeStartMonday.bind(this);
         this.handleChangeEndMonday = this.handleChangeEndMonday.bind(this);
         this.handleChangeStartTuesday = this.handleChangeStartTuesday.bind(this);
@@ -57,12 +58,15 @@ class CourseForm extends React.Component {
         this.handleChangeEndSaturday = this.handleChangeEndSaturday.bind(this);
         this.handleChangeStartSunday = this.handleChangeStartSunday.bind(this);
         this.handleChangeEndSunday = this.handleChangeEndSunday.bind(this);
-        this.handleChangeInstructor = this.handleChangeInstructor.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChangeName(timeString, dateObject, event) {
+    handleChangeName(value) {
         this.setState({name: value});
+    }
+
+    handleChangeInstructor(value) {
+        this.setState({instructor: value});
     }
 
     handleChangeStartMonday(timeString, dateObject, event) {
@@ -205,53 +209,86 @@ class CourseForm extends React.Component {
         });
     }
 
-    handleChangeStart(value) {
-        console.log(value);
-        const startTime = new Date();
-        startTime.setHours(value.substring(0, 2));
-        startTime.setMinutes(value.substring(3, 5))
-        console.log(startTime);
-        this.setState({start: startTime});
-    }
-
-    handleChangeEnd(value) {
-        const endTime = new Date();
-        endTime.setHours(value.substring(0, 2));
-        endTime.setMinutes(value.substring(3, 5))
-        console.log(endTime);
-        if (this.state.start.getTime() >= endTime) {
-            console.log('end time should be later than start time')
-        } else {
-            console.log('times do match');
-            this.setState({end: endTime});
-        }
-
-    }
-
-    handleChangeInstructor(value) {
-        this.setState({instructor: value});
-    }
-
     handleSubmit(event) {
         event.preventDefault();
-        if (this.inputCheck()) {
+        const timeslot = [];
+        if (this.state.monday && this.state.monday.start && this.state.monday.end) {
+            const monday = {
+                day: 0,
+                start: this.state.monday.start,
+                end: this.state.monday.end
+            };
+            timeslot.push(monday);
+        }
+        if (this.state.tuesday && this.state.tuesday.start && this.state.tuesday.end) {
+            const tuesday = {
+                day: 1,
+                start: this.state.tuesday.start,
+                end: this.state.tuesday.end
+            };
+            timeslot.push(tuesday);
+        }
+        if (this.state.wednesday && this.state.wednesday.start && this.state.wednesday.end) {
+            const wednesday = {
+                day: 2,
+                start: this.state.wednesday.start,
+                end: this.state.wednesday.end
+            };
+            timeslot.push(wednesday);
+        }
+        if (this.state.thursday && this.state.thursday.start && this.state.thursday.end) {
+            const thursday = {
+                day: 3,
+                start: this.state.thursday.start,
+                end: this.state.thursday.end
+            };
+            timeslot.push(thursday);
+        }
+        if (this.state.friday && this.state.friday.start && this.state.friday.end) {
+            const friday = {
+                day: 4,
+                start: this.state.friday.start,
+                end: this.state.friday.end
+            };
+            timeslot.push(friday);
+        }
+        if (this.state.saturday && this.state.saturday.start && this.state.saturday.end) {
+            const saturday = {
+                day: 5,
+                start: this.state.saturday.start,
+                end: this.state.saturday.end
+            };
+            timeslot.push(saturday);
+        }
+        if (this.state.sunday && this.state.sunday.start && this.state.sunday.end) {
+            const sunday = {
+                day: 6,
+                start: this.state.sunday.start,
+                end: this.state.sunday.end
+            };
+            timeslot.push(sunday);
+        }
+        if (timeslot.length === 0) {
+            this.setState({error: 'Please select a time-slot for the course'});
+            console.log('[CourseForm] Empty timeslot', timeslot);
+        } else {
             const course = {
                 name: this.state.name,
                 location: {
                     coordinates: [this.state.lng, this.state.lat]
                 },
                 instructor: this.state.instructor,
-                timeslot: this.state.timeslot
+                timeslot: timeslot
             };
-            CourseService.createCourse(course)
-                .then((course) => {
-                    console.log('[CourseFormComponent] Success creating course', course);
-                }, (error) => {
-                    console.log('[CourseFormComponent] Error creating course', error);
-                });
-        } else {
-            console.log('[CourseFormComponent] Missing inputs');
+            console.log('[CourseForm] Creating new course', course);
+            // CourseService.createCourse(course)
+            //     .then((course) => {
+            //         console.log('[CourseFormComponent] Success creating course', course);
+            //     }, (error) => {
+            //         console.log('[CourseFormComponent] Error creating course', error);
+            //     });
         }
+
     }
 
     inputCheck() {
@@ -294,18 +331,14 @@ class CourseForm extends React.Component {
                                         Monday:
                                     </span>
                                     <TimePicker
-                                        id="StartField"
+                                        id="MondayStartField"
                                         label="Start Time"
-                                        locales="da-DK"
-                                        outline
                                         onChange={this.handleChangeStartMonday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
                                     <TimePicker
-                                        id="EndField"
+                                        id="MondayEndField"
                                         label="End Time"
-                                        locales="da-DK"
-                                        outline
                                         onChange={this.handleChangeEndMonday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
@@ -315,18 +348,14 @@ class CourseForm extends React.Component {
                                         Tuesday:
                                     </span>
                                     <TimePicker
-                                        id="StartField"
-                                        label="Course start time"
-                                        locales="da-DK"
-                                        outline
+                                        id="TuesdayStartField"
+                                        label="Start Time"
                                         onChange={this.handleChangeStartTuesday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
                                     <TimePicker
-                                        id="EndField"
-                                        label="Course end time"
-                                        locales="da-DK"
-                                        outline
+                                        id="TuesdayEndField"
+                                        label="End Time"
                                         onChange={this.handleChangeEndTuesday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
@@ -336,18 +365,14 @@ class CourseForm extends React.Component {
                                         Wednesday:
                                     </span>
                                     <TimePicker
-                                        id="StartField"
-                                        label="Course start time"
-                                        locales="da-DK"
-                                        outline
+                                        id="WednesdayStartField"
+                                        label="Start Time"
                                         onChange={this.handleChangeStartWednesday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
                                     <TimePicker
-                                        id="EndField"
-                                        label="Course end time"
-                                        locales="da-DK"
-                                        outline
+                                        id="WednesdayEndField"
+                                        label="End Time"
                                         onChange={this.handleChangeEndWednesday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
@@ -357,18 +382,14 @@ class CourseForm extends React.Component {
                                         Thursday:
                                     </span>
                                     <TimePicker
-                                        id="StartField"
-                                        label="Course start time"
-                                        locales="da-DK"
-                                        outline
+                                        id="ThursdayStartField"
+                                        label="Start Time"
                                         onChange={this.handleChangeStartThursday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
                                     <TimePicker
-                                        id="EndField"
-                                        label="Course end time"
-                                        locales="da-DK"
-                                        outline
+                                        id="ThursdayEndField"
+                                        label="End Time"
                                         onChange={this.handleChangeEndThursday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
@@ -378,18 +399,14 @@ class CourseForm extends React.Component {
                                         Friday:
                                     </span>
                                     <TimePicker
-                                        id="StartField"
-                                        label="Course start time"
-                                        locales="da-DK"
-                                        outline
+                                        id="FridayStartField"
+                                        label="Start Time"
                                         onChange={this.handleChangeStartFriday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
                                     <TimePicker
-                                        id="EndField"
-                                        label="Course end time"
-                                        locales="da-DK"
-                                        outline
+                                        id="FridayEndField"
+                                        label="End Time"
                                         onChange={this.handleChangeEndFriday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
@@ -399,18 +416,14 @@ class CourseForm extends React.Component {
                                         Saturday:
                                     </span>
                                     <TimePicker
-                                        id="StartField"
-                                        label="Course start time"
-                                        locales="da-DK"
-                                        outline
+                                        id="SaturdayStartField"
+                                        label="Start Time"
                                         onChange={this.handleChangeStartSaturday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
                                     <TimePicker
-                                        id="EndField"
-                                        label="Course end time"
-                                        locales="da-DK"
-                                        outline
+                                        id="SaturdayEndField"
+                                        label="End Time"
                                         onChange={this.handleChangeEndSaturday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
@@ -420,18 +433,14 @@ class CourseForm extends React.Component {
                                         Sunday:
                                     </span>
                                     <TimePicker
-                                        id="StartField"
-                                        label="Course start time"
-                                        locales="da-DK"
-                                        outline
+                                        id="SundayStartField"
+                                        label="Start Time"
                                         onChange={this.handleChangeStartSunday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
                                     <TimePicker
-                                        id="EndField"
-                                        label="Course end time"
-                                        locales="da-DK"
-                                        outline
+                                        id="SundayEndField"
+                                        label="End Time"
                                         onChange={this.handleChangeEndSunday}
                                         style={timePickerStyle}
                                         className="md-cell"/>
@@ -439,6 +448,8 @@ class CourseForm extends React.Component {
                             </div>
                         </CardText>
                         <CardActions>
+                            <AlertMessage
+                                className="md-row md-full-width">{this.state.error ? `${this.state.error}` : ''}</AlertMessage>
                             <Button id="submit" type="submit"
                                     raised primary className="md-cell--right">Create</Button>
                         </CardActions>
