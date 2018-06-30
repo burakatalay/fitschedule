@@ -1,7 +1,9 @@
 import React from 'react';
 import {Autocomplete} from "react-md";
 
-const autocompleteStyle = {width: '20rem', margin: '15px 15px 25px'};
+const hidden = {display: 'none'};
+const containerStyle = {width: '100%'};
+const autocompleteStyle = {marginBottom: '1rem'};
 
 export default class AutocompleteLocation extends React.Component {
     constructor(props) {
@@ -10,6 +12,7 @@ export default class AutocompleteLocation extends React.Component {
         this.displaySuggestions = this.displaySuggestions.bind(this);
         this.onAutocomplete = this.onAutocomplete.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.markAutocompleteLocation = this.markAutocompleteLocation.bind(this);
     }
 
     displaySuggestions(predictions, status) {
@@ -24,6 +27,11 @@ export default class AutocompleteLocation extends React.Component {
 
     componentDidMount() {
         this.props.onRef(this);
+        const mapCenter = new google.maps.LatLng(48.1351, 11.5820);
+        this.map = new google.maps.Map(document.getElementById('hiddenMap'), {
+            center: mapCenter,
+            zoom: 13
+        });
         this.autocompleteService = new google.maps.places.AutocompleteService();
     }
 
@@ -51,24 +59,46 @@ export default class AutocompleteLocation extends React.Component {
         this.setState({
             value: this.state.suggestions[suggestionIndex].description
         });
-        this.props.onAutocomplete(suggestion);
+        const request = {
+            placeId: suggestion,
+            fields: ['geometry']
+        };
+        this.placesService = new google.maps.places.PlacesService(this.map);
+        this.placesService.getDetails(request, this.markAutocompleteLocation);
+    }
+
+    markAutocompleteLocation(place, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            console.log('[AutocompleteLocationComponent] Success retrieving geolocation',
+                'lat', place.geometry.location.lat(), 'lng:', place.geometry.location.lng());
+            const geolocation = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+            this.props.onSubmit(geolocation);
+        } else {
+            console.log('[AutocompleteLocationComponent] Error retrieving geolocation', place);
+        }
     }
 
     render() {
         return (
-            <Autocomplete
-                style={autocompleteStyle}
-                id="locationField"
-                label="Location"
-                placeholder="Eg. Marienplatz"
-                onAutocomplete={this.onAutocomplete}
-                onChange={this.onChange}
-                data={this.state.suggestions}
-                value={this.state.value}
-                dataLabel="description"
-                dataValue="place_id"
-                filter={this.state.filterType}
-            />
+            <div style={containerStyle}>
+                <Autocomplete
+                    style={autocompleteStyle}
+                    id="locationField"
+                    label="Location"
+                    placeholder="Eg. Marienplatz"
+                    onAutocomplete={this.onAutocomplete}
+                    required={this.props.required}
+                    onChange={this.onChange}
+                    data={this.state.suggestions}
+                    value={this.state.value}
+                    dataLabel="description"
+                    dataValue="place_id"
+                    filter={this.state.filterType}/>
+                <div id="hiddenMap" style={hidden}></div>
+            </div>
         );
     }
 }

@@ -19,6 +19,7 @@ const searchBarStyle = {
     zIndex: 1
 };
 const textFieldStyle = {width: '15rem', margin: '15px 15px 25px'};
+const autocompleteStyle = {width: '25rem', margin: '15px 15px 25px'};
 const selectFieldStyle = {width: '5rem', margin: '15px 15px 25px'};
 const buttonStyle = {verticalAlign: 'bottom', margin: 15};
 const pinStyle = {fontSize: 30, cursor: 'pointer', margin: 15};
@@ -88,7 +89,8 @@ class SearchBar extends React.Component {
                     type="text"
                     value={this.state.course}
                     onChange={this.handleChangeCourse}/>
-                <AutocompleteLocation onAutocomplete={(value) => this.onAutocomplete(value)}
+                <AutocompleteLocation style={autocompleteStyle}
+                                      onSubmit={(value) => this.onAutocomplete(value)}
                                       onRef={ref => (this.autocompleteLocation = ref)}/>
                 <SelectField
                     style={selectFieldStyle}

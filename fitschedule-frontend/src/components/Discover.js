@@ -30,7 +30,6 @@ class Discover extends React.Component {
         this.showPosition = this.showPosition.bind(this);
         this.showError = this.showError.bind(this);
         this.useGeolocation = this.useGeolocation.bind(this);
-        this.markAutocompleteLocation = this.markAutocompleteLocation.bind(this);
         this.distChange = this.distChange.bind(this);
     }
 
@@ -199,32 +198,12 @@ class Discover extends React.Component {
     }
 
     onAutocomplete(value) {
-        console.log('[DiscoverComponent] Retrieving geometry for place_id', value);
-        const request = {
-            placeId: value,
-            fields: ['geometry']
-        };
-        this.placesService = new google.maps.places.PlacesService(this.map);
-        this.placesService.getDetails(request, this.markAutocompleteLocation);
         this.setState({useGeolocation: false});
-    }
-
-    markAutocompleteLocation(place, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-            console.log('[DiscoverComponent] Success retrieving geolocation',
-                'lat', place.geometry.location.lat(), 'lng:', place.geometry.location.lng());
-            const geolocation = {
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng()
-            };
-            this.setState({
-                autoCompleteLocation: geolocation,
-                useGeolocation: false
-            });
-            this.createReferenceMarker(geolocation);
-        } else {
-            console.log('[DiscoverComponent] Error retrieving geolocation', place);
-        }
+        this.setState({
+            autoCompleteLocation: value,
+            useGeolocation: false
+        });
+        this.createReferenceMarker(value);
     }
 
     searchSubmit(value) {
