@@ -58,18 +58,26 @@ class Schedule extends React.Component {
                             console.log('[ScheduleComponent] Success getting a course from user schedule', course)
                             const courses = this.state.items;
                             for(var i=0;i<course.timeslot.length;i++) {
-                                const startTime = new Date(course.timeslot[i].start);
-                                const endTime = new Date(course.timeslot[i].end);
                                 
-                                var c = {
-                                    "_id": course._id,
-                                    "name": course.name,
-                                    "startDateTime" : new Date(startTime.getFullYear(),startTime.getMonth(),startTime.getDate(),startTime.getHours()-2,startTime.getMinutes()),
-                                    "endDateTime"   : new Date(endTime.getFullYear(),endTime.getMonth(),endTime.getDate(),endTime.getHours()-2,endTime.getMinutes()),
-                                    "classes": "color-1"
-                                };
-                                courses.push(c);
-                                this.setState({items:courses});
+                                for(var j=0;j<4;j++) {
+                                    const startTime = new Date(course.timeslot[i].start);
+                                    const endTime = new Date(course.timeslot[i].end);
+                                    const currentDay = startTime.getDay()-1;
+                                    const day = course.timeslot[i].day;
+                                    var dayDifference = (day+7-currentDay) % 7;
+                                    startTime.setDate(startTime.getDate()+(7*j) + dayDifference);
+                                    endTime.setDate(endTime.getDate()+(7*j) + dayDifference);
+                                    var c = {
+                                        "_id": course._id,
+                                        "name": course.name,
+                                        "startDateTime" : new Date(startTime.getFullYear(),startTime.getMonth(),startTime.getDate(),startTime.getHours(),startTime.getMinutes()),
+                                        "endDateTime"   : new Date(endTime.getFullYear(),endTime.getMonth(),endTime.getDate(),endTime.getHours(),endTime.getMinutes()),
+                                        "classes": "color-1"
+                                    };
+                                    courses.push(c);
+                                    this.setState({items:courses});
+                                }
+                                
                             }
                             
                         });
@@ -190,8 +198,8 @@ class Schedule extends React.Component {
                 <div style={scheduleStyle}>
                 <div className="content-expanded">
                     <ReactAgenda
-                    minDate={new Date(now.getFullYear(), now.getMonth(), now.getDate()-10)}
-                    maxDate={new Date(now.getFullYear(), now.getMonth(), now.getDate()+10)}
+                    minDate={new Date(now.getFullYear(), now.getMonth(), now.getDate()-30)}
+                    maxDate={new Date(now.getFullYear(), now.getMonth(), now.getDate()+30)}
                     startDate={this.state.startDate}
                     endDate={this.state.endDate}
                     startAtTime={10}

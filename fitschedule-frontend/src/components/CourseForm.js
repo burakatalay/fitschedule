@@ -219,7 +219,7 @@ class CourseForm extends React.Component {
         if (this.state.thursdayStart && this.state.thursdayEnd) {
             const thursday = {
                 day: 3,
-                start: this.state.thursday.start,
+                start: this.state.thursdayStart,
                 end: this.state.thursdayEnd
             };
             timeslot.push(thursday);
