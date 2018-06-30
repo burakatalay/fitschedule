@@ -29,7 +29,8 @@ class Schedule extends React.Component {
             showModal:false,
             rowsPerHour:2,
             numberOfDays:7,
-            startDate: new Date()
+            startDate: new Date(),
+            endDate: new Date()+6
         }
         //courses = this.state.items;
         this.handleRangeSelection = this.handleRangeSelection.bind(this);
@@ -56,16 +57,8 @@ class Schedule extends React.Component {
                                 const startTime = new Date(course.timeslot[i].start);
                                 const endTime = new Date(course.timeslot[i].end);
                                 
-                                // var c = {
-                                //     "_id": course._id,
-                                //     "name": course.name,
-                                //     "startDateTime" : new Date(startTime.getFullYear(),startTime.getMonth(),startTime.getDate(),startTime.getHours()-2,startTime.getMinutes()),
-                                //     "endDateTime"   : new Date(endTime.getFullYear(),endTime.getMonth(),endTime.getDate(),endTime.getHours()-2,endTime.getMinutes()),
-                                //     "classes": "color-1"
-                                // };
                                 var c = {
-                                    "_id": guid(),
-                                    "courseId": course._id,
+                                    "_id": course._id,
                                     "name": course.name,
                                     "startDateTime" : new Date(startTime.getFullYear(),startTime.getMonth(),startTime.getDate(),startTime.getHours()-2,startTime.getMinutes()),
                                     "endDateTime"   : new Date(endTime.getFullYear(),endTime.getMonth(),endTime.getDate(),endTime.getHours()-2,endTime.getMinutes()),
@@ -86,13 +79,13 @@ class Schedule extends React.Component {
 
     }
 
-    deleteCourse() {
-        ScheduleService.deleteCourse(this.state.items.id)
+    deleteCourse(id) {
+        ScheduleService.deleteCourse(id)
             .then(() => {
                 console.log('[ScheduleComponent] Success deleting course from the schedule');
                 
             }, (error) => {
-                console.error('[ScheduleComponent] Error adding course to the schedule', error);
+                console.error('[ScheduleComponent] Error deleting course from the schedule', error);
             });
     }
 
@@ -159,18 +152,9 @@ class Schedule extends React.Component {
         this.setState({items:items});
     }
     
-    removeEvent(items , item){
-        console.log("RemoveEvent", this.state.items);
-        console.log("Items: ", items);
-        console.log("Item: ", item);
-        const courses = this.state.items;
-        for(var i=0;i<courses.length;i++) {
-            //TODO Course idlerini cekip silmeceyi burda yap iy calismlr
-        }
-        //courses.pop(item);
-        //this.deleteCourse(items)
-        this.setState({ items:courses});
-        console.log("after removeEvent Item: ", this.state.items);
+    removeEvent(items, item){
+        this.deleteCourse(item._id);
+        this.setState({items:items});
     }
     
     addNewEvent (items , newItems){
@@ -202,6 +186,7 @@ class Schedule extends React.Component {
                     minDate={new Date(now.getFullYear(), now.getMonth(), now.getDate()-10)}
                     maxDate={new Date(now.getFullYear(), now.getMonth(), now.getDate()+10)}
                     startDate={this.state.startDate}
+                    endDate={this.state.endDate}
                     startAtTime={10}
                     cellHeight={this.state.cellHeight}
                     items={this.state.items}

@@ -10,7 +10,7 @@ export default class ScheduleService {
     }
 
     static baseURL() {
-        return "http://localhost:3000/schedule/";
+        return "http://localhost:3000/schedule";
     }
 
     static courseURL() {
@@ -18,7 +18,6 @@ export default class ScheduleService {
     }
 
     static getSchedule() {
-        console.log('[ScheduleService] Getting Schedule of the User')
         return new Promise((resolve, reject) => {
             HttpService.get(this.baseURL(), function(data) {
                 console.log('[ScheduleService] Getting Schedule of the User', data)
@@ -52,11 +51,10 @@ export default class ScheduleService {
     //     });
     // }
 
-    static deleteCourse(id) {
+    static deleteCourse(courseId) {
+        console.log('[ScheduleService] Deleting courses of the User Schedule')
         return new Promise((resolve, reject) => {
-            HttpService.remove(`${ScheduleService.baseURL()}`, {
-                course: courseId
-            } ,function (data) {
+            HttpService.remove(`${ScheduleService.baseURL()}/${courseId}`, function (data) {
                 resolve(data);
             }, function (textStatus) {
                 reject(textStatus);

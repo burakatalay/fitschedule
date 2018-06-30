@@ -61,7 +61,7 @@ module.exports.removeCourseFromSchedule = function(req, res) {
                 return;
             }
             console.log(schedule);
-            CourseModel.findOne({_id: req.body.course}, function(err, course) {
+            CourseModel.findOne({_id: req.params.courseId}, function(err, course) {
                 if (err) {
                     res.status(400).send(err);
                     return;
@@ -70,16 +70,18 @@ module.exports.removeCourseFromSchedule = function(req, res) {
                 schedule.courses.pull(course);
                 schedule.save(function(err) {
                     if (err) {
-                        res.status.send(err);
+                        console.log(err);
+                        res.status(400).send(err);
                         return;
                         }
                     });
                 console.log(schedule.courses);
+                return res.status(200).json(user.schedule);
             });
             
         });
 
-        return res.status(200).json(user.schedule);
+        
     
     });
 };
