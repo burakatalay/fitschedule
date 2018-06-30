@@ -37,8 +37,8 @@ export default class CourseService {
     static deleteCourse(id) {
         return new Promise((resolve, reject) => {
             HttpService.remove(`${CourseService.baseURL()}/${id}`, function(data) {
-                if(data.message != undefined) {
-                    resolve(data.message);
+                if(data != undefined) {
+                    resolve(data);
                 }
                 else {
                     reject('Error while deleting');

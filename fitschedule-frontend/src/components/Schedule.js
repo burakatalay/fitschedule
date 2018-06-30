@@ -7,6 +7,7 @@ import Page from "./Page";
 import { ReactAgenda , ReactAgendaCtrl , guid ,  Modal } from 'react-agenda';
 import ScheduleService from "../services/ScheduleService";
 import UserService from  '../services/UserService';
+import CourseService from  '../services/CourseService';
 import { scheduleStyle } from "../css/schedule.css";
 import AddReview from './AddReview';
 
@@ -33,8 +34,9 @@ class Schedule extends React.Component {
             numberOfDays:7,
             startDate: new Date(),
             endDate: new Date()+6,
-            courseId: 0,
+            courseId: 0
         }
+        console.log(UserService.getCurrentUser());
         //courses = this.state.items;
         this.handleRangeSelection = this.handleRangeSelection.bind(this);
         this.handleItemEdit = this.handleItemEdit.bind(this);
@@ -71,6 +73,7 @@ class Schedule extends React.Component {
                                     var c = {
                                         "_id": course._id,
                                         "name": course.name,
+                                        "courseProvider": course.courseprovider,
                                         "startDateTime" : new Date(startTime.getFullYear(),startTime.getMonth(),startTime.getDate(),startTime.getHours(),startTime.getMinutes()),
                                         "endDateTime"   : new Date(endTime.getFullYear(),endTime.getMonth(),endTime.getDate(),endTime.getHours(),endTime.getMinutes()),
                                         "classes": "color-1"
@@ -88,18 +91,31 @@ class Schedule extends React.Component {
         });
     }
 
-    updateCourse() {
-
-    }
-
-    deleteCourse(id) {
-        ScheduleService.deleteCourse(id)
+    deleteCourse(id, item) {
+        if(UserService.getCurrentUser().isCourseProvider && (item.courseProvider === UserService.getCurrentUser().courseProvider)) {
+            ScheduleService.deleteCourse(id)
+            .then(() => {
+                console.log('[ScheduleComponent] Success deleting course from the schedule');
+                CourseService.deleteCourse(id)
+                .then(() => {
+                    console.log('[ScheduleComponent] Success deleting course from the database');    
+                }, (error) => {
+                    console.error('[ScheduleComponent] Error deleting course from the database', error);
+                });
+                
+            }, (error) => {
+                console.error('[ScheduleComponent] Error deleting course from the schedule', error);
+            });
+        } else {
+            ScheduleService.deleteCourse(id)
             .then(() => {
                 console.log('[ScheduleComponent] Success deleting course from the schedule');
                 
             }, (error) => {
                 console.error('[ScheduleComponent] Error deleting course from the schedule', error);
             });
+        }
+        
     }
 
     //This method will fetch everytime user goes to schedule
@@ -136,7 +152,6 @@ class Schedule extends React.Component {
         this.setState({selected:[item] });
     }
     
-    //update course method will be added here 
     //This method is disabled because standard user shouldn't be able to change anaything on the schedule
     handleRangeSelection (selected) {
         console.log("handleRangeSelection");
@@ -169,7 +184,7 @@ class Schedule extends React.Component {
     }
     
     removeEvent(items, item){
-        this.deleteCourse(item._id);
+        this.deleteCourse(item._id, item);
         this.setState({items:items});
     }
     

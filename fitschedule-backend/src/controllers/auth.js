@@ -38,7 +38,7 @@ module.exports.login = function(req, res){
             return res.status(401).send({token: null});
         }
         
-        const token = jwt.sign({id: user._id, email: user.email}, config.JwtSecret, {
+        const token = jwt.sign({id: user._id, email: user.email, isCourseProvider: user.isCourseProvider, courseProvider: user.courseProvider}, config.JwtSecret, {
             expiresIn: 86400 // expires in 24 hours
         });
 
@@ -104,7 +104,7 @@ module.exports.register = function(req, res){
                 return;
             }
             
-            const token = jwt.sign({id: user._id, email: user.email}, config.JwtSecret, {
+            const token = jwt.sign({id: user._id, email: user.email, isCourseProvider: user.isCourseProvider, courseProvider: user.courseProvider}, config.JwtSecret, {
                 expiresIn: 86400 // expires in 24 hours
             });
             

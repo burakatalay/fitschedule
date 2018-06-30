@@ -197,7 +197,9 @@ module.exports.deleteCourse = function(req, res) {
             error: 'Not Found',
             message: `Course not found`
         });
-        res.status(201).send("course deleted");
+        res.status(201).json({
+            message: `Course deleted`
+        });
     });
 }
 
