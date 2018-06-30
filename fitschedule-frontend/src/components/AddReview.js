@@ -31,7 +31,7 @@ export default class AddReview extends React.Component {
         console.log("review: ", this.state.review);
         ReviewService.publishReview(this.state.courseId, this.state.review).then((review) => {
             console.log('[ReviewComponent] Review published successfully', review);
-            //this.props.callback(false);
+            this.props.onClick(false);
         }, (error) => {
             console.log('[ReviewComponent] Error getting review', error);
         });

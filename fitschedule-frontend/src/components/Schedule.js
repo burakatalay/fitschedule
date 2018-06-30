@@ -45,6 +45,7 @@ class Schedule extends React.Component {
         this.editEvent = this.editEvent.bind(this);
         this.changeView = this.changeView.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
+        this.onClick = this.onClick.bind(this);
         
     } 
 
@@ -180,7 +181,7 @@ class Schedule extends React.Component {
 
     editEvent (items , item){
         console.log("editEvent");
-        this.setState({showModal:false ,selected:[] , items:items});
+        this.setState({showModal:false ,selected:[]});
         this._closeModal();
     }
     
@@ -188,11 +189,11 @@ class Schedule extends React.Component {
         this.setState({numberOfDays:days});
     }
 
+    onClick(value) {
+        this.setState({showModal:value});
+    }
+
     render() {
-        var AgendaItem = function(props){
-            console.log( ' item component props' , props);
-            return <div style={{display:'block', position:'absolute' , background:'#FFF'}}>{props.item.name} <button onClick={()=> props.edit(props.item)}>Edit </button></div>
-        }
         return (
             <Page>
                 <div style={scheduleStyle}>
@@ -219,7 +220,7 @@ class Schedule extends React.Component {
                     {
                     this.state.showModal? <Modal clickOutside={this._closeModal} >
                     <div className="modal-content">
-                        <AddReview courseId={this.state.courseId} onClick={(value)=>{this.setState({showModal:value})}}/>
+                        <AddReview courseId={this.state.courseId} onClick={this.onClick}/>
                     </div>
                     </Modal>:''
                     }
