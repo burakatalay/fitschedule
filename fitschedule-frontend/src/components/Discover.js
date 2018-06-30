@@ -112,7 +112,8 @@ class Discover extends React.Component {
             id: course._id,
             courseProvider: courseProvider.name,
             instructor: course.instructor,
-            timeslot: course.timeslot
+            timeslot: course.timeslot,
+            reviews: course.reviews
         };
     }
 

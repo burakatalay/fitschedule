@@ -48,7 +48,6 @@ module.exports.getReview = function (req, res) {
 module.exports.writeReview = function (req, res) {
     var review = new ReviewModel({
         comment: req.body.comment,
-        rating: req.body.rating,
         created_at: new Date(),
         created_by: req.userId
     });
@@ -56,7 +55,7 @@ module.exports.writeReview = function (req, res) {
     review.save(function (err) {
         if (err) {
             console.log('[ReviewController] Error saving new review', review);
-            res.status.send(err);
+            res.status(400).send(err);
             return;
         }
     });

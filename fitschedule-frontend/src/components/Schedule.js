@@ -8,7 +8,9 @@ import { ReactAgenda , ReactAgendaCtrl , guid ,  Modal } from 'react-agenda';
 import ScheduleService from "../services/ScheduleService";
 import UserService from  '../services/UserService';
 import { scheduleStyle } from "../css/schedule.css";
+import AddReview from './AddReview';
 
+const style = {maxWidth: 500, maxHeight: 500};
 var now = new Date();
 
 var colors= {
@@ -30,7 +32,8 @@ class Schedule extends React.Component {
             rowsPerHour:2,
             numberOfDays:7,
             startDate: new Date(),
-            endDate: new Date()+6
+            endDate: new Date()+6,
+            courseId: 0,
         }
         //courses = this.state.items;
         this.handleRangeSelection = this.handleRangeSelection.bind(this);
@@ -42,8 +45,9 @@ class Schedule extends React.Component {
         this.editEvent = this.editEvent.bind(this);
         this.changeView = this.changeView.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
-    }
-      
+        
+    } 
+
     findCourses() {
         ScheduleService.getSchedule()
             .then((schedule) => {
@@ -107,6 +111,9 @@ class Schedule extends React.Component {
         console.log("handleItemEdit");
         if(item && openModal === true){
             this.setState({selected:[item]});
+            this.setState({courseId: item._id});
+            
+            console.log("item: ", item);
             return this._openModal();
         }
     }
@@ -204,7 +211,7 @@ class Schedule extends React.Component {
                     {
                     this.state.showModal? <Modal clickOutside={this._closeModal} >
                     <div className="modal-content">
-                        <ReactAgendaCtrl items={this.state.items} itemColors={colors} selectedCells={this.state.selected} Addnew={this.addNewEvent} edit={this.editEvent}  />
+                        <AddReview courseId={this.state.courseId} onClick={(value)=>{this.setState({showModal:value})}}/>
                     </div>
                     </Modal>:''
                     }

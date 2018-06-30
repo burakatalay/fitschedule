@@ -70,9 +70,7 @@ export default class UserService {
 
     static getUserFullName(id) {
         return new Promise((resolve, reject) => {
-            HttpService.get(`${UserService.baseURL()}/auth/fullname/${id}`, {
-                id: id
-            }, function(data) {
+            HttpService.get(`${UserService.baseURL()}/name/${id}`, function(data) {
                 resolve(data);
             }, function(textStatus) {
                 reject(textStatus);

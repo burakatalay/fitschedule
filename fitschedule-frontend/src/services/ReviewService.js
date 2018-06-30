@@ -8,16 +8,15 @@ export default class ReviewService {
     }
 
     static baseURL() {
-        return "http://localhost:3000/review/";
+        return "http://localhost:3000/review";
     }
 
 
-    static publishReview(courseId) {
+    static publishReview(courseId, writtenComment) {
         return new Promise((resolve, reject) => {
-            HttpService.put(`${ScheduleService.baseURL()}`, {
+            HttpService.post(`${ReviewService.baseURL()}`, {
                 course: courseId,
-                comment: writtenComment,
-                rating: givenRating
+                comment: writtenComment
             } ,function (data) {
                 resolve(data);
             }, function (textStatus) {
@@ -28,9 +27,7 @@ export default class ReviewService {
 
     static getReview(reviewId) {
         return new Promise((resolve, reject) => {
-            HttpService.get(`${ScheduleService.baseURL()}`, {
-                id: reviewId,
-            } ,function (data) {
+            HttpService.get(`${ReviewService.baseURL()}/${reviewId}`, function (data) {
                 resolve(data);
             }, function (textStatus) {
                 reject(textStatus);

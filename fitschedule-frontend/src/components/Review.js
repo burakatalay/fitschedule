@@ -8,33 +8,57 @@ export default class Review extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            review: null,
-            creator: null
+            reviews: this.props.courseReviews,
+            creatorNames: [],
+            reviewContents: [],
+            reviewDates: []
         };
+        console.log("[Review State]: ",this.state)
     }
 
     componentDidMount() {
-        ReviewService.getReview(this.props.id).then((review) => {
-            console.log('[ReviewComponent] Success getting review', review);
-            UserService.getUserFullName(review.created_by).then((user) => {
-            console.log('[ReviewComponent] Success getting user', user);
-            this.setState({creator: user});
+        this.state.reviews.forEach(review => {
+            ReviewService.getReview(review).then((writtenreview) => {
+                console.log('[ReviewComponent] Success getting review', writtenreview);
+                UserService.getUserFullName(writtenreview.created_by).then((user) => {
+                console.log('[ReviewComponent] Success getting user', user);
+                const creators = this.state.creatorNames;
+                creators.push(user);
+                this.setState({creatorNames: creators});
+                console.log("state creator names", this.state.creatorNames);
+                }, (error) => {
+                console.log('[ReviewComponent] Error getting user', error);
+                });
+                const r = this.state.reviewContents;
+                r.push(writtenreview.comment);
+                this.setState({reviewContents:r});
+                console.log("state review contents", this.state.reviewContents);
+                const dates = this.state.reviewDates;
+                dates.push(writtenreview.created_at);
+                this.setState({reviewDates: dates});
             }, (error) => {
-            console.log('[ReviewComponent] Error getting user', error);
+                console.log('[ReviewComponent] Error getting review', error);
             });
-            this.setState({review: review});
-        }, (error) => {
-            console.log('[ReviewComponent] Error getting review', error);
         });
+        
     }
 
     render() {
-        return( 
-        this.state.review &&
-        this.state.creator &&
-        <Card style={style} className="md-block-centered">
-        <CardTitle title={this.state.creator} subtitle={this.state.review.rating}/>
-        <CardText>{this.state.review.comment}</CardText>
-      </Card>)
+        return(
+            <div>
+                {this.state.creatorNames.map((name,i) => (
+                    <Card className="md-block-centered">
+                        <CardTitle title={name} subtitle={this.state.reviewDates[i]}/>
+                        <CardText>
+                        <p>
+                            {this.state.reviewContents[i]}
+                        </p>
+                        </CardText>
+                    </Card>
+                    
+                    
+                    ))}
+            </div>
+        );
     }
 }

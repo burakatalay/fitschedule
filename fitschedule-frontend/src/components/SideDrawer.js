@@ -85,13 +85,15 @@ class SideDrawer extends React.Component {
                             <Divider style={dividerStyle}/>
                             <Timeslots timeslot={this.state.course.timeslot}/>
                         </div>
-                        {this.printReviews}
                         <Button id="submit"
                                 type="submit"
                                 style={buttonStyle}
                                 onClick={this.addToSchedule}
                                 raised
                                 primary>Add to Schedule</Button>
+
+                        <Review courseReviews={this.state.course.reviews}/>
+                        
                     </div>
                 }/>
         );
