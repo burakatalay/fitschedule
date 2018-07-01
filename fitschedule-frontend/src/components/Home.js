@@ -82,61 +82,6 @@ class Home extends React.Component {
                         </div>
                     </div>
                 </section>
-                <section style={lowerSection}>
-                    <h2 style={lowerHeader} className="md-text-center">Because what our customers think matters</h2>
-                    <Grid style={gridStyle}>
-                        <Cell size={4}>
-                            <Card style={cardStyle} className="md-block-centered">
-                                <Media className="md-block-centered" style={picStyle}>
-                                    <img
-                                        src="http://gaia.adage.com/images/bin/imgstore/work/full/s/h/u/Shutterstock_TheBestBobintheWorld16.jpg"
-                                        alt="customer picture"/>
-                                </Media>
-                                <CardTitle title="Customer One"/>
-                                <CardText>
-                                    <p style={lowerHeader}>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras gravida nunc nec
-                                        ipsum ornare convallis. Vivamus laoreet pellentesque massa, eu viverra ligula
-                                        venenatis sit amet. Etiam pretium tincidunt turpis.</p>
-                                </CardText>
-                            </Card>
-                        </Cell>
-                        <Cell size={4}>
-                            <Card style={cardStyle} className="md-block-centered">
-                                <Media className="md-block-centered" style={picStyle}>
-                                    <img
-                                        src="https://thumb9.shutterstock.com/display_pic_with_logo/580987/623388845/stock-photo-sad-disappointed-young-woman-with-glass-of-wine-crying-and-playing-with-shower-in-bathtub-623388845.jpg"
-                                        alt="customer picture"/>
-                                </Media>
-                                <CardTitle title="Customer Two"/>
-                                <CardText>
-                                    <p style={lowerHeader}>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras gravida nunc nec
-                                        ipsum ornare convallis. Vivamus laoreet pellentesque massa, eu viverra ligula
-                                        venenatis sit amet. Etiam pretium tincidunt turpis, vitae viverra arcu tincidunt
-                                        a.</p>
-                                </CardText>
-                            </Card>
-                        </Cell>
-                        <Cell size={4}>
-                            <Card style={cardStyle} className="md-block-centered">
-                                <Media className="md-block-centered" style={picStyle}>
-                                    <img
-                                        src="https://thumb1.shutterstock.com/display_pic_with_logo/937165/115854550/stock-photo-man-with-nervous-crisis-isolated-on-white-background-115854550.jpg"
-                                        alt="customer picture"/>
-                                </Media>
-                                <CardTitle title="Customer Three"/>
-                                <CardText>
-                                    <p style={lowerHeader}>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras gravida nunc nec
-                                        ipsum ornare convallis. Vivamus laoreet pellentesque massa, eu viverra ligula
-                                        venenatis sit amet. Etiam pretium tincidunt turpis, vitae viverra arcu tincidunt
-                                        a.</p>
-                                </CardText>
-                            </Card>
-                        </Cell>
-                    </Grid>
-                </section>
             </Page>
         )
     }
