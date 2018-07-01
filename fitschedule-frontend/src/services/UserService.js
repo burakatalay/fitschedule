@@ -54,12 +54,24 @@ export default class UserService {
         };
     }
 
-    static getUserFromDBWithToken() {
+    static whoami() {
         return new Promise((resolve, reject) => {
-            HttpService.get(this.baseURL()+"/whoami", function(data) {
+            HttpService.get(`${UserService.baseURL()}/whoami`, function(data) {
                 resolve(data);
             }, function(textStatus) {
                 reject(textStatus);
+            });
+        });
+    }
+
+    static isCourseProvider() {
+        return new Promise((resolve, reject) => {
+            this.whoami().then((data) => {
+                console.log('[UserService] Success getting current user data', data);
+                resolve(data.isCourseProvider);
+            },(error)=> {
+                console.error('[UserService] Error getting current user data');
+                reject();
             });
         });
     }

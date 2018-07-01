@@ -52,7 +52,6 @@ export default class ScheduleService {
     // }
 
     static deleteCourse(courseId) {
-        console.log('[ScheduleService] Deleting courses of the User Schedule')
         return new Promise((resolve, reject) => {
             HttpService.remove(`${ScheduleService.baseURL()}/${courseId}`, function (data) {
                 resolve(data);

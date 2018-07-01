@@ -34,7 +34,8 @@ class Schedule extends React.Component {
             numberOfDays:7,
             startDate: new Date(),
             endDate: new Date()+6,
-            courseId: 0
+            courseId: 0, 
+            courseProvider: null
         }
         console.log(UserService.getCurrentUser());
         //courses = this.state.items;
@@ -49,7 +50,7 @@ class Schedule extends React.Component {
         this.handleCellSelection = this.handleCellSelection.bind(this);
         this.onClick = this.onClick.bind(this);
         
-    } 
+    }
 
     findCourses() {
         ScheduleService.getSchedule()
@@ -91,29 +92,20 @@ class Schedule extends React.Component {
         });
     }
 
-    deleteCourse(id, item) {
-        var currentUser = UserService.getUserFromDBWithToken();
-        if(currentUser.isCourseProvider && (item.courseprovider === currentUser.courseProvider)) {
-            ScheduleService.deleteCourse(id)
+    deleteCourse(item) {
+        if(item.courseProvider === this.state.courseProvider) {
+            CourseService.deleteCourse(item._id)
             .then(() => {
-                console.log('[ScheduleComponent] Success deleting course from the schedule');
-                CourseService.deleteCourse(id)
-                .then(() => {
-                    console.log('[ScheduleComponent] Success deleting course from the database');    
-                }, (error) => {
-                    console.error('[ScheduleComponent] Error deleting course from the database', error);
-                });
-                
+                console.log('[ScheduleComponent] Success deleting course from the database');    
             }, (error) => {
-                console.error('[ScheduleComponent] Error deleting course from the schedule', error);
+                console.error('[ScheduleComponent] Error deleting course from the database', error);
             });
         } else {
-            ScheduleService.deleteCourse(id)
+            ScheduleService.deleteCourse(item._id)
             .then(() => {
-                console.log('[ScheduleComponent] Success deleting course from the schedule');
-                
+                console.log('[ScheduleComponent] Success removing course from the schedule');
             }, (error) => {
-                console.error('[ScheduleComponent] Error deleting course from the schedule', error);
+                console.error('[ScheduleComponent] Error removing course from the schedule', error);
             });
         }
     }
@@ -121,6 +113,14 @@ class Schedule extends React.Component {
     //This method will fetch everytime user goes to schedule
     componentDidMount(){
         this.findCourses();
+        UserService.whoami().then((data) => {
+            console.log('[ScheduleComponent] Success whoami', data);
+            if(data.courseProvider) {
+                this.setState({courseProvider: data.courseProvider});
+            }
+        }, (error) => {
+            console.log('[ScheduleComponent] Error whoami', error);
+        });
         console.log('[ScheduleComponent] componentDidMount state', this.state);
     }
     
@@ -184,7 +184,7 @@ class Schedule extends React.Component {
     }
     
     removeEvent(items, item){
-        this.deleteCourse(item._id, item);
+        this.deleteCourse(item);
         this.setState({items:items});
     }
     
