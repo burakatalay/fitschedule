@@ -1,61 +1,72 @@
 import React from 'react';
-import { Button, TextField, SVGIcon } from 'react-md';
+import {Button, DialogContainer, TextField} from 'react-md';
 import ReviewService from '../services/ReviewService';
-import Schedule from './Schedule';
-
-
-const style = {width: 500, height: 500};
 
 export default class AddReview extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            courseId: this.props.courseId,
-            review: ""
+            courseId: null,
+            review: "",
+            visible: false
         };
 
         this.onClick = this.onClick.bind(this);
+        this.hide = this.hide.bind(this);
         this.handleChangeReview = this.handleChangeReview.bind(this);
-        
     }
 
     componentDidMount() {
-       console.log("componentdidmount");
-       console.log(this.state);
+        this.props.onRef(this);
+    }
+
+    componentWillUnmount() {
+        this.props.onRef(undefined);
     }
 
     onClick() {
-        console.log('[ReviewComponent] Clicked done button for review');
-        console.log("course id:", this.state.courseId);
-        console.log("review: ", this.state.review);
         ReviewService.publishReview(this.state.courseId, this.state.review).then((review) => {
-            console.log('[ReviewComponent] Review published successfully', review);
-            this.props.onClick(false);
+            console.log('[ReviewComponent] Success publishing review', review);
+            this.hide();
         }, (error) => {
-            console.log('[ReviewComponent] Error getting review', error);
+            console.log('[ReviewComponent] Error publishing review', error);
+            this.hide();
         });
     }
 
-    handleChangeReview(value){
+    handleChangeReview(value) {
         this.setState({review: value});
     }
 
+    show(id) {
+        this.setState({visible: true, courseId: id});
+    };
+
+    hide() {
+        this.setState({visible: false, review: ''});
+    };
+
     render() {
-        return( 
-            <div style={style}>
+        const actions = [];
+        actions.push({secondary: true, children: 'Cancel', onClick: this.hide});
+        actions.push(<Button flat primary onClick={this.onClick}>Add Review</Button>);
+
+        return (
+            <DialogContainer
+                id="simple-action-dialog"
+                visible={this.state.visible}
+                onHide={this.hide}
+                actions={actions}
+                title="Leave a review">
                 <TextField
                     id="simple-action-dialog-field"
                     label="Please Review Your Course."
                     placeholder="Review here..."
                     value={this.state.review}
-                    onChange={this.handleChangeReview}
-                />
-                <Button flat primary swapTheming
-                    onClick={this.onClick}
-                >Done</Button>
-          </div>
-          
-          );
+                    row={5}
+                    onChange={this.handleChangeReview}/>
+            </DialogContainer>
+        );
     }
 }

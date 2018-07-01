@@ -1,55 +1,44 @@
 "use strict";
 
 import React from 'react';
-import moment from 'moment';
 import {withRouter} from 'react-router-dom'
 import Page from "./Page";
-import { ReactAgenda , ReactAgendaCtrl , guid ,  Modal } from 'react-agenda';
+import {ReactAgenda} from 'react-agenda';
 import ScheduleService from "../services/ScheduleService";
-import UserService from  '../services/UserService';
-import CourseService from  '../services/CourseService';
-import { scheduleStyle } from "../css/schedule.css";
+import UserService from '../services/UserService';
+import CourseService from '../services/CourseService';
+import {scheduleStyle} from "../css/schedule.css";
 import AddReview from './AddReview';
 
-const style = {maxWidth: 500, maxHeight: 500};
-var now = new Date();
+const now = new Date();
 
-var colors= {
-    "color-1":"rgba(102, 195, 131 , 1)",
-    "color-2":"rgba(242, 177, 52, 1)",
-    "color-3":"rgba(235, 85, 59, 1)" ,
-    "color-4":"rgba(70, 159, 213, 1)",
-    "color-5":"rgba(170, 59, 123, 1)"
-  }
+const colors = {
+    "color-1": "rgba(102, 195, 131 , 1)",
+    "color-2": "rgba(242, 177, 52, 1)",
+    "color-3": "rgba(235, 85, 59, 1)",
+    "color-4": "rgba(70, 159, 213, 1)",
+    "color-5": "rgba(170, 59, 123, 1)"
+};
 
 class Schedule extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             items: [],
-            selected:[],
-            cellHeight:30,
-            showModal:false,
-            rowsPerHour:2,
-            numberOfDays:7,
+            selected: [],
+            cellHeight: 30,
+            rowsPerHour: 2,
+            numberOfDays: 7,
             startDate: new Date(),
-            endDate: new Date()+6,
-            courseId: 0, 
+            endDate: new Date() + 6,
             courseProvider: null
-        }
-        console.log(UserService.getCurrentUser());
-        //courses = this.state.items;
-        this.handleRangeSelection = this.handleRangeSelection.bind(this);
+        };
         this.handleItemEdit = this.handleItemEdit.bind(this);
         this._openModal = this._openModal.bind(this);
         this._closeModal = this._closeModal.bind(this);
-        this.addNewEvent = this.addNewEvent.bind(this);
         this.removeEvent = this.removeEvent.bind(this);
         this.editEvent = this.editEvent.bind(this);
         this.changeView = this.changeView.bind(this);
-        this.handleCellSelection = this.handleCellSelection.bind(this);
-        this.onClick = this.onClick.bind(this);
-        
     }
 
     findCourses() {
@@ -61,30 +50,27 @@ class Schedule extends React.Component {
                         .then((course) => {
                             console.log('[ScheduleComponent] Success getting a course from user schedule', course)
                             const courses = this.state.items;
-                            for(var i=0;i<course.timeslot.length;i++) {
-                                
-                                for(var j=0;j<4;j++) {
+                            for (let i = 0; i < course.timeslot.length; i++) {
+                                for (let j = 0; j < 4; j++) {
                                     const startTime = new Date(course.timeslot[i].start);
                                     const endTime = new Date(course.timeslot[i].end);
-                                    const currentDay = startTime.getDay()-1;
+                                    const currentDay = startTime.getDay() - 1;
                                     const day = course.timeslot[i].day;
-                                    var dayDifference = (day+7-currentDay) % 7;
-                                    startTime.setDate(startTime.getDate()+(7*j) + dayDifference);
-                                    endTime.setDate(endTime.getDate()+(7*j) + dayDifference);
-                                    var c = {
+                                    let dayDifference = (day + 7 - currentDay) % 7;
+                                    startTime.setDate(startTime.getDate() + (7 * j) + dayDifference);
+                                    endTime.setDate(endTime.getDate() + (7 * j) + dayDifference);
+                                    let c = {
                                         "_id": course._id,
                                         "name": course.name,
                                         "courseProvider": course.courseprovider,
-                                        "startDateTime" : new Date(startTime.getFullYear(),startTime.getMonth(),startTime.getDate(),startTime.getHours(),startTime.getMinutes()),
-                                        "endDateTime"   : new Date(endTime.getFullYear(),endTime.getMonth(),endTime.getDate(),endTime.getHours(),endTime.getMinutes()),
+                                        "startDateTime": new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDate(), startTime.getHours(), startTime.getMinutes()),
+                                        "endDateTime": new Date(endTime.getFullYear(), endTime.getMonth(), endTime.getDate(), endTime.getHours(), endTime.getMinutes()),
                                         "classes": "color-1"
                                     };
                                     courses.push(c);
-                                    this.setState({items:courses});
+                                    this.setState({items: courses});
                                 }
-                                
                             }
-                            
                         });
                 });
             }).catch((e) => {
@@ -93,29 +79,29 @@ class Schedule extends React.Component {
     }
 
     deleteCourse(item) {
-        if(item.courseProvider === this.state.courseProvider) {
+        if (item.courseProvider === this.state.courseProvider) {
             CourseService.deleteCourse(item._id)
-            .then(() => {
-                console.log('[ScheduleComponent] Success deleting course from the database');    
-            }, (error) => {
-                console.error('[ScheduleComponent] Error deleting course from the database', error);
-            });
+                .then(() => {
+                    console.log('[ScheduleComponent] Success deleting course from the database');
+                }, (error) => {
+                    console.error('[ScheduleComponent] Error deleting course from the database', error);
+                });
         } else {
             ScheduleService.deleteCourse(item._id)
-            .then(() => {
-                console.log('[ScheduleComponent] Success removing course from the schedule');
-            }, (error) => {
-                console.error('[ScheduleComponent] Error removing course from the schedule', error);
-            });
+                .then(() => {
+                    console.log('[ScheduleComponent] Success removing course from the schedule');
+                }, (error) => {
+                    console.error('[ScheduleComponent] Error removing course from the schedule', error);
+                });
         }
     }
 
     //This method will fetch everytime user goes to schedule
-    componentDidMount(){
+    componentDidMount() {
         this.findCourses();
         UserService.whoami().then((data) => {
             console.log('[ScheduleComponent] Success whoami', data);
-            if(data.courseProvider) {
+            if (data.courseProvider) {
                 this.setState({courseProvider: data.courseProvider});
             }
         }, (error) => {
@@ -123,128 +109,76 @@ class Schedule extends React.Component {
         });
         console.log('[ScheduleComponent] componentDidMount state', this.state);
     }
-    
-    componentWillReceiveProps(next, last){
+
+    componentWillReceiveProps(next, last) {
         console.log("componentWillReceiveProps");
         console.log(next);
-        if(next.items){
-            this.setState({items:next.items});
-        }
-    }
-    
-    handleItemEdit(item, openModal) {
-        console.log("handleItemEdit");
-        if(item && openModal === true){
-            this.setState({selected:[item]});
-            this.setState({courseId: item._id});
-            
-            console.log("item: ", item);
-            return this._openModal();
+        if (next.items) {
+            this.setState({items: next.items});
         }
     }
 
-    //This method is disabled because standard user shouldn't be able to change anaything on the schedule
-    handleCellSelection(item, openModal) {
-        console.log("handleCellSelection");
-        if(this.state.selected && this.state.selected[0] === item){
-            return  this._openModal();
+    handleItemEdit(item, openModal) {
+        console.log('[ScheduleComponent] Handle item edit', item);
+        if (item) {
+            this._openModal(item._id);
         }
-        this.setState({selected:[item] });
     }
-    
-    //This method is disabled because standard user shouldn't be able to change anaything on the schedule
-    handleRangeSelection (selected) {
-        console.log("handleRangeSelection");
-        console.log(selected);
-        this.setState({selected:selected , showCtrl:true});
-        this._openModal();
+
+    _openModal(id) {
+        this.addReview.show(id);
     }
-    
-    _openModal(){
-        this.setState({showModal:true});
-    }
-    _closeModal(e){
-        if(e){
+
+    _closeModal(e) {
+        if (e) {
             e.stopPropagation();
             e.preventDefault();
         }
-        this.setState({showModal:false});
+        this.addReview.hide();
     }
-    
-    handleItemChange(items , item){
-        console.log("handleRangeSelection");
-        console.log(items);
-        this.setState({items:items});
-    }
-    
-    //Update course method will be added here.
-    handleItemSize(items , item){
-        console.log("handleItemSize")
-        this.setState({items:items});
-    }
-    
-    removeEvent(items, item){
+
+    removeEvent(items, item) {
         this.deleteCourse(item);
-        this.setState({items:items});
-    }
-    
-    addNewEvent (items , newItems){
-        console.log("addNewEvent");
-        this.setState({showModal:false ,selected:[] , items:items});
-        this._closeModal();
+        this.setState({items: items});
     }
 
-    editEvent (items , item){
+    editEvent(items, item) {
         console.log("editEvent");
-        this.setState({showModal:false ,selected:[]});
+        this.setState({selected: []});
         this._closeModal();
     }
-    
-    changeView (days , event ){
-        this.setState({numberOfDays:days});
-    }
 
-    onClick(value) {
-        this.setState({showModal:value});
+    changeView(days, event) {
+        this.setState({numberOfDays: days});
     }
 
     render() {
         return (
             <Page>
                 <div style={scheduleStyle}>
-                <div className="content-expanded">
-                    <ReactAgenda
-                    minDate={new Date(now.getFullYear(), now.getMonth(), now.getDate()-30)}
-                    maxDate={new Date(now.getFullYear(), now.getMonth(), now.getDate()+30)}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
-                    startAtTime={10}
-                    cellHeight={this.state.cellHeight}
-                    items={this.state.items}
-                    numberOfDays={this.state.numberOfDays}
-                    headFormat={"ddd DD MMM"}
-                    rowsPerHour={this.state.rowsPerHour}
-                    itemColors={colors}
-                    autoScale={false}
-                    fixedHeader={true}
-                    onCellSelect={this.handleCellSelection}
-                    onChangeEvent={this.handleItemChange.bind(this)}
-                    onChangeDuration={this.handleItemSize.bind(this)}
-                    onItemEdit={this.handleItemEdit.bind(this)}
-                    onItemRemove={this.removeEvent.bind(this)}/>
-                    {
-                    this.state.showModal? <Modal clickOutside={this._closeModal} >
-                    <div className="modal-content">
-                        <AddReview courseId={this.state.courseId} onClick={this.onClick}/>
+                    <div className="content-expanded">
+                        <ReactAgenda
+                            minDate={new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30)}
+                            maxDate={new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30)}
+                            startDate={this.state.startDate}
+                            endDate={this.state.endDate}
+                            startAtTime={10}
+                            cellHeight={this.state.cellHeight}
+                            items={this.state.items}
+                            numberOfDays={this.state.numberOfDays}
+                            headFormat={"ddd DD MMM"}
+                            rowsPerHour={this.state.rowsPerHour}
+                            itemColors={colors}
+                            autoScale={false}
+                            fixedHeader={true}
+                            onItemEdit={this.handleItemEdit}
+                            onItemRemove={this.removeEvent}/>
+                        <AddReview onRef={ref => (this.addReview = ref)}/>
                     </div>
-                    </Modal>:''
-                    }
-                </div>
                 </div>
             </Page>
         );
     }
 }
-
 
 export default withRouter(Schedule);
