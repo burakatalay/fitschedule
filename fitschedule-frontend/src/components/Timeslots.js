@@ -75,7 +75,10 @@ export default class Timeslots extends React.Component {
 
     parseDate(date) {
         const formattedDate = new Date(date);
-        let formattedMinute = formattedDate.getMinutes();
+        let formattedMinute = formattedDate.getMinutes().toString();
+        if(formattedMinute.length === 1) {
+            return formattedDate.getHours() + ':0' + formattedMinute;
+        }
         formattedMinute = formattedMinute === 0 ? '00' : formattedMinute;
         return formattedDate.getHours() + ':' + formattedMinute;
     }
