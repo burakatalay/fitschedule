@@ -1,5 +1,3 @@
-"use strict";
-
 import React from 'react';
 import {withRouter} from 'react-router-dom'
 import Page from "./Page";
@@ -9,6 +7,7 @@ import UserService from '../services/UserService';
 import CourseService from '../services/CourseService';
 import {scheduleStyle} from "../css/schedule.css";
 import AddReview from './AddReview';
+import ConfirmAction from './ConfirmAction';
 
 const now = new Date();
 
@@ -31,13 +30,12 @@ class Schedule extends React.Component {
             numberOfDays: 7,
             startDate: new Date(),
             endDate: new Date() + 6,
-            courseProvider: null
+            courseProvider: null,
         };
         this.handleItemEdit = this.handleItemEdit.bind(this);
         this._openModal = this._openModal.bind(this);
         this._closeModal = this._closeModal.bind(this);
         this.removeEvent = this.removeEvent.bind(this);
-        this.editEvent = this.editEvent.bind(this);
         this.changeView = this.changeView.bind(this);
     }
 
@@ -78,25 +76,6 @@ class Schedule extends React.Component {
         });
     }
 
-    deleteCourse(item) {
-        if (item.courseProvider === this.state.courseProvider) {
-            CourseService.deleteCourse(item._id)
-                .then(() => {
-                    console.log('[ScheduleComponent] Success deleting course from the database');
-                }, (error) => {
-                    console.error('[ScheduleComponent] Error deleting course from the database', error);
-                });
-        } else {
-            ScheduleService.deleteCourse(item._id)
-                .then(() => {
-                    console.log('[ScheduleComponent] Success removing course from the schedule');
-                }, (error) => {
-                    console.error('[ScheduleComponent] Error removing course from the schedule', error);
-                });
-        }
-    }
-
-    //This method will fetch everytime user goes to schedule
     componentDidMount() {
         this.findCourses();
         UserService.whoami().then((data) => {
@@ -121,31 +100,42 @@ class Schedule extends React.Component {
     handleItemEdit(item, openModal) {
         console.log('[ScheduleComponent] Handle item edit', item);
         if (item) {
-            this._openModal(item._id);
+            this._openModal('0',item._id,null,null);
         }
     }
 
-    _openModal(id) {
-        this.addReview.show(id);
+    _openModal(number,id,item,courseProvider) {
+        if(number == '0') {
+            console.log('[ScheduleComponent] show addReview');
+            this.addReview.show(id);
+        } else {
+            console.log('[ScheduleComponent] show confirmReview');
+            this.confirmReview.show(item,courseProvider);
+        }
     }
 
-    _closeModal(e) {
+    _closeModal(number,e) {
         if (e) {
             e.stopPropagation();
             e.preventDefault();
         }
-        this.addReview.hide();
+        if(number == '0') {
+            console.log('[ScheduleComponent] close addReview');
+            this.addReview.hide();
+        } else {
+            console.log('[ScheduleComponent] close confirmReview');
+            this.confirmReview.hide();
+        }
     }
 
-    removeEvent(items, item) {
-        this.deleteCourse(item);
+    removeEvent(items, item, openModal) {
+        console.log('[ScheduleComponent] item removeEvent', item);
+        this._openModal('1',null, item, this.state.courseProvider);
         this.setState({items: items});
     }
 
-    editEvent(items, item) {
-        console.log("editEvent");
-        this.setState({selected: []});
-        this._closeModal();
+    removeFromSchedule(){
+        
     }
 
     changeView(days, event) {
@@ -174,6 +164,7 @@ class Schedule extends React.Component {
                             onItemEdit={this.handleItemEdit}
                             onItemRemove={this.removeEvent}/>
                         <AddReview onRef={ref => (this.addReview = ref)}/>
+                        <ConfirmAction onRef={ref => (this.confirmReview = ref)}/>
                     </div>
                 </div>
             </Page>
