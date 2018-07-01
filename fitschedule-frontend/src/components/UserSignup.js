@@ -21,7 +21,8 @@ class UserSignup extends React.Component {
             surname: '',
             email: '',
             password: '',
-            isCourseProvider: false
+            isCourseProvider: false,
+            error: ''
         };
 
         this.handleChangeFirstname = this.handleChangeFirstname.bind(this);
@@ -41,8 +42,8 @@ class UserSignup extends React.Component {
         this.setState({surname: value});
     }
 
-    handleChangeEmail(value) {
-        this.setState({email: value});
+    handleChangeEmail(value) {  
+        this.setState({email: value});  
     }
 
     handleChangePassword(value) {
@@ -53,18 +54,27 @@ class UserSignup extends React.Component {
         this.setState({isCourseProvider: value});
     }
 
+    checkValidation(value) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(value).toLowerCase());
+    }
+
     handleSubmit(event) {
         event.preventDefault();
 
-        let user = {
-            firstname: this.state.firstname,
-            surname: this.state.surname,
-            email: this.state.email,
-            password: this.state.password,
-            isCourseProvider: this.state.isCourseProvider,
-        };
-
-        this.props.onSubmit(user);
+        if(this.checkValidation(this.state.email)) {
+            let user = {
+                firstname: this.state.firstname,
+                surname: this.state.surname,
+                email: this.state.email,
+                password: this.state.password,
+                isCourseProvider: this.state.isCourseProvider,
+            };
+            this.props.onSubmit(user);
+        } else {
+            console.log("[UserSignUp] E-mail is not valid.");
+            this.setState({error:"E-mail is not valid."});
+        }
     }
 
     render() {
@@ -100,7 +110,7 @@ class UserSignup extends React.Component {
                                 required={true}
                                 value={this.state.email}
                                 onChange={this.handleChangeEmail}
-                                errorText="E-Mail is required"/>
+                                errorText={this.state.error}/>
                             <TextField
                                 label="Password"
                                 id="PasswordField"
@@ -124,7 +134,7 @@ class UserSignup extends React.Component {
                                     raised primary className="md-cell md-cell--2">Register</Button>
                             <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
                             <AlertMessage
-                                className="md-row md-full-width">{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
+                                className="md-row md-full-width">{this.props.error ? `${this.props.error}` : `${this.state.error}`}</AlertMessage>
                         </CardActions>
                     </form>
                 </Card>
