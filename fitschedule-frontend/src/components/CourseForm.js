@@ -193,65 +193,95 @@ class CourseForm extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         const timeslot = [];
+        let timeError = false;
         if (this.state.mondayStart && this.state.mondayEnd) {
-            const monday = {
-                day: 0,
-                start: this.state.mondayStart,
-                end: this.state.mondayEnd
-            };
-            timeslot.push(monday);
+            if (this.state.mondayStart.getTime() > this.state.mondayEnd.getTime()) {
+                timeError = true;
+            } else {
+                const monday = {
+                    day: 0,
+                    start: this.state.mondayStart,
+                    end: this.state.mondayEnd
+                };
+                timeslot.push(monday);
+            }
         }
         if (this.state.tuesdayStart && this.state.tuesdayEnd) {
-            const tuesday = {
-                day: 1,
-                start: this.state.tuesdayStart,
-                end: this.state.tuesdayEnd
-            };
-            timeslot.push(tuesday);
+            if (this.state.tuesdayStart.getTime() > this.state.tuesdayEnd.getTime()) {
+                timeError = true;
+            } else {
+                const tuesday = {
+                    day: 1,
+                    start: this.state.tuesdayStart,
+                    end: this.state.tuesdayEnd
+                };
+                timeslot.push(tuesday);
+            }
         }
         if (this.state.wednesdayStart && this.state.wednesdayEnd) {
-            const wednesday = {
-                day: 2,
-                start: this.state.wednesdayStart,
-                end: this.state.wednesdayEnd
-            };
-            timeslot.push(wednesday);
+            if (this.state.wednesdayStart.getTime() > this.state.wednesdayEnd.getTime()) {
+                timeError = true;
+            } else {
+                const wednesday = {
+                    day: 2,
+                    start: this.state.wednesdayStart,
+                    end: this.state.wednesdayEnd
+                };
+                timeslot.push(wednesday);
+            }
         }
         if (this.state.thursdayStart && this.state.thursdayEnd) {
-            const thursday = {
-                day: 3,
-                start: this.state.thursdayStart,
-                end: this.state.thursdayEnd
-            };
-            timeslot.push(thursday);
+            if (this.state.thursdayStart.getTime() > this.state.thursdayEnd.getTime()) {
+                timeError = true;
+            } else {
+                const thursday = {
+                    day: 3,
+                    start: this.state.thursdayStart,
+                    end: this.state.thursdayEnd
+                };
+                timeslot.push(thursday);
+            }
         }
         if (this.state.fridayStart && this.state.fridayEnd) {
-            const friday = {
-                day: 4,
-                start: this.state.fridayStart,
-                end: this.state.fridayEnd
-            };
-            timeslot.push(friday);
+            if (this.state.fridayStart.getTime() > this.state.fridayEnd.getTime()) {
+                timeError = true;
+            } else {
+                const friday = {
+                    day: 4,
+                    start: this.state.fridayStart,
+                    end: this.state.fridayEnd
+                };
+                timeslot.push(friday);
+            }
+
         }
         if (this.state.saturdayStart && this.state.saturdayEnd) {
-            const saturday = {
-                day: 5,
-                start: this.state.saturdayStart,
-                end: this.state.saturdayEnd
-            };
-            timeslot.push(saturday);
+            if (this.state.saturdayStart.getTime() > this.state.saturdayEnd.getTime()) {
+                timeError = true;
+            } else {
+                const saturday = {
+                    day: 5,
+                    start: this.state.saturdayStart,
+                    end: this.state.saturdayEnd
+                };
+                timeslot.push(saturday);
+            }
+
         }
         if (this.state.sundayStart && this.state.sundayEnd) {
-            const sunday = {
-                day: 6,
-                start: this.state.sundayStart,
-                end: this.state.sundayEnd
-            };
-            timeslot.push(sunday);
+            if (this.state.sundayStart.getTime() > this.state.sundayEnd.getTime()) {
+                timeError = true;
+            } else {
+                const sunday = {
+                    day: 6,
+                    start: this.state.sundayStart,
+                    end: this.state.sundayEnd
+                };
+                timeslot.push(sunday);
+            }
         }
-        if (timeslot.length === 0) {
-            this.setState({error: 'Please select a time-slot for the course'});
-            console.log('[CourseForm] Empty timeslot', timeslot);
+        if (timeError || timeslot.length === 0 || this.state.name.length === 0 || this.state.instructor.length === 0 || this.state.lat && this.state.lng) {
+            this.setState({error: 'Please make sure all fields are valid'});
         } else {
             const course = {
                 name: this.state.name,
