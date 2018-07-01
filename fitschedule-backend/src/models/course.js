@@ -2,8 +2,6 @@
 
 const mongoose = require('mongoose');
 
-// Define the course schema
-
 const CourseSchema  = new mongoose.Schema({
     name: {
         type: String,
@@ -46,5 +44,4 @@ const CourseSchema  = new mongoose.Schema({
     ]
 });
 
-// Export the Course model
 module.exports = mongoose.model('Course', CourseSchema);

@@ -2,8 +2,6 @@
 
 const mongoose = require('mongoose');
 
-// Define the review schema
-
 const ReviewSchema  = new mongoose.Schema({
     comment: {
         type: String
@@ -22,5 +20,4 @@ const ReviewSchema  = new mongoose.Schema({
     }
 });
 
-// Export the Review model
 module.exports = mongoose.model('Review', ReviewSchema);

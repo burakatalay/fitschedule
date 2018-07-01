@@ -7,25 +7,28 @@ This controller was added for testing purposes, if needed could be removed or mo
 const CourseProviderModel = require('../models/courseprovider');
 
 module.exports.getDetails = function(req, res) {
-    console.log('[CourseProviderController] Received request to get course-provider with id', req.params.id);
     CourseProviderModel.findById(req.params.id, function(err, courseprovider){
         if (err) {
             res.status(500).send(err);
             return;
         }
-        if (!courseprovider) return res.status(404).json({
+        if (!courseprovider) {
+            res.status(404).json({
             error: 'Not Found',
-            message: `Course Provider not found`
-        });
-        res.status(201).json(courseprovider);
+            message: `Courseprovider not found`
+            });
+            return;
+        }
+        res.status(200).json(courseprovider);
     });
 };
 
-module.exports.list  = (req, res) => {
-    CourseProviderModel.find({}).exec()
-        .then(courseprovider => res.status(200).json(courseprovider))
-        .catch(error => res.status(500).json({
-            error: 'Internal server error',
-            message: error.message
-        }));
+module.exports.list = function(req, res) {
+    CourseProviderModel.find({}, function(err,courseproviders) {
+        if (err) {
+            res.status(500).send(err);
+            return
+        }
+        res.status(200).json(courseproviders);
+    });
 };

@@ -2,8 +2,6 @@
 
 const mongoose = require('mongoose');
 
-// Define the course schema
-
 const CourseProviderSchema  = new mongoose.Schema({
     name: {
         type: String,
@@ -11,5 +9,4 @@ const CourseProviderSchema  = new mongoose.Schema({
     }
 });
 
-// Export the CourseProvider model
 module.exports = mongoose.model('CourseProvider', CourseProviderSchema);

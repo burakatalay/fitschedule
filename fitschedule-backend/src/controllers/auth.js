@@ -7,11 +7,9 @@ const bcrypt = require('bcryptjs');
 const config = require('../config');
 const UserModel = require('../models/user');
 const ScheduleModel = require('../models/schedule');
-const CourseModel = require('../models/course');
 const CourseProviderModel = require('../models/courseprovider');
 
 module.exports.login = function(req, res){
-
     if(!req.body.email){
         res.status(400).send('email required');
         return;
@@ -20,33 +18,29 @@ module.exports.login = function(req, res){
         res.status(400).send('password required');
         return;
     }
-    
-
     UserModel.findOne({email: req.body.email}, function(err, user){
-
         if (err) {
             res.status(500).send(err);
             return
         }
-
         if (!user) {
-            res.status(401).send('Invalid Credentials');
+            res.status(404).json({
+            error: 'Not Found',
+            message: `User not found`
+            });
             return;
         }
         const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).send({token: null});
-        }
-        
+            res.status(401).send({token: null}, 'Invalid Credentials');
+            return;
+        } 
         const token = jwt.sign({id: user._id, email: user.email, isCourseProvider: user.isCourseProvider, courseProvider: user.courseProvider}, config.JwtSecret, {
             expiresIn: 86400 // expires in 24 hours
         });
-
         res.status(200).json({token: token});
     });
-
 };
-
 
 module.exports.register = function(req, res){
 
@@ -85,7 +79,7 @@ module.exports.register = function(req, res){
         });
         courseProvider.save(function(err) {
             if (err) {
-                res.status.send(err);
+                res.status(500).send(err);
                 return;
             }
         });
@@ -94,7 +88,7 @@ module.exports.register = function(req, res){
     
     schedule.save(function(err) {
         if (err) {
-            res.status.send(err);
+            res.status(500).send(err);
             return;
         }   
         user.schedule = schedule._id; 
@@ -123,13 +117,14 @@ module.exports.me = function(req, res) {
             res.status(500).send(err);
             return
         }
-        if (!user) return res.status(404).json({
+        if (!user) {
+            res.status(404).json({
             error: 'Not Found',
             message: `User not found`
-        });
-
+            });
+            return;
+        }
         return res.status(200).json(user);
-    
     });
 };
 
@@ -137,13 +132,14 @@ module.exports.logout = function(req, res) {
     res.status(200).send({token: null});
 };
 
-module.exports.list  = (req, res) => {
-    UserModel.find({}).exec()
-        .then(user => res.status(200).json(user))
-        .catch(error => res.status(500).json({
-            error: 'Internal server error',
-            message: error.message
-        }));
+module.exports.list = function(req, res) {
+    UserModel.find({}, function(err,users) {
+        if (err) {
+            res.status(500).send(err);
+            return
+        }
+        res.status(200).json(users);
+    });
 };
 
 module.exports.getFullName = function(req, res) {
@@ -152,11 +148,14 @@ module.exports.getFullName = function(req, res) {
             res.status(500).send(err);
             return;
         }
-        if (!user) return res.status(404).json({
+        if (!user) {
+            res.status(404).json({
             error: 'Not Found',
             message: `User not found`
-        });
-        res.status(201).json(user.firstname + ' ' + user.lastname);
+            });
+            return;
+        }
+        res.status(200).json(user.firstname + ' ' + user.lastname);
     });
 };
 
