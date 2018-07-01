@@ -50,9 +50,7 @@ export default class UserService {
         let base64 = base64Url.replace('-', '+').replace('_', '/');
         return {
             id : JSON.parse(window.atob(base64)).id,
-            email: JSON.parse(window.atob(base64)).email,
-            isCourseProvider: JSON.parse(window.atob(base64)).isCourseProvider,
-            courseProvider: JSON.parse(window.atob(base64)).courseProvider,
+            email: JSON.parse(window.atob(base64)).email
         };
     }
 

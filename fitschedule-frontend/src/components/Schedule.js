@@ -92,7 +92,8 @@ class Schedule extends React.Component {
     }
 
     deleteCourse(id, item) {
-        if(UserService.getCurrentUser().isCourseProvider && (item.courseProvider === UserService.getCurrentUser().courseProvider)) {
+        var currentUser = UserService.getUserFromDBWithToken();
+        if(currentUser.isCourseProvider && (item.courseprovider === currentUser.courseProvider)) {
             ScheduleService.deleteCourse(id)
             .then(() => {
                 console.log('[ScheduleComponent] Success deleting course from the schedule');
@@ -115,7 +116,6 @@ class Schedule extends React.Component {
                 console.error('[ScheduleComponent] Error deleting course from the schedule', error);
             });
         }
-        
     }
 
     //This method will fetch everytime user goes to schedule

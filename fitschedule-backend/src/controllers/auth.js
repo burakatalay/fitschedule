@@ -35,7 +35,7 @@ module.exports.login = function(req, res){
             res.status(401).send({token: null}, 'Invalid Credentials');
             return;
         } 
-        const token = jwt.sign({id: user._id, email: user.email, isCourseProvider: user.isCourseProvider, courseProvider: user.courseProvider}, config.JwtSecret, {
+        const token = jwt.sign({id: user._id, email: user.email}, config.JwtSecret, {
             expiresIn: 86400 // expires in 24 hours
         });
         res.status(200).json({token: token});
@@ -98,7 +98,7 @@ module.exports.register = function(req, res){
                 return;
             }
             
-            const token = jwt.sign({id: user._id, email: user.email, isCourseProvider: user.isCourseProvider, courseProvider: user.courseProvider}, config.JwtSecret, {
+            const token = jwt.sign({id: user._id, email: user.email}, config.JwtSecret, {
                 expiresIn: 86400 // expires in 24 hours
             });
             
