@@ -27,14 +27,11 @@ module.exports.createCourseAsInstructor = function(req, res){
             });
             return;
         }
-        console.log(user);
         ScheduleModel.findById(user.schedule, function(err, schedule) {
             if (err) {
                 res.status(500).send(err);
                 return;
             }
-        console.log(schedule);
-        
         course.courseprovider = user.courseProvider
         course.save(function(err, course) {
             if (err) {
@@ -49,7 +46,6 @@ module.exports.createCourseAsInstructor = function(req, res){
                 return;
                 }
             });
-            console.log(schedule);
             res.status(201).json(course);
         });
     });
@@ -118,7 +114,6 @@ module.exports.findCoursesByNameAndLocation = function(req, res) {
             res.status(500).send(err);
             return;
         }
-        console.log(courses);
         res.status(200).json(courses);
     });
 };
@@ -141,7 +136,7 @@ module.exports.getCourseDetails = function(req, res) {
 };
 
 module.exports.deleteCourse = function(req, res) {
-    CourseModel.findByIdAndRemove(req.params.id, function(err, course) {
+    CourseModel.findById(req.params.id, function(err, course) {
         if (err) {
             res.status(500).send(err);
             return
@@ -153,6 +148,34 @@ module.exports.deleteCourse = function(req, res) {
             });
             return;
         }
+        ScheduleModel.find({}, function(err, schedules) {
+            if (err) {
+                res.status(500).send(err);
+                return
+            }
+            if (!schedules) {  // This should not happen unless there is no user registered at all, even so this function will not get called then
+                res.status(404).json({
+                error: 'Not Found',
+                message: `No schedule found`
+                });
+                return;
+            }
+            schedules.forEach(schedule => {
+                schedule.courses.forEach(courseinschedule => {
+                    if(courseinschedule == req.params.id) {
+                        schedule.courses.pull(course);
+                        schedule.save(function(err) {
+                            if (err) {
+                                res.status(500).send(err);
+                                return;
+                            }
+                        });
+                    }     
+                });
+            });
+           
+        });
+        course.remove();
         res.status(200).json({
             message: `Course deleted successfully`
         });;  
