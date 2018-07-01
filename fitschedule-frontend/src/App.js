@@ -2,15 +2,13 @@
 
 import React from 'react';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-
-import { UserLoginView } from "./views/UserLoginView";
-import { UserSignupView } from "./views/UserSignupView";
-
 import UserService from "./services/UserService";
 import CourseForm from "./components/CourseForm";
 import Schedule  from './components/Schedule';
 import Discover from "./components/Discover";
 import Home from "./components/Home";
+import UserLogin from "./components/UserLogin";
+import UserSignup from "./components/UserSignup";
 
 
 export default class App extends React.Component {
@@ -32,8 +30,8 @@ export default class App extends React.Component {
                     else {
                         return (<Redirect to={'/login'}/>)
                     }}, path: '/add',},
-                { component: UserLoginView, path: '/login'},
-                { component: UserSignupView, path: '/register'}
+                { component: UserLogin, path: '/login'},
+                { component: UserSignup, path: '/register'}
             ]
         };
     }

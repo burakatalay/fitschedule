@@ -6,9 +6,10 @@ import {withRouter} from 'react-router-dom';
 
 import {AlertMessage} from './AlertMessage';
 import Page from './Page';
+import UserService from "../services/UserService";
 
 
-const style = {maxWidth: 500, marginTop: '2rem', marginBottom:'2rem'};
+const style = {maxWidth: 500, marginTop: '2rem', marginBottom: '2rem'};
 
 
 class UserSignup extends React.Component {
@@ -42,8 +43,8 @@ class UserSignup extends React.Component {
         this.setState({surname: value});
     }
 
-    handleChangeEmail(value) {  
-        this.setState({email: value});  
+    handleChangeEmail(value) {
+        this.setState({email: value});
     }
 
     handleChangePassword(value) {
@@ -62,7 +63,7 @@ class UserSignup extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        if(this.checkValidation(this.state.email)) {
+        if (this.checkValidation(this.state.email)) {
             let user = {
                 firstname: this.state.firstname,
                 surname: this.state.surname,
@@ -70,10 +71,17 @@ class UserSignup extends React.Component {
                 password: this.state.password,
                 isCourseProvider: this.state.isCourseProvider,
             };
-            this.props.onSubmit(user);
+            UserService.register(user.firstname, user.surname, user.email, user.password, user.isCourseProvider).then((data) => {
+                this.props.history.push('/');
+            }).catch((e) => {
+                console.error(e);
+                this.setState({
+                    error: e
+                });
+            })
         } else {
             console.log("[UserSignUp] E-mail is not valid.");
-            this.setState({error:"E-mail is not valid."});
+            this.setState({error: "E-mail is not valid."});
         }
     }
 
@@ -132,9 +140,10 @@ class UserSignup extends React.Component {
                             <Button id="submit" type="submit"
                                     disabled={this.state.firstname == undefined || this.state.firstname == '' || this.state.surname == undefined || this.state.surname == '' || this.state.email == undefined || this.state.email == '' || this.state.password == undefined || this.state.password == '' ? true : false}
                                     raised primary className="md-cell md-cell--2">Register</Button>
-                            <Button id="reset" type="reset" raised secondary className="md-cell md-cell--2">Dismiss</Button>
+                            <Button id="reset" type="reset" raised secondary
+                                    className="md-cell md-cell--2">Dismiss</Button>
                             <AlertMessage
-                                className="md-row md-full-width">{this.props.error ? `${this.props.error}` : `${this.state.error}`}</AlertMessage>
+                                className="md-row md-full-width">{this.state.error ? `${this.state.error}` : `${this.state.error}`}</AlertMessage>
                         </CardActions>
                     </form>
                 </Card>

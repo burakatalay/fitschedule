@@ -6,6 +6,7 @@ import {Link, withRouter} from 'react-router-dom';
 
 import {AlertMessage} from './AlertMessage';
 import Page from './Page';
+import UserService from "../services/UserService";
 
 
 const style = {maxWidth: 500, marginTop: '2rem', marginBottom: '2rem'};
@@ -18,7 +19,8 @@ class UserLogin extends React.Component {
 
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            error: ''
         };
 
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
@@ -43,7 +45,14 @@ class UserLogin extends React.Component {
             password: this.state.password
         };
 
-        this.props.onSubmit(user);
+        UserService.login(user.email, user.password).then((data) => {
+            this.props.history.push('/');
+        }).catch((e) => {
+            console.error(e);
+            this.setState({
+                error: e
+            });
+        });
     }
 
     render() {
@@ -80,13 +89,13 @@ class UserLogin extends React.Component {
                             <Button id="reset" type="reset" raised secondary
                                     className="md-cell md-cell--2">Dismiss</Button>
                             <AlertMessage
-                                className="md-row md-full-width">{this.props.error ? `${this.props.error}` : ''}</AlertMessage>
+                                className="md-row md-full-width">{this.state.error ? `${this.state.error}` : ''}</AlertMessage>
                         </CardActions>
                     </form>
                 </Card>
             </Page>
         );
     }
-};
+}
 
 export default withRouter(UserLogin);
