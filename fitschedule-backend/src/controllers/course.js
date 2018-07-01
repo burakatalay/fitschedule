@@ -154,7 +154,8 @@ module.exports.updateCourseDetails = function(req, res) {
 module.exports.findCoursesByNameAndLocation = function(req, res) {
 
     const query = {
-        name: req.query.course,
+        name: { $regex: new RegExp(req.query.course, "i") },
+        //name: {$regex: /^req.course.name$/i},
         location :
         { $geoWithin :
             { $centerSphere :
