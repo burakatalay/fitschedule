@@ -162,7 +162,7 @@ module.exports.deleteCourse = function(req, res) {
             }
             schedules.forEach(schedule => {
                 schedule.courses.forEach(courseinschedule => {
-                    if(courseinschedule === req.params.id) {
+                    if(courseinschedule == req.params.id) {
                         schedule.courses.pull(course);
                         schedule.save(function(err) {
                             if (err) {
