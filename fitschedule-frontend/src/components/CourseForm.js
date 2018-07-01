@@ -20,8 +20,9 @@ import AutocompleteLocation from "./AutocompleteLocation";
 import {AlertMessage} from "./AlertMessage";
 import CourseService from "../services/CourseService";
 
-const rowStyle = {display: 'flex', alignItems: 'center', width: '100%'};
-const spanStyle = {display: 'flex', width: '20rem', paddingTop: '1.5rem'};
+const pickerColumnStyle = {display: 'flex', justifyContent: 'space-around', width: '40rem'};
+const rowStyle = {display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%'};
+const labelStyle = {paddingTop: '1.5rem'};
 const style = {maxWidth: 700, marginBottom: '4rem', marginTop: '2rem'};
 const timePickerStyle = {width: '100%'};
 
@@ -302,123 +303,137 @@ class CourseForm extends React.Component {
                                                       required={true}
                                                       onSubmit={(value) => this.autocompleteSubmit(value)}/>
                                 <div style={rowStyle}>
-                                    <span style={spanStyle}>
+                                    <div style={labelStyle}>
                                         Monday:
-                                    </span>
-                                    <TimePicker
-                                        id="MondayStartField"
-                                        label="Start Time"
-                                        onChange={this.handleChangeStartMonday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
-                                    <TimePicker
-                                        id="MondayEndField"
-                                        label="End Time"
-                                        onChange={this.handleChangeEndMonday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
+                                    </div>
+                                    <div style={pickerColumnStyle}>
+                                        <TimePicker
+                                            id="MondayStartField"
+                                            label="Start Time"
+                                            onChange={this.handleChangeStartMonday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                        <TimePicker
+                                            id="MondayEndField"
+                                            label="End Time"
+                                            onChange={this.handleChangeEndMonday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                    </div>
                                 </div>
                                 <div style={rowStyle}>
-                                    <span style={spanStyle}>
+                                    <div style={labelStyle}>
                                         Tuesday:
-                                    </span>
-                                    <TimePicker
-                                        id="TuesdayStartField"
-                                        label="Start Time"
-                                        onChange={this.handleChangeStartTuesday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
-                                    <TimePicker
-                                        id="TuesdayEndField"
-                                        label="End Time"
-                                        onChange={this.handleChangeEndTuesday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
+                                    </div>
+                                    <div style={pickerColumnStyle}>
+                                        <TimePicker
+                                            id="TuesdayStartField"
+                                            label="Start Time"
+                                            onChange={this.handleChangeStartTuesday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                        <TimePicker
+                                            id="TuesdayEndField"
+                                            label="End Time"
+                                            onChange={this.handleChangeEndTuesday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                    </div>
                                 </div>
                                 <div style={rowStyle}>
-                                    <span style={spanStyle}>
+                                    <div style={labelStyle}>
                                         Wednesday:
-                                    </span>
-                                    <TimePicker
-                                        id="WednesdayStartField"
-                                        label="Start Time"
-                                        onChange={this.handleChangeStartWednesday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
-                                    <TimePicker
-                                        id="WednesdayEndField"
-                                        label="End Time"
-                                        onChange={this.handleChangeEndWednesday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
+                                    </div>
+                                    <div style={pickerColumnStyle}>
+                                        <TimePicker
+                                            id="WednesdayStartField"
+                                            label="Start Time"
+                                            onChange={this.handleChangeStartWednesday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                        <TimePicker
+                                            id="WednesdayEndField"
+                                            label="End Time"
+                                            onChange={this.handleChangeEndWednesday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                    </div>
                                 </div>
                                 <div style={rowStyle}>
-                                    <span style={spanStyle}>
+                                    <div style={labelStyle}>
                                         Thursday:
-                                    </span>
-                                    <TimePicker
-                                        id="ThursdayStartField"
-                                        label="Start Time"
-                                        onChange={this.handleChangeStartThursday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
-                                    <TimePicker
-                                        id="ThursdayEndField"
-                                        label="End Time"
-                                        onChange={this.handleChangeEndThursday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
+                                    </div>
+                                    <div style={pickerColumnStyle}>
+                                        <TimePicker
+                                            id="ThursdayStartField"
+                                            label="Start Time"
+                                            onChange={this.handleChangeStartThursday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                        <TimePicker
+                                            id="ThursdayEndField"
+                                            label="End Time"
+                                            onChange={this.handleChangeEndThursday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                    </div>
                                 </div>
                                 <div style={rowStyle}>
-                                    <span style={spanStyle}>
+                                    <div style={labelStyle}>
                                         Friday:
-                                    </span>
-                                    <TimePicker
-                                        id="FridayStartField"
-                                        label="Start Time"
-                                        onChange={this.handleChangeStartFriday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
-                                    <TimePicker
-                                        id="FridayEndField"
-                                        label="End Time"
-                                        onChange={this.handleChangeEndFriday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
+                                    </div>
+                                    <div style={pickerColumnStyle}>
+                                        <TimePicker
+                                            id="FridayStartField"
+                                            label="Start Time"
+                                            onChange={this.handleChangeStartFriday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                        <TimePicker
+                                            id="FridayEndField"
+                                            label="End Time"
+                                            onChange={this.handleChangeEndFriday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                    </div>
                                 </div>
                                 <div style={rowStyle}>
-                                    <span style={spanStyle}>
+                                    <div style={labelStyle}>
                                         Saturday:
-                                    </span>
-                                    <TimePicker
-                                        id="SaturdayStartField"
-                                        label="Start Time"
-                                        onChange={this.handleChangeStartSaturday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
-                                    <TimePicker
-                                        id="SaturdayEndField"
-                                        label="End Time"
-                                        onChange={this.handleChangeEndSaturday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
+                                    </div>
+                                    <div style={pickerColumnStyle}>
+                                        <TimePicker
+                                            id="SaturdayStartField"
+                                            label="Start Time"
+                                            onChange={this.handleChangeStartSaturday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                        <TimePicker
+                                            id="SaturdayEndField"
+                                            label="End Time"
+                                            onChange={this.handleChangeEndSaturday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                    </div>
                                 </div>
                                 <div style={rowStyle}>
-                                    <span style={spanStyle}>
+                                    <div style={labelStyle}>
                                         Sunday:
-                                    </span>
-                                    <TimePicker
-                                        id="SundayStartField"
-                                        label="Start Time"
-                                        onChange={this.handleChangeStartSunday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
-                                    <TimePicker
-                                        id="SundayEndField"
-                                        label="End Time"
-                                        onChange={this.handleChangeEndSunday}
-                                        style={timePickerStyle}
-                                        className="md-cell"/>
+                                    </div>
+                                    <div style={pickerColumnStyle}>
+                                        <TimePicker
+                                            id="SundayStartField"
+                                            label="Start Time"
+                                            onChange={this.handleChangeStartSunday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                        <TimePicker
+                                            id="SundayEndField"
+                                            label="End Time"
+                                            onChange={this.handleChangeEndSunday}
+                                            style={timePickerStyle}
+                                            className="md-cell"/>
+                                    </div>
                                 </div>
                             </div>
                         </CardText>
