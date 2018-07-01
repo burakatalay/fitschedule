@@ -5,7 +5,7 @@
 
 In order to fully use the application, the database needs to be populated with courses. There are two ways to achieve this:
 
-1)Run the frontend application and register a user by selecting the "Course Provider" checkbox and create courses there. After this the newly created courses can be searched from the discover page of the application.
+1) Run the frontend application and register a user by selecting the "Course Provider" checkbox and create courses there. After this the newly created courses can be searched from the discover page of the application.
 
 2) Directly send courses to the database from an application like Postman. Use "localhost:3000/courses/createcourseasfitnesscenter" and send an HTTP post. The body should contain a JSON with the following format:
 
