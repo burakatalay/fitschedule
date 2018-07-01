@@ -1,5 +1,8 @@
 import React from 'react';
 
+const labelStyle = {fontWeight: 'bold'};
+const rowStyle = {display: 'flex', justifyContent: 'space-between', marginRight: '1rem', marginBottom: '1rem'};
+
 export default class Timeslots extends React.Component {
     constructor(props) {
         super(props);
@@ -81,19 +84,40 @@ export default class Timeslots extends React.Component {
         return (
             <div>
                 {this.state.mon &&
-                <p><strong>Monday: </strong>{this.state.mon.start} - {this.state.mon.end}</p>}
+                <div style={rowStyle}>
+                    <div style={labelStyle}>Monday:</div>
+                    <div>{this.state.mon.start} - {this.state.mon.end}</div>
+                </div>}
                 {this.state.tue &&
-                <p><strong>Tuesday: </strong>{this.state.tue.start} - {this.state.tue.end}</p>}
+                <div style={rowStyle}>
+                    <div style={labelStyle}>Tuesday:</div>
+                    <div>{this.state.tue.start} - {this.state.tue.end}</div>
+                </div>}
                 {this.state.wed &&
-                <p><strong>Wednesday: </strong>{this.state.wed.start} - {this.state.wed.end}</p>}
+                <div style={rowStyle}>
+                    <div style={labelStyle}>Wednesday:</div>
+                    <div>{this.state.wed.start} - {this.state.wed.end}</div>
+                </div>}
                 {this.state.thu &&
-                <p><strong>Thursday: </strong>{this.state.thu.start} - {this.state.thu.end}</p>}
+                <div style={rowStyle}>
+                    <div style={labelStyle}>Thursday:</div>
+                    <div>{this.state.thu.start} - {this.state.thu.end}</div>
+                </div>}
                 {this.state.fri &&
-                <p><strong>Friday: </strong>{this.state.fri.start} - {this.state.fri.end}</p>}
+                <div style={rowStyle}>
+                    <div style={labelStyle}>Friday:</div>
+                    <div>{this.state.fri.start} - {this.state.fri.end}</div>
+                </div>}
                 {this.state.sat &&
-                <p><strong>Saturday: </strong>{this.state.sat.start} - {this.state.sat.end}</p>}
+                <div style={rowStyle}>
+                    <div style={labelStyle}>Saturday:</div>
+                    <div>{this.state.sat.start} - {this.state.sat.end}</div>
+                </div>}
                 {this.state.sun &&
-                <p><strong>Sunday: </strong>{this.state.sun.start} - {this.state.sun.end}</p>}
+                <div style={rowStyle}>
+                    <div style={labelStyle}>Sunday:</div>
+                    <div>{this.state.sun.start} - {this.state.sun.end}</div>
+                </div>}
             </div>
         );
     }
