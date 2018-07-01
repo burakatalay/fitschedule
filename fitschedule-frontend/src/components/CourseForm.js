@@ -280,7 +280,7 @@ class CourseForm extends React.Component {
                 timeslot.push(sunday);
             }
         }
-        if (timeError || timeslot.length === 0 || this.state.name.length === 0 || this.state.instructor.length === 0 || this.state.lat && this.state.lng) {
+        if (timeError || timeslot.length === 0 || this.state.name.length === 0 || this.state.instructor.length === 0 || !this.state.lat || !this.state.lng) {
             this.setState({error: 'Please make sure all fields are valid'});
         } else {
             const course = {
